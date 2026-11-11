@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proving with cas · SymLean</title>
+<meta name="description" content="How to state a goal so that cas and cega close it, and what to do when they refuse.">
+<link rel="stylesheet" href="../../static/site.css">
+<link rel="icon" type="image/png" href="../../static/brand/favicon.png">
+<link rel="apple-touch-icon" href="../../static/brand/apple-touch-icon.png">
+<meta property="og:title" content="Proving with cas · SymLean">
+<meta property="og:description" content="How to state a goal so that cas and cega close it, and what to do when they refuse.">
+<meta property="og:image" content="https://robertboy18.github.io/SymLean/static/brand/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="kind-tutorial">
+<a class="skip" href="#main">Skip to the content</a>
+<header class="topbar"><div class="topbar-inner"><a class="brand" href="../../index.html"><picture class="brand-logo"><source media="(prefers-color-scheme: dark)" srcset="../../static/brand/symlean-logo-dark.png"><img src="../../static/brand/symlean-logo.png" alt="SymLean" width="960" height="252"></picture></a><nav class="top-nav"><a href="../index.html" aria-current="page">Docs</a><a href="first-hour.html">Getting started</a><a href="../all.html">Index</a><a class="code-button" href="https://github.com/Robertboy18/SymLean">Code</a></nav></div></header>
+<div class="docs"><nav class="sidebar" aria-label="Documentation"><p class="nav-home"><a href="../index.html">Documentation</a></p><p class="nav-heading">Guides</p><details><summary><a href="../guide/why.html">Why SymLean</a></summary><ul></ul></details><details><summary><a href="../guide/algebra.html">Algebra</a></summary><ul><li><a href="../ref/simplify.html"><code class="lean">simplify</code></a></li><li><a href="../ref/fullSimplify.html"><code class="lean">fullSimplify</code></a></li><li><a href="../ref/expand.html"><code class="lean">expand</code></a></li><li><a href="../ref/factor.html"><code class="lean">factor</code></a></li><li><a href="../ref/collect.html"><code class="lean">collect</code></a></li><li><a href="../ref/trigExpand.html"><code class="lean">trigExpand</code></a></li><li><a href="../ref/together.html"><code class="lean">together</code></a></li><li><a href="../ref/cancel.html"><code class="lean">cancel</code></a></li><li><a href="../ref/apart.html"><code class="lean">apart</code></a></li><li><a href="../ref/numerator.html"><code class="lean">numerator</code></a></li><li><a href="../ref/denominator.html"><code class="lean">denominator</code></a></li></ul></details><details><summary><a href="../guide/polynomials.html">Polynomials</a></summary><ul><li><a href="../ref/coefficient.html"><code class="lean">coefficient</code></a></li><li><a href="../ref/coefficientList.html"><code class="lean">coefficientList</code></a></li><li><a href="../ref/exponent.html"><code class="lean">exponent</code></a></li><li><a href="../ref/polynomialGCD.html"><code class="lean">polynomialGCD</code></a></li><li><a href="../ref/polynomialLCM.html"><code class="lean">polynomialLCM</code></a></li><li><a href="../ref/polynomialQuotient.html"><code class="lean">polynomialQuotient</code></a></li><li><a href="../ref/polynomialRemainder.html"><code class="lean">polynomialRemainder</code></a></li><li><a href="../ref/polynomialQuotientRemainder.html"><code class="lean">polynomialQuotientRemainder</code></a></li><li><a href="../ref/interpolatingPolynomial.html"><code class="lean">interpolatingPolynomial</code></a></li><li><a href="../ref/groebner.html"><code class="lean">groebner</code></a></li><li><a href="../ref/member.html"><code class="lean">member</code></a></li></ul></details><details><summary><a href="../guide/calculus.html">Calculus</a></summary><ul><li><a href="../ref/derive.html"><code class="lean">derive</code></a></li><li><a href="../ref/grad.html"><code class="lean">grad</code></a></li><li><a href="../ref/integrate.html"><code class="lean">integrate</code></a></li><li><a href="../ref/nintegrate.html"><code class="lean">nintegrate</code></a></li><li><a href="../ref/cas-integrate-primitive.html"><code class="lean"><span class="t">cas</span> [integrate primitive := F]</code></a></li><li><a href="../ref/maximize.html"><code class="lean">maximize</code></a></li><li><a href="../ref/minimize.html"><code class="lean">minimize</code></a></li></ul></details><details><summary><a href="../guide/series-limits.html">Series and limits</a></summary><ul><li><a href="../ref/series.html"><code class="lean">series</code></a></li><li><a href="../ref/limit.html"><code class="lean">limit</code></a></li></ul></details><details><summary><a href="../guide/equations.html">Equations</a></summary><ul><li><a href="../ref/solve.html"><code class="lean">solve</code></a></li><li><a href="../ref/reduce.html"><code class="lean">reduce</code></a></li><li><a href="../ref/roots.html"><code class="lean">roots</code></a></li><li><a href="../ref/findRoot.html"><code class="lean">findRoot</code></a></li></ul></details><details><summary><a href="../guide/sums.html">Sums and recurrences</a></summary><ul><li><a href="../ref/sum.html"><code class="lean">sum</code></a></li><li><a href="../ref/product.html"><code class="lean">product</code></a></li><li><a href="../ref/rsolve.html"><code class="lean">rsolve</code></a></li></ul></details><details><summary><a href="../guide/special-functions.html">Special functions</a></summary><ul><li><a href="../ref/gamma.html"><code class="lean">gamma</code></a></li><li><a href="../ref/zeta.html"><code class="lean">zeta</code></a></li><li><a href="../ref/BernoulliB.html"><code class="lean">BernoulliB</code></a></li><li><a href="../ref/erf.html"><code class="lean">erf</code></a></li><li><a href="../ref/BesselJ.html"><code class="lean">BesselJ</code></a></li><li><a href="../ref/LegendreP.html"><code class="lean">LegendreP</code></a></li><li><a href="../ref/ChebyshevT.html"><code class="lean">ChebyshevT</code></a></li><li><a href="../ref/ChebyshevU.html"><code class="lean">ChebyshevU</code></a></li><li><a href="../ref/HermiteH.html"><code class="lean">HermiteH</code></a></li><li><a href="../ref/HermiteHe.html"><code class="lean">HermiteHe</code></a></li></ul></details><details><summary><a href="../guide/number-theory.html">Number theory</a></summary><ul><li><a href="../ref/primeQ.html"><code class="lean">primeQ</code></a></li><li><a href="../ref/factorInteger.html"><code class="lean">factorInteger</code></a></li><li><a href="../ref/moebiusMu.html"><code class="lean">moebiusMu</code></a></li><li><a href="../ref/divisors.html"><code class="lean">divisors</code></a></li><li><a href="../ref/divisorSigma.html"><code class="lean">divisorSigma</code></a></li><li><a href="../ref/eulerPhi.html"><code class="lean">eulerPhi</code></a></li><li><a href="../ref/powerMod.html"><code class="lean">powerMod</code></a></li><li><a href="../ref/modularInverse.html"><code class="lean">modularInverse</code></a></li><li><a href="../ref/chineseRemainder.html"><code class="lean">chineseRemainder</code></a></li><li><a href="../ref/extendedGCD.html"><code class="lean">extendedGCD</code></a></li><li><a href="../ref/jacobiSymbol.html"><code class="lean">jacobiSymbol</code></a></li><li><a href="../ref/integerDigits.html"><code class="lean">integerDigits</code></a></li><li><a href="../ref/continuedFraction.html"><code class="lean">continuedFraction</code></a></li><li><a href="../ref/fromContinuedFraction.html"><code class="lean">fromContinuedFraction</code></a></li><li><a href="../ref/binomial.html"><code class="lean">binomial</code></a></li><li><a href="../ref/factorial.html"><code class="lean">factorial</code></a></li><li><a href="../ref/fibonacci.html"><code class="lean">fibonacci</code></a></li></ul></details><details><summary><a href="../guide/linear-algebra.html">Linear algebra</a></summary><ul><li><a href="../ref/dot.html"><code class="lean">dot</code></a></li><li><a href="../ref/matrixPower.html"><code class="lean">matrixPower</code></a></li><li><a href="../ref/transpose.html"><code class="lean">transpose</code></a></li><li><a href="../ref/trace.html"><code class="lean">trace</code></a></li><li><a href="../ref/det.html"><code class="lean">det</code></a></li><li><a href="../ref/inverse.html"><code class="lean">inverse</code></a></li><li><a href="../ref/matrixRank.html"><code class="lean">matrixRank</code></a></li><li><a href="../ref/rowReduce.html"><code class="lean">rowReduce</code></a></li><li><a href="../ref/nullSpace.html"><code class="lean">nullSpace</code></a></li><li><a href="../ref/linearSolve.html"><code class="lean">linearSolve</code></a></li><li><a href="../ref/characteristicPolynomial.html"><code class="lean">characteristicPolynomial</code></a></li><li><a href="../ref/eigenvalues.html"><code class="lean">eigenvalues</code></a></li><li><a href="../ref/eigenvectors.html"><code class="lean">eigenvectors</code></a></li><li><a href="../ref/positiveDefinite.html"><code class="lean">positiveDefinite</code></a></li><li><a href="../ref/eigenvalueBounds.html"><code class="lean">eigenvalueBounds</code></a></li></ul></details><details><summary><a href="../guide/differential-equations.html">Differential equations</a></summary><ul><li><a href="../ref/dsolve.html"><code class="lean">dsolve</code></a></li><li><a href="../ref/ndsolve.html"><code class="lean">ndsolve</code></a></li><li><a href="../ref/laplace.html"><code class="lean">laplace</code></a></li><li><a href="../ref/inverseLaplace.html"><code class="lean">inverseLaplace</code></a></li><li><a href="../ref/fourierTransform.html"><code class="lean">fourierTransform</code></a></li><li><a href="../ref/fourier.html"><code class="lean">fourier</code></a></li><li><a href="../ref/fourierCos.html"><code class="lean">fourierCos</code></a></li><li><a href="../ref/fourierSin.html"><code class="lean">fourierSin</code></a></li></ul></details><details><summary><a href="../guide/numerics.html">Numerics</a></summary><ul><li><a href="../ref/N.html"><code class="lean">N</code></a></li><li><a href="../ref/enclose.html"><code class="lean">enclose</code></a></li><li><a href="../ref/maximize.html"><code class="lean">maximize</code></a></li><li><a href="../ref/minimize.html"><code class="lean">minimize</code></a></li><li><a href="../ref/nintegrate.html"><code class="lean">nintegrate</code></a></li><li><a href="../ref/findRoot.html"><code class="lean">findRoot</code></a></li><li><a href="../ref/ndsolve.html"><code class="lean">ndsolve</code></a></li><li><a href="../ref/eigenvalueBounds.html"><code class="lean">eigenvalueBounds</code></a></li><li><a href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="../ref/cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/certificates.html">Certificates</a></summary><ul><li><a href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="../ref/enclose.html"><code class="lean">enclose</code></a></li><li><a href="../ref/cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/tactics.html">Tactics</a></summary><ul><li><a href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="../ref/cas-using.html"><code class="lean"><span class="t">cas</span> <span class="t">using</span></code></a></li><li><a href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="../ref/cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="../ref/cas-query.html"><code class="lean"><span class="t">cas?</span></code></a></li><li><a href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="../ref/cas_nf.html"><code class="lean"><span class="t">cas_nf</span></code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/oracles.html">Oracles</a></summary><ul><li><a href="../ref/oracle.html"><code class="lean">oracle</code></a></li><li><a href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="../ref/cas-integrate-primitive.html"><code class="lean"><span class="t">cas</span> [integrate primitive := F]</code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/hex.html">Hex</a></summary><ul><li><a href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="../ref/factor.html"><code class="lean">factor</code></a></li><li><a href="../ref/apart.html"><code class="lean">apart</code></a></li><li><a href="../ref/product.html"><code class="lean">product</code></a></li><li><a href="../ref/eigenvalues.html"><code class="lean">eigenvalues</code></a></li><li><a href="../ref/eigenvectors.html"><code class="lean">eigenvectors</code></a></li><li><a href="../ref/primeQ.html"><code class="lean">primeQ</code></a></li><li><a href="../ref/moebiusMu.html"><code class="lean">moebiusMu</code></a></li><li><a href="../ref/factorInteger.html"><code class="lean">factorInteger</code></a></li><li><a href="../ref/eulerPhi.html"><code class="lean">eulerPhi</code></a></li><li><a href="../ref/det.html"><code class="lean">det</code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/library.html">The library</a></summary><ul></ul></details><p class="nav-heading">Tutorials</p><ul class="nav-flat"><li><a href="first-hour.html">Getting started with SymLean</a></li><li><a href="proving.html" aria-current="page">Proving with <code class="lean"><span class="t">cas</span></code></a></li><li><a href="trust.html">What you trust</a></li></ul><p class="nav-heading"><a href="../all.html">Index A to Z</a></p></nav><main class="doc" id="main"><nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Documentation</a> <span class="sep">›</span> <a href="../index.html#tutorials">Tutorials</a> <span class="sep">›</span> <span aria-current="page">Proving with <code class="lean"><span class="t">cas</span></code></span></nav><header class="page-head"><p class="kind">Tutorial</p><h1>Proving with <code class="lean"><span class="t">cas</span></code></h1><p class="summary">How to state a goal so that <code class="lean"><span class="t">cas</span></code> and <code class="lean"><span class="t">cega</span></code> close it, and what to do when they refuse.</p></header><p>The tactics work on the goal you wrote. You state the result with Mathlib’s functions and the hypotheses your argument needs, and a tactic proves exactly that statement, or fails and leaves the goal as it was. For me that’s the property that matters most.</p>
+<p>Mathlib’s <code class="lean">Real.log</code> is defined everywhere, with <span class="inline-math"><math alttext="\log x = \log \lvert x \rvert" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>log</mi><mspace width="0.1667em"/><mi>x</mi><mo>&#x0003D;</mo><mi>log</mi><mo>&#x0007C;</mo><mi>x</mi><mo>&#x0007C;</mo></mrow></math></span> and <span class="inline-math"><math alttext="\log 0 = 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>log</mi><mspace width="0.1667em"/><mn>0</mn><mo>&#x0003D;</mo><mn>0</mn></mrow></math></span>. So <span class="inline-math"><math alttext="\exp(\log x)" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>exp</mi><mo stretchy="false">&#x00028;</mo><mi>log</mi><mspace width="0.1667em"/><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> is <span class="inline-math"><math alttext="x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span>, <span class="inline-math"><math alttext="\lvert x \rvert" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x0007C;</mo><mi>x</mi><mo>&#x0007C;</mo></mrow></math></span> or <span class="inline-math"><math alttext="-x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02212;</mo><mi>x</mi></mrow></math></span>, depending on what you know about <span class="inline-math"><math alttext="x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span>, and <code class="lean"><span class="t">cas</span></code> proves whichever one your hypotheses support:</p>
+<div class="cells"><div class="cell in" id="in-1"><a class="label" href="#in-1">In[1]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : 0 &lt; x" title="hx : 0 &lt; x">hx</span> : <span class="n">0</span> &lt; <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) = <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : 0 &lt; x
+⊢ Real.exp (Real.log x) = x
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : 0 &lt; x
+⊢ Real.exp (Real.log x) = x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : 0 &lt; x
+⊢ Real.exp (Real.log x) = x
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : 0 &lt; x
+⊢ Real.exp (Real.log x) = x
+
+After
+no goals"><span class="t">cas</span></span>
+
+<span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : x ≠ 0" title="hx : x ≠ 0">hx</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ≠ <span class="n">0</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) = |<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>| := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : x ≠ 0
+⊢ Real.exp (Real.log x) = |x|
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : x ≠ 0
+⊢ Real.exp (Real.log x) = |x|
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : x ≠ 0
+⊢ Real.exp (Real.log x) = |x|
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : x ≠ 0
+⊢ Real.exp (Real.log x) = |x|
+
+After
+no goals"><span class="t">cas</span></span>
+
+<span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : x &lt; 0" title="hx : x &lt; 0">hx</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> &lt; <span class="n">0</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) = -<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ Real.exp (Real.log x) = -x
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ Real.exp (Real.log x) = -x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ Real.exp (Real.log x) = -x
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ Real.exp (Real.log x) = -x
+
+After
+no goals"><span class="t">cas</span></span></pre></div></div><div class="cell out" id="out-1"><span class="label">Out[1]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<p>Nothing is assumed along the way. If a condition is missing, it’s reported, never added.</p>
+<h2 id="choosing">Choosing a tactic<a class="anchor" href="#choosing" aria-label="Link to this section">#</a></h2>
+<table class="opts"><thead><tr><th>Goal</th><th>Tactic</th></tr></thead><tbody><tr><td>exact algebra, identities, derivatives, regularity, integral formulas</td><td><a class="sym" href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></td></tr><tr><td>a side condition that a hypothesis supplies</td><td><a class="sym" href="../ref/cas-using.html"><code class="lean"><span class="t">cas</span> <span class="t">using</span> h</code></a></td></tr><tr><td>numerical bounds on a box, on an integral or on a constant</td><td><a class="sym" href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></td></tr><tr><td>a rewrite inside a hypothesis or a goal</td><td><a class="sym" href="../ref/cas_nf.html"><code class="lean"><span class="t">cas_nf</span></code></a></td></tr><tr><td>not sure</td><td><a class="sym" href="../ref/cas-query.html"><code class="lean"><span class="t">cas?</span></code></a> or <a class="sym" href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a>, which suggest the call to keep</td></tr></tbody></table>
+<p>The one place to be careful is an integral. There <code class="lean"><span class="t">cas</span></code> looks for an exact formula and <code class="lean"><span class="t">cega</span></code> proves a numerical bound, and neither switches to the other, so pick the one that matches what your goal states.</p>
+<h2 id="compute">Compute first, then state<a class="anchor" href="#compute" aria-label="Link to this section">#</a></h2>
+<p>The habit I’d recommend is to compute with <code class="lean"><span class="k">#cas</span></code> until you know what’s true, and only then write the statement. Say I want to show that <span class="inline-math"><math alttext="x^3 - 3x^2 + 4x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>&#x02212;</mo><mn>3</mn><msup><mi>x</mi><mn>2</mn></msup><mo>&#x0002B;</mo><mn>4</mn><mi>x</mi></mrow></math></span> is increasing on all of <span class="inline-math"><math alttext="\mathbb{R}" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x0211D;</mi></mrow></math></span>. By Mathlib’s <code class="lean">strictMono_of_deriv_pos</code>, it is if its derivative is positive everywhere. <code class="lean"><span class="k">#cas</span></code> computes the derivative and shows that it has no real zero, so the derivative keeps the sign of its leading coefficient:</p>
+<div class="cells"><div class="cell in" id="in-2"><a class="label" href="#in-2">In[2]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [derive x] e` differentiates `e` with respect to `x` and prints the derivative with the
+conditions under which it holds; the other variables of `e` are parameters." title="`#cas [derive x] e` differentiates `e` with respect to `x` and prints the derivative with the
+conditions under which it holds; the other variables of `e` are parameters."><span class="k">#cas</span></span> [<span class="m">derive</span> x] (x ^ <span class="n">3</span> - <span class="n">3</span> * x ^ <span class="n">2</span> + <span class="n">4</span> * x)</pre></div></div><div class="cell out" id="out-2"><span class="label">Out[2]=</span><div class="cell-body"><div class="report"><div class="result"><div class="tf"><math alttext="\displaystyle 3{x}^{2} - 6x + 4" xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mstyle displaystyle="true" scriptlevel="0"><mn>3</mn><msup><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msup><mo>&#x02212;</mo><mn>6</mn><mi>x</mi><mo>&#x0002B;</mo><mn>4</mn></mstyle></mrow></math></div><code class="plain">3*x^2 - 6*x + 4</code></div><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Derivative of the input</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), HasDerivAt (<span class="k">fun</span> x ↦ x ^ <span class="n">3</span> - <span class="n">3</span> * x ^ <span class="n">2</span> + <span class="n">4</span> * x) (<span class="n">3</span> * x ^ <span class="n">2</span> - <span class="n">6</span> * x + <span class="n">4</span>) x</pre><p class="by">from <code>CAS.Command.hasDerivAt_of_displayRoute</code></p></div><details class="cert"><summary>The certificate: 5 checked steps</summary><ol class="steps"><li><p class="step-title">Derivative of the input</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), HasDerivAt (<span class="k">fun</span> x ↦ x ^ <span class="n">3</span> - <span class="n">3</span> * x ^ <span class="n">2</span> + <span class="n">4</span> * x) (<span class="n">3</span> * x ^ <span class="n">2</span> - <span class="n">6</span> * x + <span class="n">4</span>) x</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.hasDerivAt_of_displayRoute</code></p></li><li><p class="step-title">Partial derivative in x: indexed rules compute Expr.diff</p><pre class="lean">(CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+      (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+        ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>]))).rawDerivative =
+  CAS.Verified.Expr.diff <span class="n">0</span>
+    (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>]))</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Verified.Expr.DiffDerivation.rawDerivative_eq_diff</code></p></li><li><p class="step-title">Partial derivative in x: normalization preserves evaluation</p><pre class="lean">∀ (ρ : Fin <span class="n">1</span> → <span class="ty">ℝ</span>),
+  CAS.Verified.Expr.eval ρ
+      (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+          (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+            ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>]))).simplifiedDerivative =
+    CAS.Verified.Expr.eval ρ
+      (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+          (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+            ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>]))).rawDerivative</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Verified.Expr.DiffDerivation.eval_simplifiedDerivative_eq_rawDerivative</code></p></li><li><p class="step-title">Partial derivative in x: side-conditioned display normalization</p><pre class="lean">∀ (ρ : Fin <span class="n">1</span> → <span class="ty">ℝ</span>),
+  CAS.Verified.Expr.Alg.SideHolds ρ
+      (CAS.Command.displayDerivativeRoute
+          (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+            (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+              ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>])))).nonzero →
+    CAS.Verified.Expr.eval ρ
+        (CAS.Command.displayDerivativeRoute
+            (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+              (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+                ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>])))).rhs =
+      CAS.Verified.Expr.eval ρ
+        (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+            (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+              ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>]))).simplifiedDerivative</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.displayDerivativeRoute_sound</code></p></li><li><p class="step-title">Partial derivative in x: analytic semantics of the displayed result</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>^<span class="n">1</span>),
+  CAS.Verified.Expr.ValidAt x.ofLp
+      (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+        ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>])) →
+    CAS.Verified.Expr.Alg.SideHolds x.ofLp
+        (CAS.Command.displayDerivativeRoute
+            (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+              (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+                ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>])))).nonzero →
+      (fderiv <span class="ty">ℝ</span>
+            (<span class="k">fun</span> y ↦
+              CAS.Verified.Expr.eval y.ofLp
+                (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+                  ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>])))
+            x)
+          (EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>) =
+        CAS.Verified.Expr.eval x.ofLp
+          (CAS.Command.displayDerivativeRoute
+              (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+                (((𝕏[<span class="n">0</span>].pow <span class="n">3</span>).sub ((CAS.Verified.Expr.nat <span class="n">3</span>).mul (𝕏[<span class="n">0</span>].pow <span class="n">2</span>))).add
+                  ((CAS.Verified.Expr.nat <span class="n">4</span>).mul 𝕏[<span class="n">0</span>])))).rhs</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.fderiv_apply_single_eq_eval_displayDerivative</code></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><pre class="node-body">Variables: x</pre></li><li><p class="node-title">Analytic domain conditions</p><pre class="node-body">Raw checked nonzero requirements: (none)
+Raw checked positivity requirements: (none)</pre></li><li><p class="node-title">Partial derivative in x</p><ul class="tree"><li><p class="node-title">1. Apply symbolic differentiation rules</p><pre class="node-body">raw result: 3*x^2*1 - 0*x^2 - 3*2*x^1*1 + 0*x + 4*1</pre></li><li><p class="node-title">2. Normalize the symbolic derivative unconditionally</p><pre class="node-body">normalized result: 3*x^2 - 6*x + 4</pre></li><li><p class="node-title">3. Apply checked side-conditioned cleanup</p><pre class="node-body">displayed result: 3*x^2 - 6*x + 4
+additional nonzero requirements: (none)</pre></li></ul></li></ul></details></div></div></div></div>
+<div class="cells"><div class="cell in" id="in-3"><a class="label" href="#in-3">In[3]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [roots x] (lhs = rhs)` lists every real solution of a polynomial equation in `x`, the
+rational ones exactly and the others as truncated decimals, and proves that the list is
+complete." title="`#cas [roots x] (lhs = rhs)` lists every real solution of a polynomial equation in `x`, the
+rational ones exactly and the others as truncated decimals, and proves that the list is
+complete."><span class="k">#cas</span></span> [<span class="m">roots</span> x] (<span class="n">3</span> * x ^ <span class="n">2</span> - <span class="n">6</span> * x + <span class="n">4</span> = <span class="n">0</span>)</pre></div></div><div class="cell out" id="out-3"><span class="label">Out[3]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">complete list of real solutions</p><code class="plain only">no real solutions</code></div><dl class="fields"><dt>Input <span class="qual-inline">(polynomial equation)</span></dt><dd><code>(3 * x ^ 2 - 6 * x + 4 = 0)</code></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Complete list of real solutions</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), <span class="n">3</span> * x ^ <span class="n">2</span> - <span class="n">6</span> * x + <span class="n">4</span> = <span class="n">0</span> → False</pre><p class="by">from <code>CAS.Polynomial.RealRoot.of_exprRootCheck</code></p></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Complete list of real solutions</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), <span class="n">3</span> * x ^ <span class="n">2</span> - <span class="n">6</span> * x + <span class="n">4</span> = <span class="n">0</span> → False</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Polynomial.RealRoot.of_exprRootCheck</code></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><p class="node-title">Certified isolation</p><pre class="node-body">Square-free polynomial of degree 2, Cauchy bound 13/3, 3 cells
+Guarantee: the listed solutions are distinct, each rational is a solution, each decimal interval contains exactly one solution, and there are no other real solutions</pre></li></ul></details></div></div></div></div>
+<p>In the proof I state the derivative and let <code class="lean"><span class="t">cas</span></code> prove it, then show that it is positive by writing it as <span class="inline-math"><math alttext="3(x - 1)^2 + 1" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>3</mn><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x02212;</mo><mn>1</mn><msup><mo stretchy="false">&#x00029;</mo><mn>2</mn></msup><mo>&#x0002B;</mo><mn>1</mn></mrow></math></span>, an identity that <code class="lean"><span class="t">cas</span></code> proves too. And since a strictly monotone function is injective, the cubic takes no value twice:</p>
+<div class="cells"><div class="cell in" id="in-4"><a class="label" href="#in-4">In[4]:=</a><div class="cell-body"><pre class="lean"><span class="k">theorem</span> <span class="lean-hover" tabindex="0" data-lean-hover="cubic_strictMono : StrictMono fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x" title="cubic_strictMono : StrictMono fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x">cubic_strictMono</span> : <span class="lean-hover" tabindex="0" data-lean-hover="StrictMono : {α β : Type} → [Preorder α] → [Preorder β] → (α → β) → Prop
+
+A function `f` is strictly monotone if `a &lt; b` implies `f a &lt; f b`. " title="StrictMono : {α β : Type} → [Preorder α] → [Preorder β] → (α → β) → Prop
+
+A function `f` is strictly monotone if `a &lt; b` implies `f a &lt; f b`. ">StrictMono</span> (<span class="k">fun</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span> ↦ <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">3</span> - <span class="n">3</span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> + <span class="n">4</span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ StrictMono fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x
+
+After
+no goals" title="Before
+
+⊢ StrictMono fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ StrictMono fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x
+
+After
+
+⊢ ∀ (x : ℝ), 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+⊢ StrictMono fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x
+
+After
+
+⊢ ∀ (x : ℝ), 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="t">apply</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="strictMono_of_deriv_pos : ∀ {f : ℝ → ℝ}, (∀ (x : ℝ), 0 &lt; deriv f x) → StrictMono f
+
+Let `f : ℝ → ℝ` be a differentiable function. If `f&#x27;` is positive, then
+`f` is a strictly monotone function.
+Note that we don&#x27;t require differentiability explicitly as it already implied by the derivative
+being strictly positive. " title="strictMono_of_deriv_pos : ∀ {f : ℝ → ℝ}, (∀ (x : ℝ), 0 &lt; deriv f x) → StrictMono f
+
+Let `f : ℝ → ℝ` be a differentiable function. If `f&#x27;` is positive, then
+`f` is a strictly monotone function.
+Note that we don&#x27;t require differentiability explicitly as it already implied by the derivative
+being strictly positive. ">strictMono_of_deriv_pos</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∀ (x : ℝ), 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+⊢ ∀ (x : ℝ), 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="t">intro</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="k">have</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4" title="h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="deriv : {𝕜 : Type} →
+  [inst : NontriviallyNormedField 𝕜] →
+    {F : Type} → [inst_1 : AddCommGroup F] → [Module 𝕜 F] → [TopologicalSpace F] → (𝕜 → F) → 𝕜 → F
+
+Derivative of `f` at the point `x`, if it exists.  Zero otherwise.
+
+If the derivative exists (i.e., `∃ f&#x27;, HasDerivAt f f&#x27; x`), then
+`f x&#x27; = f x + (x&#x27; - x) • deriv f x + o(x&#x27; - x)` where `x&#x27;` converges to `x`.
+" title="deriv : {𝕜 : Type} →
+  [inst : NontriviallyNormedField 𝕜] →
+    {F : Type} → [inst_1 : AddCommGroup F] → [Module 𝕜 F] → [TopologicalSpace F] → (𝕜 → F) → 𝕜 → F
+
+Derivative of `f` at the point `x`, if it exists.  Zero otherwise.
+
+If the derivative exists (i.e., `∃ f&#x27;, HasDerivAt f f&#x27; x`), then
+`f x&#x27; = f x + (x&#x27; - x) • deriv f x + o(x&#x27; - x)` where `x&#x27;` converges to `x`.
+">deriv</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="k">fun</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="ty">ℝ</span></span> ↦ <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="n">3</span></span> - <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="n">3</span></span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="n">2</span></span> + <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="n">4</span></span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> = <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="n">3</span></span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="n">2</span></span> - <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="n">6</span></span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x" title="Before
+
+x : ℝ
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x"><span class="n">4</span></span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals" title="Before
+
+x : ℝ
+⊢ deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals"><span class="k">by</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals" title="Before
+
+x : ℝ
+⊢ deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals"><span class="t">cas</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; 3 * x ^ 2 - 6 * x + 4" title="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x
+
+After
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; 3 * x ^ 2 - 6 * x + 4"><span class="t">rw</span></span> [<span class="lean-hover" tabindex="0" data-lean-hover="h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4" title="h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4">h</span>]
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals" title="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals"><span class="k">calc</span></span> (<span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="n">0</span></span> : <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="ty">ℝ</span></span>) &lt; <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="n">3</span></span> * (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> - <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="n">1</span></span>) ^ <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="n">2</span></span> + <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="n">1</span></span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; 3 * (x - 1) ^ 2 + 1
+
+After
+no goals" title="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; 3 * (x - 1) ^ 2 + 1
+
+After
+no goals"><span class="k">by</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; 3 * (x - 1) ^ 2 + 1
+
+After
+no goals" title="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 0 &lt; 3 * (x - 1) ^ 2 + 1
+
+After
+no goals"><span class="t">positivity</span></span>
+    <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals">_</span> = <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="n">3</span></span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="n">2</span></span> - <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="n">6</span></span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="Before
+no goals
+
+After
+no goals" title="Before
+no goals
+
+After
+no goals"><span class="n">4</span></span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 3 * (x - 1) ^ 2 + 1 = 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals" title="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 3 * (x - 1) ^ 2 + 1 = 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals"><span class="k">by</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 3 * (x - 1) ^ 2 + 1 = 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals" title="Before
+
+x : ℝ
+h : deriv (fun x ↦ x ^ 3 - 3 * x ^ 2 + 4 * x) x = 3 * x ^ 2 - 6 * x + 4
+⊢ 3 * (x - 1) ^ 2 + 1 = 3 * x ^ 2 - 6 * x + 4
+
+After
+no goals"><span class="t">cas</span></span>
+
+<span class="k">theorem</span> <span class="lean-hover" tabindex="0" data-lean-hover="cubic_injective : ∀ (a b : ℝ), a ^ 3 - 3 * a ^ 2 + 4 * a = b ^ 3 - 3 * b ^ 2 + 4 * b → a = b" title="cubic_injective : ∀ (a b : ℝ), a ^ 3 - 3 * a ^ 2 + 4 * a = b ^ 3 - 3 * b ^ 2 + 4 * b → a = b">cubic_injective</span> (<span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> : <span class="ty">ℝ</span>)
+    (<span class="lean-hover" tabindex="0" data-lean-hover="h : a ^ 3 - 3 * a ^ 2 + 4 * a = b ^ 3 - 3 * b ^ 2 + 4 * b" title="h : a ^ 3 - 3 * a ^ 2 + 4 * a = b ^ 3 - 3 * b ^ 2 + 4 * b">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> ^ <span class="n">3</span> - <span class="n">3</span> * <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> ^ <span class="n">2</span> + <span class="n">4</span> * <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> = <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> ^ <span class="n">3</span> - <span class="n">3</span> * <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> ^ <span class="n">2</span> + <span class="n">4</span> * <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> = <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> :=
+  cubic_strictMono.injective <span class="lean-hover" tabindex="0" data-lean-hover="h : a ^ 3 - 3 * a ^ 2 + 4 * a = b ^ 3 - 3 * b ^ 2 + 4 * b" title="h : a ^ 3 - 3 * a ^ 2 + 4 * a = b ^ 3 - 3 * b ^ 2 + 4 * b">h</span>
+
+<span class="lean-hover" tabindex="0" data-lean-hover="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output." title="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output."><span class="k">#print</span></span> axioms <span class="lean-hover" tabindex="0" data-lean-hover="cubic_injective : ∀ (a b : ℝ), a ^ 3 - 3 * a ^ 2 + 4 * a = b ^ 3 - 3 * b ^ 2 + 4 * b → a = b" title="cubic_injective : ∀ (a b : ℝ), a ^ 3 - 3 * a ^ 2 + 4 * a = b ^ 3 - 3 * b ^ 2 + 4 * b → a = b">cubic_injective</span></pre></div></div><div class="cell out" id="out-4"><span class="label">Out[4]=</span><div class="cell-body"><div class="msg axioms"><p><code>cubic_injective</code> depends on the axioms <code>propext</code>, <code>Classical.choice</code>, <code>Quot.sound</code>.</p></div></div></div></div>
+<h2 id="conditions">Conditions from hypotheses<a class="anchor" href="#conditions" aria-label="Link to this section">#</a></h2>
+<p>When a rule needs a condition, you hand over the hypothesis that proves it with <code class="lean"><span class="t">using</span></code>. A logarithm of <span class="inline-math"><math alttext="-t" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02212;</mo><mi>t</mi></mrow></math></span> needs <span class="inline-math"><math alttext="-t \ne 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo>&#x02212;</mo><mi>t</mi><mo>&#x02260;</mo><mn>0</mn></mrow></math></span>, which <span class="inline-math"><math alttext="x &lt; 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x0003C;</mo><mn>0</mn></mrow></math></span> gives, and <span class="inline-math"><math alttext="\int_a^b dt/t" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mo>&#x0222B;</mo><mi>a</mi><mi>b</mi></msubsup><mi>d</mi><mi>t</mi><mo>&#x0002F;</mo><mi>t</mi></mrow></math></span> needs <span class="inline-math"><math alttext="t \ne 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>t</mi><mo>&#x02260;</mo><mn>0</mn></mrow></math></span> on the whole interval:</p>
+<div class="cells"><div class="cell in" id="in-5"><a class="label" href="#in-5">In[5]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : x &lt; 0" title="hx : x &lt; 0">hx</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> &lt; <span class="n">0</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="deriv : {𝕜 : Type} →
+  [inst : NontriviallyNormedField 𝕜] →
+    {F : Type} → [inst_1 : AddCommGroup F] → [Module 𝕜 F] → [TopologicalSpace F] → (𝕜 → F) → 𝕜 → F
+
+Derivative of `f` at the point `x`, if it exists.  Zero otherwise.
+
+If the derivative exists (i.e., `∃ f&#x27;, HasDerivAt f f&#x27; x`), then
+`f x&#x27; = f x + (x&#x27; - x) • deriv f x + o(x&#x27; - x)` where `x&#x27;` converges to `x`.
+" title="deriv : {𝕜 : Type} →
+  [inst : NontriviallyNormedField 𝕜] →
+    {F : Type} → [inst_1 : AddCommGroup F] → [Module 𝕜 F] → [TopologicalSpace F] → (𝕜 → F) → 𝕜 → F
+
+Derivative of `f` at the point `x`, if it exists.  Zero otherwise.
+
+If the derivative exists (i.e., `∃ f&#x27;, HasDerivAt f f&#x27; x`), then
+`f x&#x27; = f x + (x&#x27; - x) • deriv f x + o(x&#x27; - x)` where `x&#x27;` converges to `x`.
+">deriv</span> (<span class="k">fun</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> : <span class="ty">ℝ</span> ↦ <span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> (-<span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span>)) <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> = <span class="n">1</span> / <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ deriv (fun t ↦ Real.log (-t)) x = 1 / x
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ deriv (fun t ↦ Real.log (-t)) x = 1 / x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ deriv (fun t ↦ Real.log (-t)) x = 1 / x
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ deriv (fun t ↦ Real.log (-t)) x = 1 / x
+
+After
+no goals"><span class="t">cas</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ deriv (fun t ↦ Real.log (-t)) x = 1 / x
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : x &lt; 0
+⊢ deriv (fun t ↦ Real.log (-t)) x = 1 / x
+
+After
+no goals"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="hx : x &lt; 0" title="hx : x &lt; 0">hx</span>
+
+<span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0" title="hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0">hnonzero</span> : ∀ <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ∈ <span class="lean-hover" tabindex="0" data-lean-hover="Set.uIcc : {α : Type} → [Lattice α] → α → α → Set α
+
+`uIcc a b` is the set of elements lying between `a` and `b`, with `a` and `b` included.
+Note that we define it more generally in a lattice as `Set.Icc (a ⊓ b) (a ⊔ b)`. In a product type,
+`uIcc` corresponds to the bounding box of the two elements. " title="Set.uIcc : {α : Type} → [Lattice α] → α → α → Set α
+
+`uIcc a b` is the set of elements lying between `a` and `b`, with `a` and `b` included.
+Note that we define it more generally in a lattice as `Set.Icc (a ⊓ b) (a ⊔ b)`. In a product type,
+`uIcc` corresponds to the bounding box of the two elements. ">Set.uIcc</span> <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span>, <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ≠ <span class="n">0</span>) :
+    (∫ <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> <span class="k">in</span> a..b, <span class="n">1</span> / <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span>) = <span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> - <span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, 1 / t = Real.log b - Real.log a
+
+After
+no goals" title="Before
+
+a b : ℝ
+hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, 1 / t = Real.log b - Real.log a
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, 1 / t = Real.log b - Real.log a
+
+After
+no goals" title="Before
+
+a b : ℝ
+hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, 1 / t = Real.log b - Real.log a
+
+After
+no goals"><span class="t">cas</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, 1 / t = Real.log b - Real.log a
+
+After
+no goals" title="Before
+
+a b : ℝ
+hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, 1 / t = Real.log b - Real.log a
+
+After
+no goals"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0" title="hnonzero : ∀ t ∈ Set.uIcc a b, t ≠ 0">hnonzero</span></pre></div></div><div class="cell out" id="out-5"><span class="label">Out[5]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<p>Without the condition the call fails, and the message names what it needed. Here <span class="inline-math"><math alttext="x / x = 1" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x0002F;</mo><mi>x</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span> is false at <span class="inline-math"><math alttext="x = 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x0003D;</mo><mn>0</mn></mrow></math></span>, where Lean’s division gives <span class="inline-math"><math alttext="0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn></mrow></math></span>, and the message lists <span class="inline-math"><math alttext="x \ne 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x02260;</mo><mn>0</mn></mrow></math></span> as the condition to supply:</p>
+<div class="cells"><div class="cell in" id="in-6"><a class="label" href="#in-6">In[6]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> / <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> = <span class="n">1</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ x / x = 1
+
+After
+
+x : ℝ
+⊢ x / x = 1" title="Before
+
+x : ℝ
+⊢ x / x = 1
+
+After
+
+x : ℝ
+⊢ x / x = 1"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ x / x = 1
+
+After
+
+x : ℝ
+⊢ x / x = 1" title="Before
+
+x : ℝ
+⊢ x / x = 1
+
+After
+
+x : ℝ
+⊢ x / x = 1"><span class="t">cas</span></span></pre></div></div><div class="cell out" id="out-6"><span class="label">Out[6]=</span><div class="cell-body"><div class="msg error"><p class="sev">Error</p><pre>cas could not close this ordinary arithmetic goal.
+This goal contains branch-sensitive operations and may need nonzero denominator hypotheses. Put those facts in the local context; pass one explicit fact as `cas using h` when needed. The corresponding `#cas [simplify]` report shows the exact generated conditions. Detected candidate conditions: x ≠ 0.</pre><details class="more"><summary>The rest of the message</summary><pre>Polynomial equation route:
+  `grind` failed
+  case grind
+  x : ℝ
+  h : ¬x * x⁻¹ = 1
+  ⊢ False
+  [grind] Goal diagnostics
+    [facts] Asserted facts
+      [prop] ¬x * x⁻¹ = 1
+      [prop] if x = 0 then x⁻¹ = 0 else x * x⁻¹ = 1
+    [eqc] True propositions
+      [prop] if x = 0 then x⁻¹ = 0 else x * x⁻¹ = 1
+    [eqc] False propositions
+      [prop] x * x⁻¹ = 1
+    [eqc] Equivalence classes
+      [eqc] {1, (x * x⁻¹ - 1) * (x * x⁻¹ - 1)⁻¹}
+    [ring] Ring `ℝ`
+      [basis] Basis
+        [_] x * x⁻¹ * (x * x⁻¹ - 1)⁻¹ + -1 * (x * x⁻¹ - 1)⁻¹ + -1 = 0
+    [limits] Thresholds reached
+      [limit] maximum number of E-matching rounds has been reached, threshold: `(ematch := 0)`
+      [limit] maximum number of case-splits has been reached, threshold: `(splits := 0)`
+Checked identity route:
+  cas could not prove the real analytic domain conditions.
+  A denominator or logarithm argument may need to be nonzero, a square-root argument may need to be positive, or an inverse-trigonometric argument may need to avoid a branch endpoint. Supply the relevant ordinary hypothesis with `cas using h`.
+  Unproved conditions:
+    x ≠ 0
+Grind fallback:
+  `grind` failed (`set_option trace.cas.fallback true` shows its diagnostics)</pre></details></div></div></div></div>
+<h2 id="numbers">Numbers inside a proof<a class="anchor" href="#numbers" aria-label="Link to this section">#</a></h2>
+<p>Suppose I want to know how large <span class="inline-math"><math alttext="\int_0^1 \frac{dt}{1 + t^2} + \int_0^1 e^{-t^2}\,dt" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mo>&#x0222B;</mo><mn>0</mn><mn>1</mn></msubsup><mfrac><mrow><mi>d</mi><mi>t</mi></mrow><mrow><mn>1</mn><mo>&#x0002B;</mo><msup><mi>t</mi><mn>2</mn></msup></mrow></mfrac><mo>&#x0002B;</mo><msubsup><mo>&#x0222B;</mo><mn>0</mn><mn>1</mn></msubsup><msup><mi>e</mi><mrow><mo>&#x02212;</mo><msup><mi>t</mi><mn>2</mn></msup></mrow></msup><mspace width="0.167em" /><mi>d</mi><mi>t</mi></mrow></math></span> is. The first integral is <span class="inline-math"><math alttext="\pi/4" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C0;</mi><mo>&#x0002F;</mo><mn>4</mn></mrow></math></span>, which <code class="lean"><span class="k">#cas</span></code> evaluates exactly. The second has no elementary closed form, so for an estimate I need its digits:</p>
+<div class="cells"><div class="cell in" id="in-7"><a class="label" href="#in-7">In[7]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [integrate x in [a, b]] e` evaluates the definite integral of `e` from `a` to `b` as
+`F b - F a` for the antiderivative `F` that `integrate?` finds (the search of `#cas [integrate x]`
+without its backends), where an endpoint is a real term, `∞` or `-∞` and `F` is replaced by its
+limit at an infinite endpoint. It proves the printed theorem `∫ x in a..b, e = v` with `cas`, or,
+over `Set.Ioi a`, `Set.Iic b` or the whole line, the integrability of `e` there together with the
+value of its integral, such as `IntegrableOn (fun x ↦ e) (Set.Ioi a) ∧ ∫ x in Set.Ioi a, e = v`." title="`#cas [integrate x in [a, b]] e` evaluates the definite integral of `e` from `a` to `b` as
+`F b - F a` for the antiderivative `F` that `integrate?` finds (the search of `#cas [integrate x]`
+without its backends), where an endpoint is a real term, `∞` or `-∞` and `F` is replaced by its
+limit at an infinite endpoint. It proves the printed theorem `∫ x in a..b, e = v` with `cas`, or,
+over `Set.Ioi a`, `Set.Iic b` or the whole line, the integrability of `e` there together with the
+value of its integral, such as `IntegrableOn (fun x ↦ e) (Set.Ioi a) ∧ ∫ x in Set.Ioi a, e = v`."><span class="k">#cas</span></span> [<span class="m">integrate</span> x <span class="k">in</span> [<span class="n">0</span>, <span class="n">1</span>]] (<span class="n">1</span> / (<span class="n">1</span> + x ^ <span class="n">2</span>))</pre></div></div><div class="cell out" id="out-7"><span class="label">Out[7]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">definite integral</p><div class="tf"><math alttext="\displaystyle \frac{1}{4}\,\pi" xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><mn>1</mn></mrow><mrow><mn>4</mn></mrow></mfrac><mspace width="0.167em" /><mi>&#x003C0;</mi></mstyle></mrow></math></div><code class="plain">1/4*pi</code></div><dl class="fields"><dt>Primitive</dt><dd><code>atan(x)</code></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Definite integral, proved by <code class="lean"><span class="t">cas</span></code></p><pre class="lean">∫ (x : <span class="ty">ℝ</span>) <span class="k">in</span> <span class="n">0</span>..<span class="n">1</span>, <span class="n">1</span> / (<span class="n">1</span> + x ^ <span class="n">2</span>) = <span class="n">1</span> / <span class="n">4</span> * Real.pi</pre></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Definite integral, proved by <code class="lean"><span class="t">cas</span></code></p><pre class="lean">∫ (x : <span class="ty">ℝ</span>) <span class="k">in</span> <span class="n">0</span>..<span class="n">1</span>, <span class="n">1</span> / (<span class="n">1</span> + x ^ <span class="n">2</span>) = <span class="n">1</span> / <span class="n">4</span> * Real.pi</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><pre class="node-body">Variables: x</pre></li></ul></details></div></div></div></div>
+<div class="cells"><div class="cell in" id="in-8"><a class="label" href="#in-8">In[8]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [nintegrate x in [a, b]] f` computes a decimal value `c` of the integral of `f` from `a`
+to `b` with `d` places and proves that `c` is within `10 ^ (-d)` of the integral." title="`#cas [nintegrate x in [a, b]] f` computes a decimal value `c` of the integral of `f` from `a`
+to `b` with `d` places and proves that `c` is within `10 ^ (-d)` of the integral."><span class="k">#cas</span></span> [<span class="m">nintegrate</span> x <span class="k">in</span> [<span class="n">0</span>, <span class="n">1</span>]] (exp (-x^<span class="n">2</span>))</pre></div></div><div class="cell out" id="out-8"><span class="label">Out[8]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">certified value of the integral</p><div class="tf"><math alttext="\displaystyle 0.746824 \pm {10}^{-6}" xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mstyle displaystyle="true" scriptlevel="0"><mn>0.746824</mn><mo>&#x000B1;</mo><msup><mrow><mn>10</mn></mrow><mrow><mo>&#x02212;</mo><mn>6</mn></mrow></msup></mstyle></mrow></math></div><code class="plain">0.746824 ± 10^-6</code></div><dl class="fields"><dt>Domain</dt><dd><code>x ∈ [0, 1]</code></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Certified Simpson panels in one kernel check</p><pre class="lean">|(∫ (x : <span class="ty">ℝ</span>) <span class="k">in</span> <span class="n">0</span>..<span class="n">1</span>, Real.exp (-x ^ <span class="n">2</span>)) - <span class="n">746824</span> / <span class="n">10</span> ^ <span class="n">6</span>| ≤ <span class="n">1</span> / <span class="n">10</span> ^ <span class="n">6</span></pre></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Certified Simpson panels in one kernel check</p><pre class="lean">|(∫ (x : <span class="ty">ℝ</span>) <span class="k">in</span> <span class="n">0</span>..<span class="n">1</span>, Real.exp (-x ^ <span class="n">2</span>)) - <span class="n">746824</span> / <span class="n">10</span> ^ <span class="n">6</span>| ≤ <span class="n">1</span> / <span class="n">10</span> ^ <span class="n">6</span></pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><p class="node-title">Certified quadrature</p><pre class="node-body">Batch Simpson certificate with 16 panels; fourth-derivative bounds by interval evaluation of the simplified symbolic derivative</pre></li></ul></details></div></div></div></div>
+<p>So the sum is <span class="inline-math"><math alttext="1.5322\ldots" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.5322</mn><mo>&#x02026;</mo></mrow></math></span>, and <span class="inline-math"><math alttext="1.54" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.54</mn></mrow></math></span> is a safe bound to prove. In the proof, <code class="lean"><span class="t">cas</span></code> proves the exact value of the first integral, <code class="lean"><span class="t">cega</span></code> proves a bound on the second and one on <span class="inline-math"><math alttext="\pi" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003C0;</mi></mrow></math></span>, and <code class="lean"><span class="t">linarith</span></code> adds them up:</p>
+<div class="cells"><div class="cell in" id="in-9"><a class="label" href="#in-9">In[9]:=</a><div class="cell-body"><pre class="lean"><span class="k">theorem</span> <span class="lean-hover" tabindex="0" data-lean-hover="integral_estimate : (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="integral_estimate : (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54">integral_estimate</span> :
+    (∫ <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> <span class="k">in</span> (<span class="n">0</span> : <span class="ty">ℝ</span>)..<span class="n">1</span>, <span class="n">1</span> / (<span class="n">1</span> + <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ^ <span class="n">2</span>)) + (∫ <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> <span class="k">in</span> (<span class="n">0</span> : <span class="ty">ℝ</span>)..<span class="n">1</span>, <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (-<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span>)) &lt; <span class="n">1.54</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+no goals" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="k">have</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4" title="h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4">h₁</span> : (∫ <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="k">in</span></span> (<span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">0</span></span> : <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="ty">ℝ</span></span>)..<span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">1</span></span>, <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">1</span></span> / (<span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">1</span></span> + <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ^ <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">2</span></span>)) = <span class="lean-hover" tabindex="0" data-lean-hover="Real.pi : ℝ
+
+The number π = 3.14159265... Defined here using choice as twice a zero of cos in [1,2],
+from which one can derive all its properties. For explicit bounds on π,
+see `Mathlib/Analysis/Real/Pi/Bounds.lean`.
+
+Denoted `π`, once the `Real` namespace is opened. " title="Real.pi : ℝ
+
+The number π = 3.14159265... Defined here using choice as twice a zero of cos in [1,2],
+from which one can derive all its properties. For explicit bounds on π,
+see `Mathlib/Analysis/Real/Pi/Bounds.lean`.
+
+Denoted `π`, once the `Real` namespace is opened. ">Real.pi</span> / <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">4</span></span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+
+After
+no goals" title="Before
+
+⊢ ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+
+After
+no goals"><span class="k">by</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+
+After
+no goals" title="Before
+
+⊢ ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+
+After
+no goals"><span class="t">cas</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="k">have</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4" title="h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4">h₂</span> : (∫ <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="k">in</span></span> (<span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">0</span></span> : <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="ty">ℝ</span></span>)..<span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">1</span></span>, <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (-<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">2</span></span>)) ≤ <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">3</span></span> / <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">4</span></span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+
+After
+no goals" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+
+After
+no goals"><span class="k">by</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+
+After
+no goals" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+⊢ ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+
+After
+no goals"><span class="t">cega</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="k">have</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="hπ : Real.pi &lt; 3.1416" title="hπ : Real.pi &lt; 3.1416">hπ</span> : <span class="lean-hover" tabindex="0" data-lean-hover="Real.pi : ℝ
+
+The number π = 3.14159265... Defined here using choice as twice a zero of cos in [1,2],
+from which one can derive all its properties. For explicit bounds on π,
+see `Mathlib/Analysis/Real/Pi/Bounds.lean`.
+
+Denoted `π`, once the `Real` namespace is opened. " title="Real.pi : ℝ
+
+The number π = 3.14159265... Defined here using choice as twice a zero of cos in [1,2],
+from which one can derive all its properties. For explicit bounds on π,
+see `Mathlib/Analysis/Real/Pi/Bounds.lean`.
+
+Denoted `π`, once the `Real` namespace is opened. ">Real.pi</span> &lt; <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="n">3.1416</span></span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ Real.pi &lt; 3.1416
+
+After
+no goals" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ Real.pi &lt; 3.1416
+
+After
+no goals"><span class="k">by</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ Real.pi &lt; 3.1416
+
+After
+no goals" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+⊢ Real.pi &lt; 3.1416
+
+After
+no goals"><span class="t">cega</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ Real.pi / 4 + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ Real.pi / 4 + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54"><span class="t">rw</span></span> [<span class="lean-hover" tabindex="0" data-lean-hover="h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4" title="h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4">h₁</span>]
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ Real.pi / 4 + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+no goals" title="Before
+
+h₁ : ∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2) = Real.pi / 4
+h₂ : ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) ≤ 3 / 4
+hπ : Real.pi &lt; 3.1416
+⊢ Real.pi / 4 + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54
+
+After
+no goals"><span class="t">linarith</span></span>
+
+<span class="lean-hover" tabindex="0" data-lean-hover="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output." title="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output."><span class="k">#print</span></span> axioms <span class="lean-hover" tabindex="0" data-lean-hover="integral_estimate : (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54" title="integral_estimate : (∫ (t : ℝ) in 0..1, 1 / (1 + t ^ 2)) + ∫ (x : ℝ) in 0..1, Real.exp (-x ^ 2) &lt; 1.54">integral_estimate</span></pre></div></div><div class="cell out" id="out-9"><span class="label">Out[9]=</span><div class="cell-body"><div class="msg axioms"><p><code>integral_estimate</code> depends on the axioms <code>propext</code>, <code>Classical.choice</code>, <code>Quot.sound</code>.</p></div></div></div></div>
+<p>Behind the second <code class="lean"><span class="k">have</span></code>, <code class="lean"><span class="t">cega</span></code> encloses the Gaussian integral by Simpson’s rule, with the error on each panel bounded by the remainder (3.5.6) of <a class="ext" href="https://dlmf.nist.gov/3.5">DLMF §3.5</a>, and it doubles the number of panels until the enclosure proves <span class="inline-math"><math alttext="3/4" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>3</mn><mo>&#x0002F;</mo><mn>4</mn></mrow></math></span>.</p>
+<h2 id="primitive">A primitive of my own<a class="anchor" href="#primitive" aria-label="Link to this section">#</a></h2>
+<p>When I already know a primitive, I hand it over, and <code class="lean"><span class="t">cas</span></code> checks it by differentiating. Here it is <span class="inline-math"><math alttext="F(t) = (\log t)^2/2" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>F</mi><mo stretchy="false">&#x00028;</mo><mi>t</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><mi>log</mi><mspace width="0.1667em"/><mi>t</mi><msup><mo stretchy="false">&#x00029;</mo><mn>2</mn></msup><mo>&#x0002F;</mo><mn>2</mn></mrow></math></span>:</p>
+<div class="cells"><div class="cell in" id="in-10"><a class="label" href="#in-10">In[10]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : ∀ t ∈ Set.uIcc a b, t ≠ 0" title="h : ∀ t ∈ Set.uIcc a b, t ≠ 0">h</span> : ∀ <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ∈ <span class="lean-hover" tabindex="0" data-lean-hover="Set.uIcc : {α : Type} → [Lattice α] → α → α → Set α
+
+`uIcc a b` is the set of elements lying between `a` and `b`, with `a` and `b` included.
+Note that we define it more generally in a lattice as `Set.Icc (a ⊓ b) (a ⊔ b)`. In a product type,
+`uIcc` corresponds to the bounding box of the two elements. " title="Set.uIcc : {α : Type} → [Lattice α] → α → α → Set α
+
+`uIcc a b` is the set of elements lying between `a` and `b`, with `a` and `b` included.
+Note that we define it more generally in a lattice as `Set.Icc (a ⊓ b) (a ⊔ b)`. In a product type,
+`uIcc` corresponds to the bounding box of the two elements. ">Set.uIcc</span> <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span>, <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ≠ <span class="n">0</span>) :
+    (∫ <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> <span class="k">in</span> a..b, <span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> / <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span>) = <span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> ^ <span class="n">2</span> / <span class="n">2</span> - <span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> ^ <span class="n">2</span> / <span class="n">2</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2"><span class="k">let</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> : <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2"><span class="ty">ℝ</span></span> → <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2"><span class="ty">ℝ</span></span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2"><span class="k">fun</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ↦ <span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ^ <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2"><span class="n">2</span></span> / <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2"><span class="n">2</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals"><span class="t">cas</span></span> [<span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals">integrate</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals">primitive</span> := <span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals" title="Before
+
+a b : ℝ
+h : ∀ t ∈ Set.uIcc a b, t ≠ 0
+F : ℝ → ℝ := fun t ↦ Real.log t ^ 2 / 2
+⊢ ∫ (t : ℝ) in a..b, Real.log t / t = Real.log b ^ 2 / 2 - Real.log a ^ 2 / 2
+
+After
+no goals"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : ∀ t ∈ Set.uIcc a b, t ≠ 0" title="h : ∀ t ∈ Set.uIcc a b, t ≠ 0">h</span>]</pre></div></div><div class="cell out" id="out-10"><span class="label">Out[10]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<h2 id="keep">Keeping the call that worked<a class="anchor" href="#keep" aria-label="Link to this section">#</a></h2>
+<p>Once a call works, keep the simplest one. <code class="lean"><span class="t">cas?</span></code> proves the goal as <code class="lean"><span class="t">cas</span></code> does and suggests the quieter call to keep in the source:</p>
+<div class="cells"><div class="cell in" id="in-11"><a class="label" href="#in-11">In[11]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="Real.cos : ℝ → ℝ
+
+The real cosine function, defined as the real part of the complex cosine " title="Real.cos : ℝ → ℝ
+
+The real cosine function, defined as the real part of the complex cosine ">Real.cos</span> (<span class="n">3</span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) = <span class="n">4</span> * <span class="lean-hover" tabindex="0" data-lean-hover="Real.cos : ℝ → ℝ
+
+The real cosine function, defined as the real part of the complex cosine " title="Real.cos : ℝ → ℝ
+
+The real cosine function, defined as the real part of the complex cosine ">Real.cos</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">3</span> - <span class="n">3</span> * <span class="lean-hover" tabindex="0" data-lean-hover="Real.cos : ℝ → ℝ
+
+The real cosine function, defined as the real part of the complex cosine " title="Real.cos : ℝ → ℝ
+
+The real cosine function, defined as the real part of the complex cosine ">Real.cos</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ Real.cos (3 * x) = 4 * Real.cos x ^ 3 - 3 * Real.cos x
+
+After
+no goals" title="Before
+
+x : ℝ
+⊢ Real.cos (3 * x) = 4 * Real.cos x ^ 3 - 3 * Real.cos x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ Real.cos (3 * x) = 4 * Real.cos x ^ 3 - 3 * Real.cos x
+
+After
+no goals" title="Before
+
+x : ℝ
+⊢ Real.cos (3 * x) = 4 * Real.cos x ^ 3 - 3 * Real.cos x
+
+After
+no goals"><span class="t">cas?</span></span></pre></div></div><div class="cell out" id="out-11"><span class="label">Out[11]=</span><div class="cell-body"><div class="msg try"><p class="try-label">Try this</p><pre class="lean"><span class="t">cas</span>
+
+Lean checked the suggested replacement against the original goal. Selected route: CAS route: elementary rewrites, <span class="k">then</span> ordinary arithmetic.</pre></div></div></div></div>
+<h2 id="refusals">When a call refuses<a class="anchor" href="#refusals" aria-label="Link to this section">#</a></h2>
+<p>A refusal leaves the goal as it was. For a numerical bound that is false or too tight, <code class="lean"><span class="t">cega</span></code> says which values its queries certified. This one is false, since <span class="inline-math"><math alttext="x(1 - x)" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x02212;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> is <span class="inline-math"><math alttext="1/4" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x0002F;</mo><mn>4</mn></mrow></math></span> at <span class="inline-math"><math alttext="x = 1/2" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x0003D;</mo><mn>1</mn><mo>&#x0002F;</mo><mn>2</mn></mrow></math></span>, so no setting will prove it. The message reports the certified upper bound <span class="inline-math"><math alttext="1/4" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x0002F;</mo><mn>4</mn></mrow></math></span>, which is exactly the maximum:</p>
+<div class="cells"><div class="cell in" id="in-12"><a class="label" href="#in-12">In[12]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h0 : 0 ≤ x" title="h0 : 0 ≤ x">h0</span> : <span class="n">0</span> ≤ <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h1 : x ≤ 1" title="h1 : x ≤ 1">h1</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ≤ <span class="n">1</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> * (<span class="n">1</span> - <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) ≤ <span class="n">1</span> / <span class="n">5</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 5
+
+After
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 5" title="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 5
+
+After
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 5"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 5
+
+After
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 5" title="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 5
+
+After
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 5"><span class="t">cega</span></span></pre></div></div><div class="cell out" id="out-12"><span class="label">Out[12]=</span><div class="cell-body"><div class="msg error"><p class="sev">Error</p><pre>cega box route: comparison with the stated bound: the certified value does not give the stated bound.
+  ↑1 / ↑4 ≤ 1 / 5
+Exact rational arithmetic did not close this comparison.
+The query run was `cega [enclose x in [0, 1]]
+    (x *
+      (1 -
+        x))`; its certified upper bound 1/4 may be too weak for the stated bound. If the bound is true, a deeper subdivision or a higher precision may prove it, as in `cega (depth := 4)` or `cega (prec := 24)`.</pre><details class="more"><summary>The rest of the message</summary><pre>Subdivision to depth 2 (`cega (depth := 2) [enclose x in [0, 1]] (x * (1 - x))`) did not prove it either:
+  cega box route: comparison with the stated bound: the certified value does not give the stated bound.
+    ↑1 / ↑4 ≤ 1 / 5
+  Exact rational arithmetic did not close this comparison.
+Other routes:
+  carrier search:
+    cega found no registered checked carrier or direct certificate matching the target
+Bare `cega` proves an ordinary real inequality (`f x ≤ c`, `f x &lt; c`, `c ≤ f x`, `c &lt; f x`, `|f x| ≤ c`, `|f x| &lt; c`, `a ≤ f x ∧ f x ≤ b` (also with `&lt;`), `f x ∈ Set.Icc a b` (also `Set.Ioo`, `Set.Ico`, `Set.Ioc`), `f x ≤ g x`, and conjunctions of these, with `c`, `a`, `b` closed and every real variable bounded by hypotheses `a ≤ x` and `x ≤ b`, `x ∈ Set.Icc a b`, or `|x| ≤ r` with rational literal endpoints), a bound on an interval integral `∫ x in a..b, f x` with rational limits, a certificate goal (`EnclosedOn f s lo hi`, `BoundOn f s c`, `ApproxOn f g s ε`, `ResidualBound r s ε`) on a coordinate box or from a checked carrier in the local context or the goal, and a closed goal that interval evaluation proves.</pre></details></div></div></div></div>
+<p>When a call fails, read the message first. It names what was missing and, where there is one, the call or setting to try. After that, these are the things I reach for:</p>
+<ul><li><code class="lean"><span class="k">#cas</span></code> answers the question itself: <code class="lean"><span class="k">#cas</span> [<span class="m">derive</span> x]</code> prints the derivative with its conditions, <code class="lean"><span class="k">#cas</span> [<span class="m">integrate</span> x]</code> a primitive and <code class="lean"><span class="k">#cas</span> [<span class="m">N</span> <span class="n">20</span>]</code> the digits of a constant, so that the goal can state what SymLean computes.</li><li><code class="lean"><span class="t">cas?</span></code> and <code class="lean"><span class="t">cega?</span></code> show the route that closed a goal and suggest the call to keep.</li><li>When a message names an option, <a class="sym" href="../ref/options.html"><code class="lean">Options</code></a> lists it with its default, and <code class="lean"><span class="k">set_option</span> <var>name</var> <var>value</var> <span class="k">in</span></code> sets it for one call.</li><li><code class="lean"><span class="k">set_option</span> trace.cas.fallback true <span class="k">in</span></code> shows the full diagnostics of the <code class="lean"><span class="t">grind</span></code> and <code class="lean"><span class="t">norm_num</span></code> fallbacks of <code class="lean"><span class="t">cas</span></code>.</li></ul>
+<p>Every theorem on this page depends only on <code class="lean">propext</code>, <code class="lean">Classical.choice</code> and <code class="lean">Quot.sound</code>, as <code class="lean"><span class="k">#print</span> axioms</code> shows, and <a class="sym" href="trust.html">What you trust</a> explains why.</p></main></div>
+<footer class="footer"><p>Examples built with Lean 4.35.0. Quoted examples link to their source.</p><p><a href="https://github.com/Robertboy18/SymLean">SymLean on GitHub</a> · Apache License 2.0</p></footer>
+<script defer src="../../static/site.js"></script>
+</body>
+</html>

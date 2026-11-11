@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cas_nf · SymLean</title>
+<meta name="description" content="Rewrites the real terms of a goal or a hypothesis to a normal form, with a checked proof of each rewrite.">
+<link rel="stylesheet" href="../../static/site.css">
+<link rel="icon" type="image/png" href="../../static/brand/favicon.png">
+<link rel="apple-touch-icon" href="../../static/brand/apple-touch-icon.png">
+<meta property="og:title" content="cas_nf · SymLean">
+<meta property="og:description" content="Rewrites the real terms of a goal or a hypothesis to a normal form, with a checked proof of each rewrite.">
+<meta property="og:image" content="https://robertboy18.github.io/SymLean/static/brand/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="kind-tactic">
+<a class="skip" href="#main">Skip to the content</a>
+<header class="topbar"><div class="topbar-inner"><a class="brand" href="../../index.html"><picture class="brand-logo"><source media="(prefers-color-scheme: dark)" srcset="../../static/brand/symlean-logo-dark.png"><img src="../../static/brand/symlean-logo.png" alt="SymLean" width="960" height="252"></picture></a><nav class="top-nav"><a href="../index.html" aria-current="page">Docs</a><a href="../tutorial/first-hour.html">Getting started</a><a href="../all.html">Index</a><a class="code-button" href="https://github.com/Robertboy18/SymLean">Code</a></nav></div></header>
+<div class="docs"><nav class="sidebar" aria-label="Documentation"><p class="nav-home"><a href="../index.html">Documentation</a></p><p class="nav-heading">Guides</p><details><summary><a href="../guide/why.html">Why SymLean</a></summary><ul></ul></details><details><summary><a href="../guide/algebra.html">Algebra</a></summary><ul><li><a href="simplify.html"><code class="lean">simplify</code></a></li><li><a href="fullSimplify.html"><code class="lean">fullSimplify</code></a></li><li><a href="expand.html"><code class="lean">expand</code></a></li><li><a href="factor.html"><code class="lean">factor</code></a></li><li><a href="collect.html"><code class="lean">collect</code></a></li><li><a href="trigExpand.html"><code class="lean">trigExpand</code></a></li><li><a href="together.html"><code class="lean">together</code></a></li><li><a href="cancel.html"><code class="lean">cancel</code></a></li><li><a href="apart.html"><code class="lean">apart</code></a></li><li><a href="numerator.html"><code class="lean">numerator</code></a></li><li><a href="denominator.html"><code class="lean">denominator</code></a></li></ul></details><details><summary><a href="../guide/polynomials.html">Polynomials</a></summary><ul><li><a href="coefficient.html"><code class="lean">coefficient</code></a></li><li><a href="coefficientList.html"><code class="lean">coefficientList</code></a></li><li><a href="exponent.html"><code class="lean">exponent</code></a></li><li><a href="polynomialGCD.html"><code class="lean">polynomialGCD</code></a></li><li><a href="polynomialLCM.html"><code class="lean">polynomialLCM</code></a></li><li><a href="polynomialQuotient.html"><code class="lean">polynomialQuotient</code></a></li><li><a href="polynomialRemainder.html"><code class="lean">polynomialRemainder</code></a></li><li><a href="polynomialQuotientRemainder.html"><code class="lean">polynomialQuotientRemainder</code></a></li><li><a href="interpolatingPolynomial.html"><code class="lean">interpolatingPolynomial</code></a></li><li><a href="groebner.html"><code class="lean">groebner</code></a></li><li><a href="member.html"><code class="lean">member</code></a></li></ul></details><details><summary><a href="../guide/calculus.html">Calculus</a></summary><ul><li><a href="derive.html"><code class="lean">derive</code></a></li><li><a href="grad.html"><code class="lean">grad</code></a></li><li><a href="integrate.html"><code class="lean">integrate</code></a></li><li><a href="nintegrate.html"><code class="lean">nintegrate</code></a></li><li><a href="cas-integrate-primitive.html"><code class="lean"><span class="t">cas</span> [integrate primitive := F]</code></a></li><li><a href="maximize.html"><code class="lean">maximize</code></a></li><li><a href="minimize.html"><code class="lean">minimize</code></a></li></ul></details><details><summary><a href="../guide/series-limits.html">Series and limits</a></summary><ul><li><a href="series.html"><code class="lean">series</code></a></li><li><a href="limit.html"><code class="lean">limit</code></a></li></ul></details><details><summary><a href="../guide/equations.html">Equations</a></summary><ul><li><a href="solve.html"><code class="lean">solve</code></a></li><li><a href="reduce.html"><code class="lean">reduce</code></a></li><li><a href="roots.html"><code class="lean">roots</code></a></li><li><a href="findRoot.html"><code class="lean">findRoot</code></a></li></ul></details><details><summary><a href="../guide/sums.html">Sums and recurrences</a></summary><ul><li><a href="sum.html"><code class="lean">sum</code></a></li><li><a href="product.html"><code class="lean">product</code></a></li><li><a href="rsolve.html"><code class="lean">rsolve</code></a></li></ul></details><details><summary><a href="../guide/special-functions.html">Special functions</a></summary><ul><li><a href="gamma.html"><code class="lean">gamma</code></a></li><li><a href="zeta.html"><code class="lean">zeta</code></a></li><li><a href="BernoulliB.html"><code class="lean">BernoulliB</code></a></li><li><a href="erf.html"><code class="lean">erf</code></a></li><li><a href="BesselJ.html"><code class="lean">BesselJ</code></a></li><li><a href="LegendreP.html"><code class="lean">LegendreP</code></a></li><li><a href="ChebyshevT.html"><code class="lean">ChebyshevT</code></a></li><li><a href="ChebyshevU.html"><code class="lean">ChebyshevU</code></a></li><li><a href="HermiteH.html"><code class="lean">HermiteH</code></a></li><li><a href="HermiteHe.html"><code class="lean">HermiteHe</code></a></li></ul></details><details><summary><a href="../guide/number-theory.html">Number theory</a></summary><ul><li><a href="primeQ.html"><code class="lean">primeQ</code></a></li><li><a href="factorInteger.html"><code class="lean">factorInteger</code></a></li><li><a href="moebiusMu.html"><code class="lean">moebiusMu</code></a></li><li><a href="divisors.html"><code class="lean">divisors</code></a></li><li><a href="divisorSigma.html"><code class="lean">divisorSigma</code></a></li><li><a href="eulerPhi.html"><code class="lean">eulerPhi</code></a></li><li><a href="powerMod.html"><code class="lean">powerMod</code></a></li><li><a href="modularInverse.html"><code class="lean">modularInverse</code></a></li><li><a href="chineseRemainder.html"><code class="lean">chineseRemainder</code></a></li><li><a href="extendedGCD.html"><code class="lean">extendedGCD</code></a></li><li><a href="jacobiSymbol.html"><code class="lean">jacobiSymbol</code></a></li><li><a href="integerDigits.html"><code class="lean">integerDigits</code></a></li><li><a href="continuedFraction.html"><code class="lean">continuedFraction</code></a></li><li><a href="fromContinuedFraction.html"><code class="lean">fromContinuedFraction</code></a></li><li><a href="binomial.html"><code class="lean">binomial</code></a></li><li><a href="factorial.html"><code class="lean">factorial</code></a></li><li><a href="fibonacci.html"><code class="lean">fibonacci</code></a></li></ul></details><details><summary><a href="../guide/linear-algebra.html">Linear algebra</a></summary><ul><li><a href="dot.html"><code class="lean">dot</code></a></li><li><a href="matrixPower.html"><code class="lean">matrixPower</code></a></li><li><a href="transpose.html"><code class="lean">transpose</code></a></li><li><a href="trace.html"><code class="lean">trace</code></a></li><li><a href="det.html"><code class="lean">det</code></a></li><li><a href="inverse.html"><code class="lean">inverse</code></a></li><li><a href="matrixRank.html"><code class="lean">matrixRank</code></a></li><li><a href="rowReduce.html"><code class="lean">rowReduce</code></a></li><li><a href="nullSpace.html"><code class="lean">nullSpace</code></a></li><li><a href="linearSolve.html"><code class="lean">linearSolve</code></a></li><li><a href="characteristicPolynomial.html"><code class="lean">characteristicPolynomial</code></a></li><li><a href="eigenvalues.html"><code class="lean">eigenvalues</code></a></li><li><a href="eigenvectors.html"><code class="lean">eigenvectors</code></a></li><li><a href="positiveDefinite.html"><code class="lean">positiveDefinite</code></a></li><li><a href="eigenvalueBounds.html"><code class="lean">eigenvalueBounds</code></a></li></ul></details><details><summary><a href="../guide/differential-equations.html">Differential equations</a></summary><ul><li><a href="dsolve.html"><code class="lean">dsolve</code></a></li><li><a href="ndsolve.html"><code class="lean">ndsolve</code></a></li><li><a href="laplace.html"><code class="lean">laplace</code></a></li><li><a href="inverseLaplace.html"><code class="lean">inverseLaplace</code></a></li><li><a href="fourierTransform.html"><code class="lean">fourierTransform</code></a></li><li><a href="fourier.html"><code class="lean">fourier</code></a></li><li><a href="fourierCos.html"><code class="lean">fourierCos</code></a></li><li><a href="fourierSin.html"><code class="lean">fourierSin</code></a></li></ul></details><details><summary><a href="../guide/numerics.html">Numerics</a></summary><ul><li><a href="N.html"><code class="lean">N</code></a></li><li><a href="enclose.html"><code class="lean">enclose</code></a></li><li><a href="maximize.html"><code class="lean">maximize</code></a></li><li><a href="minimize.html"><code class="lean">minimize</code></a></li><li><a href="nintegrate.html"><code class="lean">nintegrate</code></a></li><li><a href="findRoot.html"><code class="lean">findRoot</code></a></li><li><a href="ndsolve.html"><code class="lean">ndsolve</code></a></li><li><a href="eigenvalueBounds.html"><code class="lean">eigenvalueBounds</code></a></li><li><a href="cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/certificates.html">Certificates</a></summary><ul><li><a href="cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="enclose.html"><code class="lean">enclose</code></a></li><li><a href="cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="options.html"><code class="lean">Options</code></a></li></ul></details><details open><summary><a href="../guide/tactics.html">Tactics</a></summary><ul><li><a href="cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="cas-using.html"><code class="lean"><span class="t">cas</span> <span class="t">using</span></code></a></li><li><a href="cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="cas-query.html"><code class="lean"><span class="t">cas?</span></code></a></li><li><a href="cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="cas_nf.html" aria-current="page"><code class="lean"><span class="t">cas_nf</span></code></a></li><li><a href="options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/oracles.html">Oracles</a></summary><ul><li><a href="oracle.html"><code class="lean">oracle</code></a></li><li><a href="cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="cas-integrate-primitive.html"><code class="lean"><span class="t">cas</span> [integrate primitive := F]</code></a></li><li><a href="options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/hex.html">Hex</a></summary><ul><li><a href="cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="factor.html"><code class="lean">factor</code></a></li><li><a href="apart.html"><code class="lean">apart</code></a></li><li><a href="product.html"><code class="lean">product</code></a></li><li><a href="eigenvalues.html"><code class="lean">eigenvalues</code></a></li><li><a href="eigenvectors.html"><code class="lean">eigenvectors</code></a></li><li><a href="primeQ.html"><code class="lean">primeQ</code></a></li><li><a href="moebiusMu.html"><code class="lean">moebiusMu</code></a></li><li><a href="factorInteger.html"><code class="lean">factorInteger</code></a></li><li><a href="eulerPhi.html"><code class="lean">eulerPhi</code></a></li><li><a href="det.html"><code class="lean">det</code></a></li><li><a href="options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/library.html">The library</a></summary><ul></ul></details><p class="nav-heading">Tutorials</p><ul class="nav-flat"><li><a href="../tutorial/first-hour.html">Getting started with SymLean</a></li><li><a href="../tutorial/proving.html">Proving with <code class="lean"><span class="t">cas</span></code></a></li><li><a href="../tutorial/trust.html">What you trust</a></li></ul><p class="nav-heading"><a href="../all.html">Index A to Z</a></p></nav><main class="doc" id="main"><nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Documentation</a> <span class="sep">›</span> <a href="../guide/tactics.html">Tactics</a> <span class="sep">›</span> <span aria-current="page"><code class="lean"><span class="t">cas_nf</span></code></span></nav><header class="page-head"><p class="kind">Tactic</p><h1><code class="lean"><span class="t">cas_nf</span></code></h1><p class="summary">Rewrites the real terms of a goal or a hypothesis to a normal form, with a checked proof of each rewrite.</p></header><section class="usage" aria-label="Usage"><div class="usage-row"><div class="usage-form"><code class="lean"><span class="t">cas_nf</span></code></div><div class="usage-meaning">rewrites the real terms of the goal to their normal form, and closes the goal when it becomes a reflexive equality.</div></div><div class="usage-row"><div class="usage-form"><code class="lean"><span class="t">cas_nf</span> <span class="k">at</span> <var>h</var></code></div><div class="usage-meaning">rewrites the hypothesis <var>h</var>. <code class="lean"><span class="k">at</span> <var>h</var> ⊢</code> and <code class="lean"><span class="k">at</span> *</code> choose locations as for <code class="lean"><span class="t">simp</span></code>.</div></div><div class="usage-row"><div class="usage-form"><code class="lean"><span class="t">cas_nf</span> <span class="t">using</span> <var>h</var></code></div><div class="usage-meaning">the same, with <var>h</var> as evidence for the conditions a rewrite needs, such as a nonzero denominator.</div></div><div class="usage-row"><div class="usage-form"><code class="lean"><span class="t">conv</span> =&gt; <span class="t">cas_nf</span></code></div><div class="usage-meaning">rewrites the focused term only, also as <code class="lean"><span class="t">cas_nf</span> <span class="t">using</span> <var>h</var></code>.</div></div></section>
+<p><a class="sym" href="cas.html"><code class="lean"><span class="t">cas</span></code></a> closes a goal or leaves it alone. Sometimes I want something in between: the goal is not finished, but one quotient in it should cancel, or a hypothesis should look like the goal. <code class="lean"><span class="t">cas_nf</span></code> rewrites to a normal form and leaves the rest of the proof to me.</p>
+<details class="section details-options" id="details" open><summary><h2>Details and Options</h2></summary><ul><li><code class="lean"><span class="t">cas_nf</span></code> turns the goal <code class="lean">P e</code> into <code class="lean">P e'</code>, with a proof of <span class="inline-math"><math alttext="e = e&#x27;" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>e</mi><mo>&#x0003D;</mo><msup><mi>e</mi><mo>&#x02032;</mo></msup></mrow></math></span>. A polynomial gets the normal form of Mathlib’s <code class="lean"><span class="t">ring_nf</span></code>. An expression with quotients, roots, logarithms or trigonometric functions gets the normal form of the checked symbolic routes.</li><li>A rewrite that needs a condition, such as <span class="inline-math"><math alttext="x - y \ne 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x02212;</mo><mi>y</mi><mo>&#x02260;</mo><mn>0</mn></mrow></math></span> to cancel <span class="inline-math"><math alttext="(x^2 - y^2)/(x - y)" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><msup><mi>x</mi><mn>2</mn></msup><mo>&#x02212;</mo><msup><mi>y</mi><mn>2</mn></msup><mo stretchy="false">&#x00029;</mo><mo>&#x0002F;</mo><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x02212;</mo><mi>y</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>, takes it from the local context or from <code class="lean"><span class="t">using</span> h</code>. For two conditions, pass <code class="lean">And.intro h₁ h₂</code>.</li><li>Without the condition the rewrite is refused, never assumed. Lean’s division is total, and the normal form keeps that meaning: <span class="inline-math"><math alttext="x/0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x0002F;</mo><mn>0</mn></mrow></math></span> becomes <span class="inline-math"><math alttext="0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn></mrow></math></span>.</li><li><code class="lean"><span class="t">cas_nf</span></code> normalizes, and is not an equality solver: two equal analytic expressions can keep different normal forms.</li><li>It fails when it changes nothing.</li><li>There are no options.</li></ul></details>
+<section class="examples" id="examples"><h2>Examples <span class="count">(15)</span><a class="anchor" href="#examples" aria-label="Link to this section">#</a></h2><details class="ex-section" id="basic-examples" open><summary><h3>Basic Examples <span class="count">(3)</span></h3></summary><div class="ex-body"><p>A polynomial identity becomes reflexive, and the goal closes:</p>
+<div class="cells"><div class="cell in" id="in-1"><a class="label" href="#in-1">In[1]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> : <span class="ty">ℝ</span>) : (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>) ^ <span class="n">2</span> = <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> + <span class="n">2</span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> * <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> ^ <span class="n">2</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y : ℝ
+⊢ (x + y) ^ 2 = x ^ 2 + 2 * x * y + y ^ 2
+
+After
+no goals" title="Before
+
+x y : ℝ
+⊢ (x + y) ^ 2 = x ^ 2 + 2 * x * y + y ^ 2
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y : ℝ
+⊢ (x + y) ^ 2 = x ^ 2 + 2 * x * y + y ^ 2
+
+After
+no goals" title="Before
+
+x y : ℝ
+⊢ (x + y) ^ 2 = x ^ 2 + 2 * x * y + y ^ 2
+
+After
+no goals"><span class="t">cas_nf</span></span></pre></div></div><div class="cell out" id="out-1"><span class="label">Out[1]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<hr class="sep">
+<p>A hypothesis and the goal brought to the same form:</p>
+<div class="cells"><div class="cell in" id="in-2"><a class="label" href="#in-2">In[2]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> <span class="lean-hover" tabindex="0" data-lean-hover="c : ℝ" title="c : ℝ">c</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : (x + y) ^ 2 ≤ c" title="h : (x + y) ^ 2 ≤ c">h</span> : (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>) ^ <span class="n">2</span> ≤ <span class="lean-hover" tabindex="0" data-lean-hover="c : ℝ" title="c : ℝ">c</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> + <span class="n">2</span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> * <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> ^ <span class="n">2</span> ≤ <span class="lean-hover" tabindex="0" data-lean-hover="c : ℝ" title="c : ℝ">c</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+no goals" title="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c" title="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c" title="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : (x + y) ^ 2 ≤ c" title="h : (x + y) ^ 2 ≤ c">h</span> ⊢
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+
+After
+no goals" title="Before
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c" title="h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c">h</span></pre></div></div><div class="cell out" id="out-2"><span class="label">Out[2]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<hr class="sep">
+<p>A quotient that cancels, under a function you know nothing about, with the denominator condition passed by <code class="lean"><span class="t">using</span></code>:</p>
+<div class="cells"><div class="cell in" id="in-3"><a class="label" href="#in-3">In[3]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> : <span class="ty">ℝ</span> → <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> <span class="lean-hover" tabindex="0" data-lean-hover="z : ℝ" title="z : ℝ">z</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hden : x - y ≠ 0" title="hden : x - y ≠ 0">hden</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> - <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> ≠ <span class="n">0</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : F (x + y) = z" title="h : F (x + y) = z">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>) = <span class="lean-hover" tabindex="0" data-lean-hover="z : ℝ" title="z : ℝ">z</span>) :
+    <span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> ((<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> - <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> ^ <span class="n">2</span>) / (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> - <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>)) = <span class="lean-hover" tabindex="0" data-lean-hover="z : ℝ" title="z : ℝ">z</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F ((x ^ 2 - y ^ 2) / (x - y)) = z
+
+After
+no goals" title="Before
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F ((x ^ 2 - y ^ 2) / (x - y)) = z
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F ((x ^ 2 - y ^ 2) / (x - y)) = z
+
+After
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F (x + y) = z" title="Before
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F ((x ^ 2 - y ^ 2) / (x - y)) = z
+
+After
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F (x + y) = z"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F ((x ^ 2 - y ^ 2) / (x - y)) = z
+
+After
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F (x + y) = z" title="Before
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F ((x ^ 2 - y ^ 2) / (x - y)) = z
+
+After
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F (x + y) = z"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="hden : x - y ≠ 0" title="hden : x - y ≠ 0">hden</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F (x + y) = z
+
+After
+no goals" title="Before
+
+F : ℝ → ℝ
+x y z : ℝ
+hden : x - y ≠ 0
+h : F (x + y) = z
+⊢ F (x + y) = z
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : F (x + y) = z" title="h : F (x + y) = z">h</span></pre></div></div><div class="cell out" id="out-3"><span class="label">Out[3]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div></div></details><details class="ex-section" id="scope"><summary><h3>Scope <span class="count">(4)</span></h3></summary><div class="ex-body"><p>The Pythagorean identity inside a hypothesis:</p>
+<div class="cells"><div class="cell in" id="in-4"><a class="label" href="#in-4">In[4]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P (Real.sin x ^ 2 + Real.cos x ^ 2)" title="h : P (Real.sin x ^ 2 + Real.cos x ^ 2)">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.sin : ℝ → ℝ
+
+The real sine function, defined as the real part of the complex sine " title="Real.sin : ℝ → ℝ
+
+The real sine function, defined as the real part of the complex sine ">Real.sin</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> + <span class="lean-hover" tabindex="0" data-lean-hover="Real.cos : ℝ → ℝ
+
+The real cosine function, defined as the real part of the complex cosine " title="Real.cos : ℝ → ℝ
+
+The real cosine function, defined as the real part of the complex cosine ">Real.cos</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span>)) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> <span class="n">1</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (Real.sin x ^ 2 + Real.cos x ^ 2)
+⊢ P 1
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (Real.sin x ^ 2 + Real.cos x ^ 2)
+⊢ P 1
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (Real.sin x ^ 2 + Real.cos x ^ 2)
+⊢ P 1
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P 1
+⊢ P 1" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (Real.sin x ^ 2 + Real.cos x ^ 2)
+⊢ P 1
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P 1
+⊢ P 1"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (Real.sin x ^ 2 + Real.cos x ^ 2)
+⊢ P 1
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P 1
+⊢ P 1" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (Real.sin x ^ 2 + Real.cos x ^ 2)
+⊢ P 1
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P 1
+⊢ P 1"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (Real.sin x ^ 2 + Real.cos x ^ 2)" title="h : P (Real.sin x ^ 2 + Real.cos x ^ 2)">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P 1
+⊢ P 1
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P 1
+⊢ P 1
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P 1" title="h : P 1">h</span></pre></div></div><div class="cell out" id="out-4"><span class="label">Out[4]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<hr class="sep">
+<p>The normal form of <span class="inline-math"><math alttext="e^{\log x}" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>e</mi><mrow><mi>log</mi><mspace width="0.1667em"/><mi>x</mi></mrow></msup></mrow></math></span> depends on what you know about <span class="inline-math"><math alttext="x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span>:</p>
+<div class="cells"><div class="cell in" id="in-5"><a class="label" href="#in-5">In[5]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : 0 &lt; x" title="hx : 0 &lt; x">hx</span> : <span class="n">0</span> &lt; <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P (Real.exp (Real.log x))" title="h : P (Real.exp (Real.log x))">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>))) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P (Real.exp (Real.log x))
+⊢ P x
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P (Real.exp (Real.log x))
+⊢ P x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P (Real.exp (Real.log x))
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P x
+⊢ P x" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P (Real.exp (Real.log x))
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P x
+⊢ P x"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P (Real.exp (Real.log x))
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P x
+⊢ P x" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P (Real.exp (Real.log x))
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P x
+⊢ P x"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="hx : 0 &lt; x" title="hx : 0 &lt; x">hx</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P (Real.exp (Real.log x))
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P x
+⊢ P x" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P (Real.exp (Real.log x))
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P x
+⊢ P x"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (Real.exp (Real.log x))" title="h : P (Real.exp (Real.log x))">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P x
+⊢ P x
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 &lt; x
+h : P x
+⊢ P x
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P x" title="h : P x">h</span></pre></div></div><div class="cell out" id="out-5"><span class="label">Out[5]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<div class="cells"><div class="cell in" id="in-6"><a class="label" href="#in-6">In[6]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : x ≠ 0" title="hx : x ≠ 0">hx</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ≠ <span class="n">0</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P (Real.exp (Real.log x))" title="h : P (Real.exp (Real.log x))">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>))) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> |<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>| := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P (Real.exp (Real.log x))
+⊢ P |x|
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P (Real.exp (Real.log x))
+⊢ P |x|
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P (Real.exp (Real.log x))
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P |x|
+⊢ P |x|" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P (Real.exp (Real.log x))
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P |x|
+⊢ P |x|"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P (Real.exp (Real.log x))
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P |x|
+⊢ P |x|" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P (Real.exp (Real.log x))
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P |x|
+⊢ P |x|"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="hx : x ≠ 0" title="hx : x ≠ 0">hx</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P (Real.exp (Real.log x))
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P |x|
+⊢ P |x|" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P (Real.exp (Real.log x))
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P |x|
+⊢ P |x|"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (Real.exp (Real.log x))" title="h : P (Real.exp (Real.log x))">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P |x|
+⊢ P |x|
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x ≠ 0
+h : P |x|
+⊢ P |x|
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P |x|" title="h : P |x|">h</span></pre></div></div><div class="cell out" id="out-6"><span class="label">Out[6]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<div class="cells"><div class="cell in" id="in-7"><a class="label" href="#in-7">In[7]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : x &lt; 0" title="hx : x &lt; 0">hx</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> &lt; <span class="n">0</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P (Real.exp (Real.log x))" title="h : P (Real.exp (Real.log x))">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>))) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (-<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (Real.exp (Real.log x))
+⊢ P (-x)
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (Real.exp (Real.log x))
+⊢ P (-x)
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (Real.exp (Real.log x))
+⊢ P (-x)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (-x)
+⊢ P (-x)" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (Real.exp (Real.log x))
+⊢ P (-x)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (-x)
+⊢ P (-x)"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (Real.exp (Real.log x))
+⊢ P (-x)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (-x)
+⊢ P (-x)" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (Real.exp (Real.log x))
+⊢ P (-x)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (-x)
+⊢ P (-x)"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="hx : x &lt; 0" title="hx : x &lt; 0">hx</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (Real.exp (Real.log x))
+⊢ P (-x)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (-x)
+⊢ P (-x)" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (Real.exp (Real.log x))
+⊢ P (-x)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (-x)
+⊢ P (-x)"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (Real.exp (Real.log x))" title="h : P (Real.exp (Real.log x))">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (-x)
+⊢ P (-x)
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : x &lt; 0
+h : P (-x)
+⊢ P (-x)
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (-x)" title="h : P (-x)">h</span></pre></div></div><div class="cell out" id="out-7"><span class="label">Out[7]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<hr class="sep">
+<p>Square roots, with and without a sign condition:</p>
+<div class="cells"><div class="cell in" id="in-8"><a class="label" href="#in-8">In[8]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : 0 ≤ x" title="hx : 0 ≤ x">hx</span> : <span class="n">0</span> ≤ <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P (√x ^ 2)" title="h : P (√x ^ 2)">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (√<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span>)) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P (√x ^ 2)
+⊢ P x
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P (√x ^ 2)
+⊢ P x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P (√x ^ 2)
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P x
+⊢ P x" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P (√x ^ 2)
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P x
+⊢ P x"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P (√x ^ 2)
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P x
+⊢ P x" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P (√x ^ 2)
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P x
+⊢ P x"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="hx : 0 ≤ x" title="hx : 0 ≤ x">hx</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P (√x ^ 2)
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P x
+⊢ P x" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P (√x ^ 2)
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P x
+⊢ P x"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (√x ^ 2)" title="h : P (√x ^ 2)">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P x
+⊢ P x
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+hx : 0 ≤ x
+h : P x
+⊢ P x
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P x" title="h : P x">h</span></pre></div></div><div class="cell out" id="out-8"><span class="label">Out[8]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<div class="cells"><div class="cell in" id="in-9"><a class="label" href="#in-9">In[9]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P √(x ^ 2)" title="h : P √(x ^ 2)">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (√(<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span>))) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> |<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>| := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P √(x ^ 2)
+⊢ P |x|
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P √(x ^ 2)
+⊢ P |x|
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P √(x ^ 2)
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P |x|
+⊢ P |x|" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P √(x ^ 2)
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P |x|
+⊢ P |x|"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P √(x ^ 2)
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P |x|
+⊢ P |x|" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P √(x ^ 2)
+⊢ P |x|
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P |x|
+⊢ P |x|"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P √(x ^ 2)" title="h : P √(x ^ 2)">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P |x|
+⊢ P |x|
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P |x|
+⊢ P |x|
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P |x|" title="h : P |x|">h</span></pre></div></div><div class="cell out" id="out-9"><span class="label">Out[9]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<hr class="sep">
+<p>Two conditions at once:</p>
+<div class="cells"><div class="cell in" id="in-10"><a class="label" href="#in-10">In[10]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ → ℝ" title="F : ℝ → ℝ → ℝ">F</span> : <span class="ty">ℝ</span> → <span class="ty">ℝ</span> → <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> <span class="lean-hover" tabindex="0" data-lean-hover="z : ℝ" title="z : ℝ">z</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hz : 0 &lt; z" title="hz : 0 &lt; z">hz</span> : <span class="n">0</span> &lt; <span class="lean-hover" tabindex="0" data-lean-hover="z : ℝ" title="z : ℝ">z</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hden : x - y ≠ 0" title="hden : x - y ≠ 0">hden</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> - <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> ≠ <span class="n">0</span>)
+    (<span class="lean-hover" tabindex="0" data-lean-hover="h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))" title="h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ → ℝ" title="F : ℝ → ℝ → ℝ">F</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="z : ℝ" title="z : ℝ">z</span>)) ((<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> - <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> ^ <span class="n">2</span>) / (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> - <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>)))) :
+    <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ → ℝ" title="F : ℝ → ℝ → ℝ">F</span> <span class="lean-hover" tabindex="0" data-lean-hover="z : ℝ" title="z : ℝ">z</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>)) := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))
+⊢ P (F z (x + y))
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))
+⊢ P (F z (x + y))
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))
+⊢ P (F z (x + y))
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F z (x + y))
+⊢ P (F z (x + y))" title="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))
+⊢ P (F z (x + y))
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F z (x + y))
+⊢ P (F z (x + y))"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))
+⊢ P (F z (x + y))
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F z (x + y))
+⊢ P (F z (x + y))" title="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))
+⊢ P (F z (x + y))
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F z (x + y))
+⊢ P (F z (x + y))"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="And.intro : ∀ {a b : Prop}, a → b → a ∧ b
+
+`And.intro : a → b → a ∧ b` is the constructor for the And operation. " title="And.intro : ∀ {a b : Prop}, a → b → a ∧ b
+
+`And.intro : a → b → a ∧ b` is the constructor for the And operation. ">And.intro</span> <span class="lean-hover" tabindex="0" data-lean-hover="hz : 0 &lt; z" title="hz : 0 &lt; z">hz</span> <span class="lean-hover" tabindex="0" data-lean-hover="hden : x - y ≠ 0" title="hden : x - y ≠ 0">hden</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))
+⊢ P (F z (x + y))
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F z (x + y))
+⊢ P (F z (x + y))" title="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))
+⊢ P (F z (x + y))
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F z (x + y))
+⊢ P (F z (x + y))"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))" title="h : P (F (Real.exp (Real.log z)) ((x ^ 2 - y ^ 2) / (x - y)))">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F z (x + y))
+⊢ P (F z (x + y))
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ → ℝ
+x y z : ℝ
+hz : 0 &lt; z
+hden : x - y ≠ 0
+h : P (F z (x + y))
+⊢ P (F z (x + y))
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (F z (x + y))" title="h : P (F z (x + y))">h</span></pre></div></div><div class="cell out" id="out-10"><span class="label">Out[10]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div></div></details><details class="ex-section" id="options"><summary><h3>Options <span class="count">(2)</span></h3></summary><div class="ex-body"><p>In <code class="lean"><span class="t">conv</span></code> mode only the focused term changes. Here the first argument is rewritten and the second, the same term, is not:</p>
+<div class="cells"><div class="cell in" id="in-11"><a class="label" href="#in-11">In[11]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → ℝ → Prop" title="P : ℝ → ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)" title="h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → ℝ → Prop" title="P : ℝ → ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> * <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> * <span class="n">2</span> + <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> ^ <span class="n">2</span>) ((<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>) ^ <span class="n">2</span>)) :
+    <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → ℝ → Prop" title="P : ℝ → ℝ → Prop">P</span> ((<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>) ^ <span class="n">2</span>) ((<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>) ^ <span class="n">2</span>) := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+⊢ P ((x + y) ^ 2) ((x + y) ^ 2)
+
+After
+no goals" title="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+⊢ P ((x + y) ^ 2) ((x + y) ^ 2)
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| P ((x + y) ^ 2) ((x + y) ^ 2)
+
+After
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| x * y * 2 + x ^ 2 + y ^ 2" title="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| P ((x + y) ^ 2) ((x + y) ^ 2)
+
+After
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| x * y * 2 + x ^ 2 + y ^ 2"><span class="t">conv</span></span> =&gt;
+    <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| P ((x + y) ^ 2) ((x + y) ^ 2)
+
+After
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| (x + y) ^ 2" title="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| P ((x + y) ^ 2) ((x + y) ^ 2)
+
+After
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| (x + y) ^ 2">arg</span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| P ((x + y) ^ 2) ((x + y) ^ 2)
+
+After
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| (x + y) ^ 2" title="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| P ((x + y) ^ 2) ((x + y) ^ 2)
+
+After
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| (x + y) ^ 2"><span class="n">1</span></span>
+    <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| (x + y) ^ 2
+
+After
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| x * y * 2 + x ^ 2 + y ^ 2" title="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| (x + y) ^ 2
+
+After
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+| x * y * 2 + x ^ 2 + y ^ 2"><span class="t">cas_nf</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+⊢ P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+
+After
+no goals" title="Before
+
+P : ℝ → ℝ → Prop
+x y : ℝ
+h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+⊢ P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)" title="h : P (x * y * 2 + x ^ 2 + y ^ 2) ((x + y) ^ 2)">h</span></pre></div></div><div class="cell out" id="out-11"><span class="label">Out[11]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<hr class="sep">
+<p><code class="lean"><span class="t">cas_nf</span> <span class="t">using</span> h</code> works under a binder too:</p>
+<div class="cells"><div class="cell in" id="in-12"><a class="label" href="#in-12">In[12]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> : <span class="ty">ℝ</span> → <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hden : ∀ (t : ℝ), F t ≠ 0" title="hden : ∀ (t : ℝ), F t ≠ 0">hden</span> : ∀ <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span>, <span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ≠ <span class="n">0</span>) :
+    (<span class="k">fun</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ↦ <span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> / <span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span>) = (<span class="k">fun</span> _ ↦ (<span class="n">1</span> : <span class="ty">ℝ</span>)) := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+⊢ (fun t ↦ F t / F t) = fun x ↦ 1
+
+After
+no goals" title="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+⊢ (fun t ↦ F t / F t) = fun x ↦ 1
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| (fun t ↦ F t / F t) = fun x ↦ 1
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| 1" title="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| (fun t ↦ F t / F t) = fun x ↦ 1
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| 1"><span class="t">conv</span></span> =&gt;
+    <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| (fun t ↦ F t / F t) = fun x ↦ 1
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| fun t ↦ F t / F t" title="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| (fun t ↦ F t / F t) = fun x ↦ 1
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| fun t ↦ F t / F t">lhs</span>
+    <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| fun t ↦ F t / F t
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| F t / F t" title="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| fun t ↦ F t / F t
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| F t / F t"><span class="t">intro</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| fun t ↦ F t / F t
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| F t / F t" title="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+| fun t ↦ F t / F t
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| F t / F t">t</span>
+    <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| F t / F t
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| 1" title="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| F t / F t
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| 1"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| F t / F t
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| 1" title="Before
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| F t / F t
+
+After
+
+F : ℝ → ℝ
+hden : ∀ (t : ℝ), F t ≠ 0
+t : ℝ
+| 1"><span class="t">using</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="hden : ∀ (t : ℝ), F t ≠ 0" title="hden : ∀ (t : ℝ), F t ≠ 0">hden</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span></pre></div></div><div class="cell out" id="out-12"><span class="label">Out[12]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div></div></details><details class="ex-section" id="applications"><summary><h3>Applications <span class="count">(1)</span></h3></summary><div class="ex-body"><p>A theorem whose proof is one normalization and one <code class="lean"><span class="t">exact</span></code>. Only the three standard axioms are used:</p>
+<div class="cells"><div class="cell in" id="in-13"><a class="label" href="#in-13">In[13]:=</a><div class="cell-body"><pre class="lean"><span class="k">theorem</span> <span class="lean-hover" tabindex="0" data-lean-hover="square_le : ∀ (x y c : ℝ), (x + y) ^ 2 ≤ c → x ^ 2 + 2 * x * y + y ^ 2 ≤ c" title="square_le : ∀ (x y c : ℝ), (x + y) ^ 2 ≤ c → x ^ 2 + 2 * x * y + y ^ 2 ≤ c">square_le</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> <span class="lean-hover" tabindex="0" data-lean-hover="c : ℝ" title="c : ℝ">c</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : (x + y) ^ 2 ≤ c" title="h : (x + y) ^ 2 ≤ c">h</span> : (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span>) ^ <span class="n">2</span> ≤ <span class="lean-hover" tabindex="0" data-lean-hover="c : ℝ" title="c : ℝ">c</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> + <span class="n">2</span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> * <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> + <span class="lean-hover" tabindex="0" data-lean-hover="y : ℝ" title="y : ℝ">y</span> ^ <span class="n">2</span> ≤ <span class="lean-hover" tabindex="0" data-lean-hover="c : ℝ" title="c : ℝ">c</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+no goals" title="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c" title="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c" title="Before
+
+x y c : ℝ
+h : (x + y) ^ 2 ≤ c
+⊢ x ^ 2 + 2 * x * y + y ^ 2 ≤ c
+
+After
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : (x + y) ^ 2 ≤ c" title="h : (x + y) ^ 2 ≤ c">h</span> ⊢
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+
+After
+no goals" title="Before
+
+x y c : ℝ
+h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+⊢ x * y * 2 + x ^ 2 + y ^ 2 ≤ c
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c" title="h : x * y * 2 + x ^ 2 + y ^ 2 ≤ c">h</span>
+
+<span class="lean-hover" tabindex="0" data-lean-hover="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output." title="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output."><span class="k">#print</span></span> axioms <span class="lean-hover" tabindex="0" data-lean-hover="square_le : ∀ (x y c : ℝ), (x + y) ^ 2 ≤ c → x ^ 2 + 2 * x * y + y ^ 2 ≤ c" title="square_le : ∀ (x y c : ℝ), (x + y) ^ 2 ≤ c → x ^ 2 + 2 * x * y + y ^ 2 ≤ c">square_le</span></pre></div></div><div class="cell out" id="out-13"><span class="label">Out[13]=</span><div class="cell-body"><div class="msg axioms"><p><code>square_le</code> depends on the axioms <code>propext</code>, <code>Classical.choice</code>, <code>Quot.sound</code>.</p></div></div></div></div></div></details><details class="ex-section" id="properties-and-relations"><summary><h3>Properties and Relations <span class="count">(2)</span></h3></summary><div class="ex-body"><p><a class="sym" href="cancel.html"><code class="lean">cancel</code></a> shows the same cancellation as a <code class="lean"><span class="k">#cas</span></code> report, with its condition:</p>
+<div class="cells"><div class="cell in" id="in-14"><a class="label" href="#in-14">In[14]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [cancel] e` cancels the common factors of the numerator and the denominator in each
+summand of the rational expression `e`." title="`#cas [cancel] e` cancels the common factors of the numerator and the denominator in each
+summand of the rational expression `e`."><span class="k">#cas</span></span> [<span class="m">cancel</span>] ((x ^ <span class="n">2</span> - y ^ <span class="n">2</span>) / (x - y))</pre></div></div><div class="cell out" id="out-14"><span class="label">Out[14]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">cancelled</p><code class="plain only">x + y</code></div><dl class="fields"><dt>Input <span class="qual-inline">(rational function)</span></dt><dd><code>((x ^ 2 - y ^ 2) / (x - y))</code></dd><dt>Conditions</dt><dd><span class="conds"><math alttext="x - y \ne 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x02212;</mo><mi>y</mi><mo>&#x02260;</mo><mn>0</mn></mrow></math></span></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Identity with the cancelled form</p><pre class="lean">∀ (x y : <span class="ty">ℝ</span>), x - y ≠ <span class="n">0</span> → (x ^ <span class="n">2</span> - y ^ <span class="n">2</span>) / (x - y) = x + y</pre></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Identity with the cancelled form</p><pre class="lean">∀ (x y : <span class="ty">ℝ</span>), x - y ≠ <span class="n">0</span> → (x ^ <span class="n">2</span> - y ^ <span class="n">2</span>) / (x - y) = x + y</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span></p></li></ol></details></div></div></div></div>
+<hr class="sep">
+<p>Lean’s division is total. <code class="lean"><span class="t">cas_nf</span></code> keeps that meaning, so <span class="inline-math"><math alttext="x/0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x0002F;</mo><mn>0</mn></mrow></math></span> is <span class="inline-math"><math alttext="0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn></mrow></math></span>:</p>
+<div class="cells"><div class="cell in" id="in-15"><a class="label" href="#in-15">In[15]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P (x / 0)" title="h : P (x / 0)">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> / <span class="n">0</span>)) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> <span class="n">0</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (x / 0)
+⊢ P 0
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (x / 0)
+⊢ P 0
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (x / 0)
+⊢ P 0
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P 0
+⊢ P 0" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (x / 0)
+⊢ P 0
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P 0
+⊢ P 0"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (x / 0)
+⊢ P 0
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P 0
+⊢ P 0" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P (x / 0)
+⊢ P 0
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P 0
+⊢ P 0"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (x / 0)" title="h : P (x / 0)">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P 0
+⊢ P 0
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P 0
+⊢ P 0
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P 0" title="h : P 0">h</span></pre></div></div><div class="cell out" id="out-15"><span class="label">Out[15]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div></div></details><details class="ex-section" id="possible-issues"><summary><h3>Possible Issues <span class="count">(2)</span></h3></summary><div class="ex-body"><p><code class="lean"><span class="t">cas_nf</span></code> fails when it changes nothing. This goal is in normal form already, and <code class="lean"><span class="t">exact</span> h</code> closes it:</p>
+<div class="cells"><div class="cell in" id="in-16"><a class="label" href="#in-16">In[16]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P x" title="h : P x">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P x
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P x
+⊢ P x" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P x
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P x
+⊢ P x"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P x
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P x
+⊢ P x" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P x
+⊢ P x
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P x
+⊢ P x"><span class="t">cas_nf</span></span></pre></div></div><div class="cell out" id="out-16"><span class="label">Out[16]=</span><div class="cell-body"><div class="msg error"><p class="sev">Error</p><pre>`cas_nf` made no progress on the goal</pre></div></div></div></div>
+<hr class="sep">
+<p>A cancellation needs its condition. Here <span class="inline-math"><math alttext="x - 1 \ne 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x02212;</mo><mn>1</mn><mo>&#x02260;</mo><mn>0</mn></mrow></math></span> is missing, and the message says what kind of condition to supply:</p>
+<div class="cells"><div class="cell in" id="in-17"><a class="label" href="#in-17">In[17]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P ((x ^ 2 - 1) / (x - 1))" title="h : P ((x ^ 2 - 1) / (x - 1))">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> ((<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> - <span class="n">1</span>) / (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> - <span class="n">1</span>))) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="n">1</span>) := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P ((x ^ 2 - 1) / (x - 1))" title="h : P ((x ^ 2 - 1) / (x - 1))">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)" title="Before
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)
+
+After
+
+P : ℝ → Prop
+x : ℝ
+h : P ((x ^ 2 - 1) / (x - 1))
+⊢ P (x + 1)">h</span></pre></div></div><div class="cell out" id="out-17"><span class="label">Out[17]=</span><div class="cell-body"><div class="msg error"><p class="sev">Error</p><pre>cas_nf could not prove the real analytic domain conditions.
+A denominator or logarithm argument may need to be nonzero, a square-root argument may need to be positive, or an inverse-trigonometric argument may need to avoid a branch endpoint. Supply the relevant ordinary hypothesis with `cas_nf using h`.
+Unproved conditions:
+  x + ↑(-1) ≠ 0</pre></div></div></div></div></div></details><details class="ex-section" id="neat-examples"><summary><h3>Neat Examples <span class="count">(1)</span></h3></summary><div class="ex-body"><p>Arguments are normalized before equal atoms are collected, so <span class="inline-math"><math alttext="F(x + 0) + F(x)" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>F</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x0002B;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0002B;</mo><mi>F</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> becomes <span class="inline-math"><math alttext="2F(x)" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>2</mn><mi>F</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>:</p>
+<div class="cells"><div class="cell in" id="in-18"><a class="label" href="#in-18">In[18]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> : <span class="ty">ℝ</span> → <span class="ty">Prop</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> : <span class="ty">ℝ</span> → <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h : P (F (x + 0) + F x)" title="h : P (F (x + 0) + F x)">h</span> : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="n">0</span>) + <span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>)) : <span class="lean-hover" tabindex="0" data-lean-hover="P : ℝ → Prop" title="P : ℝ → Prop">P</span> (<span class="n">2</span> * <span class="lean-hover" tabindex="0" data-lean-hover="F : ℝ → ℝ" title="F : ℝ → ℝ">F</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (F (x + 0) + F x)
+⊢ P (2 * F x)
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (F (x + 0) + F x)
+⊢ P (2 * F x)
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (F (x + 0) + F x)
+⊢ P (2 * F x)
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (2 * F x)
+⊢ P (2 * F x)" title="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (F (x + 0) + F x)
+⊢ P (2 * F x)
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (2 * F x)
+⊢ P (2 * F x)"><span class="t">cas_nf</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (F (x + 0) + F x)
+⊢ P (2 * F x)
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (2 * F x)
+⊢ P (2 * F x)" title="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (F (x + 0) + F x)
+⊢ P (2 * F x)
+
+After
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (2 * F x)
+⊢ P (2 * F x)"><span class="k">at</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (F (x + 0) + F x)" title="h : P (F (x + 0) + F x)">h</span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (2 * F x)
+⊢ P (2 * F x)
+
+After
+no goals" title="Before
+
+P : ℝ → Prop
+F : ℝ → ℝ
+x : ℝ
+h : P (2 * F x)
+⊢ P (2 * F x)
+
+After
+no goals"><span class="t">exact</span></span> <span class="lean-hover" tabindex="0" data-lean-hover="h : P (2 * F x)" title="h : P (2 * F x)">h</span></pre></div></div><div class="cell out" id="out-18"><span class="label">Out[18]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div></div></details></section><section class="see-also" id="see-also"><h2>See Also</h2><p class="sym-row"><a class="sym" href="cas.html"><code class="lean"><span class="t">cas</span></code></a> <span class="dot">·</span> <a class="sym" href="simplify.html"><code class="lean">simplify</code></a> <span class="dot">·</span> <a class="sym" href="expand.html"><code class="lean">expand</code></a> <span class="dot">·</span> <a class="sym" href="together.html"><code class="lean">together</code></a> <span class="dot">·</span> <a class="sym" href="cancel.html"><code class="lean">cancel</code></a></p></section><section class="related" id="related-guides"><h2>Related Guides</h2><ul><li><a href="../guide/tactics.html">Tactics</a></li></ul></section><section class="related" id="tutorials"><h2>Tutorials</h2><ul><li><a href="../tutorial/proving.html">Proving with <code class="lean"><span class="t">cas</span></code></a></li></ul></section></main></div>
+<footer class="footer"><p>Examples built with Lean 4.35.0. Quoted examples link to their source.</p><p><a href="https://github.com/Robertboy18/SymLean">SymLean on GitHub</a> · Apache License 2.0</p></footer>
+<script defer src="../../static/site.js"></script>
+</body>
+</html>

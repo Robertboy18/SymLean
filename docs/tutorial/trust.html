@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What you trust · SymLean</title>
+<meta name="description" content="What the kernel checks, which axioms a proof uses, and what the opt-in fast profile adds.">
+<link rel="stylesheet" href="../../static/site.css">
+<link rel="icon" type="image/png" href="../../static/brand/favicon.png">
+<link rel="apple-touch-icon" href="../../static/brand/apple-touch-icon.png">
+<meta property="og:title" content="What you trust · SymLean">
+<meta property="og:description" content="What the kernel checks, which axioms a proof uses, and what the opt-in fast profile adds.">
+<meta property="og:image" content="https://robertboy18.github.io/SymLean/static/brand/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="kind-tutorial">
+<a class="skip" href="#main">Skip to the content</a>
+<header class="topbar"><div class="topbar-inner"><a class="brand" href="../../index.html"><picture class="brand-logo"><source media="(prefers-color-scheme: dark)" srcset="../../static/brand/symlean-logo-dark.png"><img src="../../static/brand/symlean-logo.png" alt="SymLean" width="960" height="252"></picture></a><nav class="top-nav"><a href="../index.html" aria-current="page">Docs</a><a href="first-hour.html">Getting started</a><a href="../all.html">Index</a><a class="code-button" href="https://github.com/Robertboy18/SymLean">Code</a></nav></div></header>
+<div class="docs"><nav class="sidebar" aria-label="Documentation"><p class="nav-home"><a href="../index.html">Documentation</a></p><p class="nav-heading">Guides</p><details><summary><a href="../guide/why.html">Why SymLean</a></summary><ul></ul></details><details><summary><a href="../guide/algebra.html">Algebra</a></summary><ul><li><a href="../ref/simplify.html"><code class="lean">simplify</code></a></li><li><a href="../ref/fullSimplify.html"><code class="lean">fullSimplify</code></a></li><li><a href="../ref/expand.html"><code class="lean">expand</code></a></li><li><a href="../ref/factor.html"><code class="lean">factor</code></a></li><li><a href="../ref/collect.html"><code class="lean">collect</code></a></li><li><a href="../ref/trigExpand.html"><code class="lean">trigExpand</code></a></li><li><a href="../ref/together.html"><code class="lean">together</code></a></li><li><a href="../ref/cancel.html"><code class="lean">cancel</code></a></li><li><a href="../ref/apart.html"><code class="lean">apart</code></a></li><li><a href="../ref/numerator.html"><code class="lean">numerator</code></a></li><li><a href="../ref/denominator.html"><code class="lean">denominator</code></a></li></ul></details><details><summary><a href="../guide/polynomials.html">Polynomials</a></summary><ul><li><a href="../ref/coefficient.html"><code class="lean">coefficient</code></a></li><li><a href="../ref/coefficientList.html"><code class="lean">coefficientList</code></a></li><li><a href="../ref/exponent.html"><code class="lean">exponent</code></a></li><li><a href="../ref/polynomialGCD.html"><code class="lean">polynomialGCD</code></a></li><li><a href="../ref/polynomialLCM.html"><code class="lean">polynomialLCM</code></a></li><li><a href="../ref/polynomialQuotient.html"><code class="lean">polynomialQuotient</code></a></li><li><a href="../ref/polynomialRemainder.html"><code class="lean">polynomialRemainder</code></a></li><li><a href="../ref/polynomialQuotientRemainder.html"><code class="lean">polynomialQuotientRemainder</code></a></li><li><a href="../ref/interpolatingPolynomial.html"><code class="lean">interpolatingPolynomial</code></a></li><li><a href="../ref/groebner.html"><code class="lean">groebner</code></a></li><li><a href="../ref/member.html"><code class="lean">member</code></a></li></ul></details><details><summary><a href="../guide/calculus.html">Calculus</a></summary><ul><li><a href="../ref/derive.html"><code class="lean">derive</code></a></li><li><a href="../ref/grad.html"><code class="lean">grad</code></a></li><li><a href="../ref/integrate.html"><code class="lean">integrate</code></a></li><li><a href="../ref/nintegrate.html"><code class="lean">nintegrate</code></a></li><li><a href="../ref/cas-integrate-primitive.html"><code class="lean"><span class="t">cas</span> [integrate primitive := F]</code></a></li><li><a href="../ref/maximize.html"><code class="lean">maximize</code></a></li><li><a href="../ref/minimize.html"><code class="lean">minimize</code></a></li></ul></details><details><summary><a href="../guide/series-limits.html">Series and limits</a></summary><ul><li><a href="../ref/series.html"><code class="lean">series</code></a></li><li><a href="../ref/limit.html"><code class="lean">limit</code></a></li></ul></details><details><summary><a href="../guide/equations.html">Equations</a></summary><ul><li><a href="../ref/solve.html"><code class="lean">solve</code></a></li><li><a href="../ref/reduce.html"><code class="lean">reduce</code></a></li><li><a href="../ref/roots.html"><code class="lean">roots</code></a></li><li><a href="../ref/findRoot.html"><code class="lean">findRoot</code></a></li></ul></details><details><summary><a href="../guide/sums.html">Sums and recurrences</a></summary><ul><li><a href="../ref/sum.html"><code class="lean">sum</code></a></li><li><a href="../ref/product.html"><code class="lean">product</code></a></li><li><a href="../ref/rsolve.html"><code class="lean">rsolve</code></a></li></ul></details><details><summary><a href="../guide/special-functions.html">Special functions</a></summary><ul><li><a href="../ref/gamma.html"><code class="lean">gamma</code></a></li><li><a href="../ref/zeta.html"><code class="lean">zeta</code></a></li><li><a href="../ref/BernoulliB.html"><code class="lean">BernoulliB</code></a></li><li><a href="../ref/erf.html"><code class="lean">erf</code></a></li><li><a href="../ref/BesselJ.html"><code class="lean">BesselJ</code></a></li><li><a href="../ref/LegendreP.html"><code class="lean">LegendreP</code></a></li><li><a href="../ref/ChebyshevT.html"><code class="lean">ChebyshevT</code></a></li><li><a href="../ref/ChebyshevU.html"><code class="lean">ChebyshevU</code></a></li><li><a href="../ref/HermiteH.html"><code class="lean">HermiteH</code></a></li><li><a href="../ref/HermiteHe.html"><code class="lean">HermiteHe</code></a></li></ul></details><details><summary><a href="../guide/number-theory.html">Number theory</a></summary><ul><li><a href="../ref/primeQ.html"><code class="lean">primeQ</code></a></li><li><a href="../ref/factorInteger.html"><code class="lean">factorInteger</code></a></li><li><a href="../ref/moebiusMu.html"><code class="lean">moebiusMu</code></a></li><li><a href="../ref/divisors.html"><code class="lean">divisors</code></a></li><li><a href="../ref/divisorSigma.html"><code class="lean">divisorSigma</code></a></li><li><a href="../ref/eulerPhi.html"><code class="lean">eulerPhi</code></a></li><li><a href="../ref/powerMod.html"><code class="lean">powerMod</code></a></li><li><a href="../ref/modularInverse.html"><code class="lean">modularInverse</code></a></li><li><a href="../ref/chineseRemainder.html"><code class="lean">chineseRemainder</code></a></li><li><a href="../ref/extendedGCD.html"><code class="lean">extendedGCD</code></a></li><li><a href="../ref/jacobiSymbol.html"><code class="lean">jacobiSymbol</code></a></li><li><a href="../ref/integerDigits.html"><code class="lean">integerDigits</code></a></li><li><a href="../ref/continuedFraction.html"><code class="lean">continuedFraction</code></a></li><li><a href="../ref/fromContinuedFraction.html"><code class="lean">fromContinuedFraction</code></a></li><li><a href="../ref/binomial.html"><code class="lean">binomial</code></a></li><li><a href="../ref/factorial.html"><code class="lean">factorial</code></a></li><li><a href="../ref/fibonacci.html"><code class="lean">fibonacci</code></a></li></ul></details><details><summary><a href="../guide/linear-algebra.html">Linear algebra</a></summary><ul><li><a href="../ref/dot.html"><code class="lean">dot</code></a></li><li><a href="../ref/matrixPower.html"><code class="lean">matrixPower</code></a></li><li><a href="../ref/transpose.html"><code class="lean">transpose</code></a></li><li><a href="../ref/trace.html"><code class="lean">trace</code></a></li><li><a href="../ref/det.html"><code class="lean">det</code></a></li><li><a href="../ref/inverse.html"><code class="lean">inverse</code></a></li><li><a href="../ref/matrixRank.html"><code class="lean">matrixRank</code></a></li><li><a href="../ref/rowReduce.html"><code class="lean">rowReduce</code></a></li><li><a href="../ref/nullSpace.html"><code class="lean">nullSpace</code></a></li><li><a href="../ref/linearSolve.html"><code class="lean">linearSolve</code></a></li><li><a href="../ref/characteristicPolynomial.html"><code class="lean">characteristicPolynomial</code></a></li><li><a href="../ref/eigenvalues.html"><code class="lean">eigenvalues</code></a></li><li><a href="../ref/eigenvectors.html"><code class="lean">eigenvectors</code></a></li><li><a href="../ref/positiveDefinite.html"><code class="lean">positiveDefinite</code></a></li><li><a href="../ref/eigenvalueBounds.html"><code class="lean">eigenvalueBounds</code></a></li></ul></details><details><summary><a href="../guide/differential-equations.html">Differential equations</a></summary><ul><li><a href="../ref/dsolve.html"><code class="lean">dsolve</code></a></li><li><a href="../ref/ndsolve.html"><code class="lean">ndsolve</code></a></li><li><a href="../ref/laplace.html"><code class="lean">laplace</code></a></li><li><a href="../ref/inverseLaplace.html"><code class="lean">inverseLaplace</code></a></li><li><a href="../ref/fourierTransform.html"><code class="lean">fourierTransform</code></a></li><li><a href="../ref/fourier.html"><code class="lean">fourier</code></a></li><li><a href="../ref/fourierCos.html"><code class="lean">fourierCos</code></a></li><li><a href="../ref/fourierSin.html"><code class="lean">fourierSin</code></a></li></ul></details><details><summary><a href="../guide/numerics.html">Numerics</a></summary><ul><li><a href="../ref/N.html"><code class="lean">N</code></a></li><li><a href="../ref/enclose.html"><code class="lean">enclose</code></a></li><li><a href="../ref/maximize.html"><code class="lean">maximize</code></a></li><li><a href="../ref/minimize.html"><code class="lean">minimize</code></a></li><li><a href="../ref/nintegrate.html"><code class="lean">nintegrate</code></a></li><li><a href="../ref/findRoot.html"><code class="lean">findRoot</code></a></li><li><a href="../ref/ndsolve.html"><code class="lean">ndsolve</code></a></li><li><a href="../ref/eigenvalueBounds.html"><code class="lean">eigenvalueBounds</code></a></li><li><a href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="../ref/cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/certificates.html">Certificates</a></summary><ul><li><a href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="../ref/enclose.html"><code class="lean">enclose</code></a></li><li><a href="../ref/cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/tactics.html">Tactics</a></summary><ul><li><a href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="../ref/cas-using.html"><code class="lean"><span class="t">cas</span> <span class="t">using</span></code></a></li><li><a href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="../ref/cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="../ref/cas-query.html"><code class="lean"><span class="t">cas?</span></code></a></li><li><a href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="../ref/cas_nf.html"><code class="lean"><span class="t">cas_nf</span></code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/oracles.html">Oracles</a></summary><ul><li><a href="../ref/oracle.html"><code class="lean">oracle</code></a></li><li><a href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="../ref/cas-integrate-primitive.html"><code class="lean"><span class="t">cas</span> [integrate primitive := F]</code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/hex.html">Hex</a></summary><ul><li><a href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="../ref/factor.html"><code class="lean">factor</code></a></li><li><a href="../ref/apart.html"><code class="lean">apart</code></a></li><li><a href="../ref/product.html"><code class="lean">product</code></a></li><li><a href="../ref/eigenvalues.html"><code class="lean">eigenvalues</code></a></li><li><a href="../ref/eigenvectors.html"><code class="lean">eigenvectors</code></a></li><li><a href="../ref/primeQ.html"><code class="lean">primeQ</code></a></li><li><a href="../ref/moebiusMu.html"><code class="lean">moebiusMu</code></a></li><li><a href="../ref/factorInteger.html"><code class="lean">factorInteger</code></a></li><li><a href="../ref/eulerPhi.html"><code class="lean">eulerPhi</code></a></li><li><a href="../ref/det.html"><code class="lean">det</code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/library.html">The library</a></summary><ul></ul></details><p class="nav-heading">Tutorials</p><ul class="nav-flat"><li><a href="first-hour.html">Getting started with SymLean</a></li><li><a href="proving.html">Proving with <code class="lean"><span class="t">cas</span></code></a></li><li><a href="trust.html" aria-current="page">What you trust</a></li></ul><p class="nav-heading"><a href="../all.html">Index A to Z</a></p></nav><main class="doc" id="main"><nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Documentation</a> <span class="sep">›</span> <a href="../index.html#tutorials">Tutorials</a> <span class="sep">›</span> <span aria-current="page">What you trust</span></nav><header class="page-head"><p class="kind">Tutorial</p><h1>What you trust</h1><p class="summary">What the kernel checks, which axioms a proof uses, and what the opt-in fast profile adds.</p></header><p>When I use a tool in a proof, the first thing I want to know is what I’m trusting. For SymLean the answer is short. A result is a Lean proof, and Lean’s kernel checks it. Native evaluation, which also trusts Lean’s compiler, runs only when you explicitly enable it. Whatever a search finds is a proposal, and nothing it returns becomes a fact until the kernel has checked it. The sections below go through each part, with examples you can run.</p>
+<h2 id="axioms">Reading the axioms<a class="anchor" href="#axioms" aria-label="Link to this section">#</a></h2>
+<p>You can check the first part yourself with <code class="lean"><span class="k">#print</span> axioms</code>, and that’s where I always start. Here is a bound on a box and a table of thirty-two integer inequalities:</p>
+<div class="cells"><div class="cell in" id="in-1"><a class="label" href="#in-1">In[1]:=</a><div class="cell-body"><pre class="lean"><span class="k">theorem</span> <span class="lean-hover" tabindex="0" data-lean-hover="box_bound : ∀ (x : ℝ), 0 ≤ x → x ≤ 1 → x * (1 - x) ≤ 1 / 4" title="box_bound : ∀ (x : ℝ), 0 ≤ x → x ≤ 1 → x * (1 - x) ≤ 1 / 4">box_bound</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h0 : 0 ≤ x" title="h0 : 0 ≤ x">h0</span> : <span class="n">0</span> ≤ <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h1 : x ≤ 1" title="h1 : x ≤ 1">h1</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ≤ <span class="n">1</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> * (<span class="n">1</span> - <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) ≤ <span class="n">1</span> / <span class="n">4</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 4
+
+After
+no goals" title="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 4
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 4
+
+After
+no goals" title="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * (1 - x) ≤ 1 / 4
+
+After
+no goals"><span class="t">cega</span></span>
+
+<span class="k">theorem</span> <span class="lean-hover" tabindex="0" data-lean-hover="finite_rows : ∀ (i : Fin 32), ↑↑i ^ 2 &lt; 1024" title="finite_rows : ∀ (i : Fin 32), ↑↑i ^ 2 &lt; 1024">finite_rows</span> : ∀ <span class="lean-hover" tabindex="0" data-lean-hover="i : Fin 32" title="i : Fin 32">i</span> : <span class="lean-hover" tabindex="0" data-lean-hover="Fin : ℕ → Type
+
+Natural numbers less than some upper bound.
+
+In particular, a `Fin n` is a natural number `i` with the constraint that `i &lt; n`. It is the
+canonical type with `n` elements.
+" title="Fin : ℕ → Type
+
+Natural numbers less than some upper bound.
+
+In particular, a `Fin n` is a natural number `i` with the constraint that `i &lt; n`. It is the
+canonical type with `n` elements.
+">Fin</span> <span class="n">32</span>, (<span class="lean-hover" tabindex="0" data-lean-hover="i.val : ℕ" title="i.val : ℕ">i.val</span> : <span class="ty">ℤ</span>) ^ <span class="n">2</span> &lt; <span class="n">1024</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∀ (i : Fin 32), ↑↑i ^ 2 &lt; 1024
+
+After
+no goals" title="Before
+
+⊢ ∀ (i : Fin 32), ↑↑i ^ 2 &lt; 1024
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∀ (i : Fin 32), ↑↑i ^ 2 &lt; 1024
+
+After
+no goals" title="Before
+
+⊢ ∀ (i : Fin 32), ↑↑i ^ 2 &lt; 1024
+
+After
+no goals"><span class="t">cega</span></span>
+
+<span class="lean-hover" tabindex="0" data-lean-hover="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output." title="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output."><span class="k">#print</span></span> axioms <span class="lean-hover" tabindex="0" data-lean-hover="box_bound : ∀ (x : ℝ), 0 ≤ x → x ≤ 1 → x * (1 - x) ≤ 1 / 4" title="box_bound : ∀ (x : ℝ), 0 ≤ x → x ≤ 1 → x * (1 - x) ≤ 1 / 4">box_bound</span>
+<span class="lean-hover" tabindex="0" data-lean-hover="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output." title="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output."><span class="k">#print</span></span> axioms <span class="lean-hover" tabindex="0" data-lean-hover="finite_rows : ∀ (i : Fin 32), ↑↑i ^ 2 &lt; 1024" title="finite_rows : ∀ (i : Fin 32), ↑↑i ^ 2 &lt; 1024">finite_rows</span></pre></div></div><div class="cell out" id="out-1"><span class="label">Out[1]=</span><div class="cell-body"><div class="msg axioms"><p><code>box_bound</code> depends on the axioms <code>propext</code>, <code>Classical.choice</code>, <code>Quot.sound</code>.</p></div><div class="msg axioms"><p><code>finite_rows</code> depends on the axioms <code>propext</code>.</p></div></div></div></div>
+<p>Both use only Lean’s standard axioms. The bound went through interval arithmetic and the table through a finite decision procedure, two quite different routes, and the kernel checked both.</p>
+<h2 id="kernel">What the kernel checks<a class="anchor" href="#kernel" aria-label="Link to this section">#</a></h2>
+<p>Every closing tactic builds a complete proof of the goal. Before it closes the goal, it rejects a proof with holes or unassigned parts, and it checks that the type of the proof is the goal. The kernel then checks the declaration, as it checks every Lean declaration.</p>
+<p>The planners, the candidate searches and the decoding of expressions sit outside all this. They decide which proof to build, and the kernel decides whether it is one. That split is why I’m comfortable with fast, unverified search inside SymLean. Every form of <code class="lean"><span class="t">cas</span></code> and <code class="lean"><span class="t">cega</span></code> closes the goal completely or restores it, and only <code class="lean"><span class="t">cas_nf</span></code>, which rewrites, may leave a changed goal.</p>
+<p>The kernel routes of <code class="lean"><span class="t">cega</span></code> promise one more thing. Their proofs use no axiom beyond <code class="lean">propext</code>, <code class="lean">Classical.choice</code> and <code class="lean">Quot.sound</code> that the goal, the hypotheses or a supplied certificate don’t already use. A proof that does is rejected with the name of the axiom, and the next route is tried.</p>
+<p>You can see the same split in a <code class="lean"><span class="k">#cas</span></code> report, which keeps the evidence apart from the explanation:</p>
+<div class="cells"><div class="cell in" id="in-2"><a class="label" href="#in-2">In[2]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [roots x] (lhs = rhs)` lists every real solution of a polynomial equation in `x`, the
+rational ones exactly and the others as truncated decimals, and proves that the list is
+complete." title="`#cas [roots x] (lhs = rhs)` lists every real solution of a polynomial equation in `x`, the
+rational ones exactly and the others as truncated decimals, and proves that the list is
+complete."><span class="k">#cas</span></span> [<span class="m">roots</span> x] (x ^ <span class="n">3</span> - <span class="n">2</span> * x - <span class="n">5</span> = <span class="n">0</span>)</pre></div></div><div class="cell out" id="out-2"><span class="label">Out[2]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">the only real solution, by 20 decimals, truncated</p><code class="plain only">2.09455148154232659148</code></div><dl class="fields"><dt>Input <span class="qual-inline">(polynomial equation)</span></dt><dd><code>(x ^ 3 - 2 * x - 5 = 0)</code></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Complete list of real solutions</p><pre class="lean">(∃! x,
+    x ∈ Set.Ioo (<span class="n">209455148154232659148</span> / <span class="n">10</span> ^ <span class="n">20</span>) (<span class="n">209455148154232659149</span> / <span class="n">10</span> ^ <span class="n">20</span>) ∧ x ^ <span class="n">3</span> - <span class="n">2</span> * x - <span class="n">5</span> = <span class="n">0</span>) ∧
+  ∀ (x : <span class="ty">ℝ</span>),
+    x ^ <span class="n">3</span> - <span class="n">2</span> * x - <span class="n">5</span> = <span class="n">0</span> → x ∈ Set.Ioo (<span class="n">209455148154232659148</span> / <span class="n">10</span> ^ <span class="n">20</span>) (<span class="n">209455148154232659149</span> / <span class="n">10</span> ^ <span class="n">20</span>)</pre><p class="by">from <code>CAS.Polynomial.RealRoot.of_exprRootCheck</code></p></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Complete list of real solutions</p><pre class="lean">(∃! x,
+    x ∈ Set.Ioo (<span class="n">209455148154232659148</span> / <span class="n">10</span> ^ <span class="n">20</span>) (<span class="n">209455148154232659149</span> / <span class="n">10</span> ^ <span class="n">20</span>) ∧ x ^ <span class="n">3</span> - <span class="n">2</span> * x - <span class="n">5</span> = <span class="n">0</span>) ∧
+  ∀ (x : <span class="ty">ℝ</span>),
+    x ^ <span class="n">3</span> - <span class="n">2</span> * x - <span class="n">5</span> = <span class="n">0</span> → x ∈ Set.Ioo (<span class="n">209455148154232659148</span> / <span class="n">10</span> ^ <span class="n">20</span>) (<span class="n">209455148154232659149</span> / <span class="n">10</span> ^ <span class="n">20</span>)</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Polynomial.RealRoot.of_exprRootCheck</code></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><p class="node-title">Certified isolation</p><pre class="node-body">Square-free polynomial of degree 3, Cauchy bound 8, 6 cells
+Guarantee: the listed solutions are distinct, each rational is a solution, each decimal interval contains exactly one solution, and there are no other real solutions</pre></li></ul></details></div></div></div></div>
+<p>The certificate lists the proposition that was proved, with exact rational endpoints: one root in an interval of width <span class="inline-math"><math alttext="10^{-20}" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>10</mn><mrow><mo>&#x02212;</mo><mn>20</mn></mrow></msup></mrow></math></span>, and every real root inside it. That proposition is what the kernel checked. How the answer was found, meaning the route names and the steps of the planner, is explanation. I find it useful to read, but it proves nothing.</p>
+<h2 id="native">Native certificates are opt-in<a class="anchor" href="#native" aria-label="Link to this section">#</a></h2>
+<p>Large finite checks, such as a long table of inequalities, are slow to reduce in the kernel, and <code class="lean"><span class="t">cega</span> [fast]</code> can check them by compiled code instead. You trade trust for speed, and the proof says so: it also trusts Lean’s compiler and runtime, and the proof depends on a generated axiom whose name contains <code class="lean">_native.cegaFast.ax</code>, so <code class="lean"><span class="k">#print</span> axioms</code> shows it.</p>
+<p>Native checking happens only when the option <a class="sym" href="../ref/options.html"><code class="lean">cega.nativeCertificates</code></a> is true, and it is false by default, in SymLean and in every project that depends on it. With the option off, <code class="lean"><span class="t">cega</span> [fast]</code> is bare <code class="lean"><span class="t">cega</span></code> and checks in the kernel:</p>
+<div class="cells"><div class="cell in" id="in-3"><a class="label" href="#in-3">In[3]:=</a><div class="cell-body"><pre class="lean"><span class="k">theorem</span> <span class="lean-hover" tabindex="0" data-lean-hover="fast_without_native : ∀ (x : ℝ), 0 ≤ x → x ≤ 1 → x * x ≤ 1" title="fast_without_native : ∀ (x : ℝ), 0 ≤ x → x ≤ 1 → x * x ≤ 1">fast_without_native</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h0 : 0 ≤ x" title="h0 : 0 ≤ x">h0</span> : <span class="n">0</span> ≤ <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h1 : x ≤ 1" title="h1 : x ≤ 1">h1</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ≤ <span class="n">1</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ≤ <span class="n">1</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * x ≤ 1
+
+After
+no goals" title="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * x ≤ 1
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * x ≤ 1
+
+After
+no goals" title="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * x ≤ 1
+
+After
+no goals"><span class="t">cega</span></span> [<span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * x ≤ 1
+
+After
+no goals" title="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ x * x ≤ 1
+
+After
+no goals">fast</span>]
+
+<span class="lean-hover" tabindex="0" data-lean-hover="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output." title="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output."><span class="k">#print</span></span> axioms <span class="lean-hover" tabindex="0" data-lean-hover="fast_without_native : ∀ (x : ℝ), 0 ≤ x → x ≤ 1 → x * x ≤ 1" title="fast_without_native : ∀ (x : ℝ), 0 ≤ x → x ≤ 1 → x * x ≤ 1">fast_without_native</span></pre></div></div><div class="cell out" id="out-3"><span class="label">Out[3]=</span><div class="cell-body"><div class="msg axioms"><p><code>fast_without_native</code> depends on the axioms <code>propext</code>, <code>Classical.choice</code>, <code>Quot.sound</code>.</p></div></div></div></div>
+<p>With the option on, a larger table is checked by compiled code, and the axioms say so:</p>
+<div class="cells"><div class="cell in" id="in-4"><a class="label" href="#in-4">In[4]:=</a><div class="cell-body"><pre class="lean"><span class="k">set_option</span> cega.nativeCertificates true <span class="k">in</span>
+<span class="k">theorem</span> <span class="lean-hover" tabindex="0" data-lean-hover="fast_rows : ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096" title="fast_rows : ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096">fast_rows</span> : ∀ <span class="lean-hover" tabindex="0" data-lean-hover="i : Fin 64" title="i : Fin 64">i</span> : <span class="lean-hover" tabindex="0" data-lean-hover="Fin : ℕ → Type
+
+Natural numbers less than some upper bound.
+
+In particular, a `Fin n` is a natural number `i` with the constraint that `i &lt; n`. It is the
+canonical type with `n` elements.
+" title="Fin : ℕ → Type
+
+Natural numbers less than some upper bound.
+
+In particular, a `Fin n` is a natural number `i` with the constraint that `i &lt; n`. It is the
+canonical type with `n` elements.
+">Fin</span> <span class="n">64</span>, (<span class="lean-hover" tabindex="0" data-lean-hover="i.val : ℕ" title="i.val : ℕ">i.val</span> : <span class="ty">ℤ</span>) ^ <span class="n">2</span> &lt; <span class="n">4096</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096
+
+After
+no goals" title="Before
+
+⊢ ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096
+
+After
+no goals" title="Before
+
+⊢ ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096
+
+After
+no goals"><span class="t">cega</span></span> [<span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096
+
+After
+no goals" title="Before
+
+⊢ ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096
+
+After
+no goals">fast</span>]
+
+<span class="lean-hover" tabindex="0" data-lean-hover="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output." title="Prints the axioms used by a declaration, directly or indirectly.
+Please consult [the reference manual](https://lean-lang.org/doc/reference/4.35.0/find/?domain=Verso.Genre.Manual.section&amp;name=validating-proofs) to understand the significance of the output."><span class="k">#print</span></span> axioms <span class="lean-hover" tabindex="0" data-lean-hover="fast_rows : ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096" title="fast_rows : ∀ (i : Fin 64), ↑↑i ^ 2 &lt; 4096">fast_rows</span></pre></div></div><div class="cell out" id="out-4"><span class="label">Out[4]=</span><div class="cell-body"><div class="msg axioms"><p><code>fast_rows</code> depends on the axioms <code>propext</code>, <code>fast_rows._native.cegaFast.ax_1</code>.</p></div></div></div></div>
+<p>The table is a new one on purpose. If the kernel has already proved the statement earlier in the file, as it did for <code class="lean">finite_rows</code>, <code class="lean"><span class="t">cega</span> [fast]</code> may reuse that kernel proof, and then no native axiom appears.</p>
+<p>There are three ways to turn it on:</p>
+<ul><li><code class="lean"><span class="k">set_option</span> cega.nativeCertificates true <span class="k">in</span></code> for one declaration, as above.</li><li><code class="lean">lake build -R -Kcertificates=fast</code> for the library itself. It passes the option to every module and builds into <code class="lean">.lake/build-fast</code>, apart from the kernel build.</li><li><code class="lean">require SymLean ... <span class="k">with</span> NameMap.empty.insert `certificates <span class="s">"fast"</span></code> in a project that depends on SymLean.</li></ul>
+<p>The profiles are <code class="lean">kernel</code>, the default, and <code class="lean">fast</code> with its alias <code class="lean">native</code>. With <code class="lean">-R</code>, which makes Lake read its options again, any other value of <code class="lean">certificates</code> is an error of SymLean’s configuration, and Lake stops before it builds anything.</p>
+<p>The option governs only the checks that run while it is set. A failed native attempt restores the proof state before the kernel routes run, so its axioms don’t survive a refusal, and a later kernel request for the same statement never receives a native proof. The analytic routes, exponentials and logarithms among them, check in the kernel in every profile.</p>
+<h2 id="search">Searches propose, the kernel decides<a class="anchor" href="#search" aria-label="Link to this section">#</a></h2>
+<p>Much of a computer algebra system is search, and search is where bugs live. So SymLean runs its searches as ordinary compiled code and treats every answer as a proposal. Here is what that means, area by area:</p>
+<ul><li><strong>Integration.</strong> The planner proposes an antiderivative. The kernel checks that its derivative equals the integrand on the whole interval, and only then is the fundamental theorem of calculus applied. A wrong proposal fails that check.</li><li><strong>Cancellation and factoring.</strong> <code class="lean">cancel</code> finds the common factor by a gcd search, then proves the identity with the cancelled form by <code class="lean"><span class="t">field_simp</span></code> and <code class="lean">ring1</code>, from the hypotheses that the divisors as written are nonzero. Those hypotheses are the conditions of the report. A factorization is a proposal too, and <code class="lean"><span class="t">ring</span></code> proves that the product equals the input.</li><li><strong>Equations.</strong> A Gröbner basis is computed by search and replayed by <code class="lean">linear_combination</code>, and the real roots of its eliminant are isolated by a certificate that the kernel evaluates.</li><li><strong>Roots and limits.</strong> The isolating intervals are found in compiled code, and the kernel checks their obligations. The theorem reaches the goal through a proved identity with the goal’s own function, so a misread function fails instead of proving another statement.</li><li><strong>Hex and the oracles.</strong> The <a class="sym" href="../guide/hex.html">Hex routes</a> have the kernel check Hex’s certificates, and the <a class="sym" href="../guide/oracles.html">oracles</a> run external programs whose answers SymLean proves or refuses.</li></ul>
+<p>In this example the common factor <span class="inline-math"><math alttext="x - 1" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x02212;</mo><mn>1</mn></mrow></math></span> is cancelled, and <span class="inline-math"><math alttext="x - 1 \ne 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x02212;</mo><mn>1</mn><mo>&#x02260;</mo><mn>0</mn></mrow></math></span> appears as a hypothesis of the theorem:</p>
+<div class="cells"><div class="cell in" id="in-5"><a class="label" href="#in-5">In[5]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [cancel] e` cancels the common factors of the numerator and the denominator in each
+summand of the rational expression `e`." title="`#cas [cancel] e` cancels the common factors of the numerator and the denominator in each
+summand of the rational expression `e`."><span class="k">#cas</span></span> [<span class="m">cancel</span>] ((x ^ <span class="n">2</span> - <span class="n">1</span>) / (x - <span class="n">1</span>))</pre></div></div><div class="cell out" id="out-5"><span class="label">Out[5]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">cancelled</p><code class="plain only">x + 1</code></div><dl class="fields"><dt>Input <span class="qual-inline">(rational function)</span></dt><dd><code>((x ^ 2 - 1) / (x - 1))</code></dd><dt>Conditions</dt><dd><span class="conds"><math alttext="x - 1 \ne 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x02212;</mo><mn>1</mn><mo>&#x02260;</mo><mn>0</mn></mrow></math></span></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Identity with the cancelled form</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), x - <span class="n">1</span> ≠ <span class="n">0</span> → (x ^ <span class="n">2</span> - <span class="n">1</span>) / (x - <span class="n">1</span>) = x + <span class="n">1</span></pre></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Identity with the cancelled form</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), x - <span class="n">1</span> ≠ <span class="n">0</span> → (x ^ <span class="n">2</span> - <span class="n">1</span>) / (x - <span class="n">1</span>) = x + <span class="n">1</span></pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span></p></li></ol></details></div></div></div></div>
+<h2 id="refusal">What a refusal means<a class="anchor" href="#refusal" aria-label="Link to this section">#</a></h2>
+<p>A failed call restores the goal and says what it lacked: a hypothesis, a regularity proof, more precision, a supported expression. Missing side conditions are never added as assumptions, and the statement is never changed.</p>
+<p>A refusal proves nothing about the goal either way. An integration search that finds no candidate doesn’t show that no antiderivative exists, and a certificate that doesn’t reduce to <code class="lean">true</code> is reported in those words, not as a false statement.</p>
+<p>Lean’s total functions still apply: <span class="inline-math"><math alttext="0/0 = 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mo>&#x0002F;</mo><mn>0</mn><mo>&#x0003D;</mo><mn>0</mn></mrow></math></span>, <span class="inline-math"><math alttext="\log 0 = 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>log</mi><mspace width="0.1667em"/><mn>0</mn><mo>&#x0003D;</mo><mn>0</mn></mrow></math></span>, and <span class="inline-math"><math alttext="\exp(\log x) = x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>exp</mi><mo stretchy="false">&#x00028;</mo><mi>log</mi><mspace width="0.1667em"/><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>x</mi></mrow></math></span> needs <span class="inline-math"><math alttext="0 &lt; x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mo>&#x0003C;</mo><mi>x</mi></mrow></math></span>. For a nonzero <span class="inline-math"><math alttext="x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span> of unknown sign the identity is <span class="inline-math"><math alttext="\exp(\log x) = \lvert x \rvert" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>exp</mi><mo stretchy="false">&#x00028;</mo><mi>log</mi><mspace width="0.1667em"/><mi>x</mi><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mo>&#x0007C;</mo><mi>x</mi><mo>&#x0007C;</mo></mrow></math></span>, and the tactics prove the statement you wrote, under these meanings:</p>
+<div class="cells"><div class="cell in" id="in-6"><a class="label" href="#in-6">In[6]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : x ≠ 0" title="hx : x ≠ 0">hx</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ≠ <span class="n">0</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) = |<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>| := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : x ≠ 0
+⊢ Real.exp (Real.log x) = |x|
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : x ≠ 0
+⊢ Real.exp (Real.log x) = |x|
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : x ≠ 0
+⊢ Real.exp (Real.log x) = |x|
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : x ≠ 0
+⊢ Real.exp (Real.log x) = |x|
+
+After
+no goals"><span class="t">cas</span></span></pre></div></div><div class="cell out" id="out-6"><span class="label">Out[6]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<p>Last, and this is the one I’d most like you to remember: a result never says more than its statement. A certified bound on a residual is not a bound on an error. It becomes an estimate of the distance to a solution only through a stability theorem that the surrounding proof supplies.</p>
+<p>From here, the <a href="../index.html">documentation</a> has a guide for each area, starting with <a href="../guide/why.html">Why SymLean</a>.</p></main></div>
+<footer class="footer"><p>Examples built with Lean 4.35.0. Quoted examples link to their source.</p><p><a href="https://github.com/Robertboy18/SymLean">SymLean on GitHub</a> · Apache License 2.0</p></footer>
+<script defer src="../../static/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started with SymLean · SymLean</title>
+<meta name="description" content="From an empty Lean file to derivatives, integrals, roots and a proof, one command at a time.">
+<link rel="stylesheet" href="../../static/site.css">
+<link rel="icon" type="image/png" href="../../static/brand/favicon.png">
+<link rel="apple-touch-icon" href="../../static/brand/apple-touch-icon.png">
+<meta property="og:title" content="Getting started with SymLean · SymLean">
+<meta property="og:description" content="From an empty Lean file to derivatives, integrals, roots and a proof, one command at a time.">
+<meta property="og:image" content="https://robertboy18.github.io/SymLean/static/brand/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="kind-tutorial">
+<a class="skip" href="#main">Skip to the content</a>
+<header class="topbar"><div class="topbar-inner"><a class="brand" href="../../index.html"><picture class="brand-logo"><source media="(prefers-color-scheme: dark)" srcset="../../static/brand/symlean-logo-dark.png"><img src="../../static/brand/symlean-logo.png" alt="SymLean" width="960" height="252"></picture></a><nav class="top-nav"><a href="../index.html">Docs</a><a href="first-hour.html" aria-current="page">Getting started</a><a href="../all.html">Index</a><a class="code-button" href="https://github.com/Robertboy18/SymLean">Code</a></nav></div></header>
+<div class="docs"><nav class="sidebar" aria-label="Documentation"><p class="nav-home"><a href="../index.html">Documentation</a></p><p class="nav-heading">Guides</p><details><summary><a href="../guide/why.html">Why SymLean</a></summary><ul></ul></details><details><summary><a href="../guide/algebra.html">Algebra</a></summary><ul><li><a href="../ref/simplify.html"><code class="lean">simplify</code></a></li><li><a href="../ref/fullSimplify.html"><code class="lean">fullSimplify</code></a></li><li><a href="../ref/expand.html"><code class="lean">expand</code></a></li><li><a href="../ref/factor.html"><code class="lean">factor</code></a></li><li><a href="../ref/collect.html"><code class="lean">collect</code></a></li><li><a href="../ref/trigExpand.html"><code class="lean">trigExpand</code></a></li><li><a href="../ref/together.html"><code class="lean">together</code></a></li><li><a href="../ref/cancel.html"><code class="lean">cancel</code></a></li><li><a href="../ref/apart.html"><code class="lean">apart</code></a></li><li><a href="../ref/numerator.html"><code class="lean">numerator</code></a></li><li><a href="../ref/denominator.html"><code class="lean">denominator</code></a></li></ul></details><details><summary><a href="../guide/polynomials.html">Polynomials</a></summary><ul><li><a href="../ref/coefficient.html"><code class="lean">coefficient</code></a></li><li><a href="../ref/coefficientList.html"><code class="lean">coefficientList</code></a></li><li><a href="../ref/exponent.html"><code class="lean">exponent</code></a></li><li><a href="../ref/polynomialGCD.html"><code class="lean">polynomialGCD</code></a></li><li><a href="../ref/polynomialLCM.html"><code class="lean">polynomialLCM</code></a></li><li><a href="../ref/polynomialQuotient.html"><code class="lean">polynomialQuotient</code></a></li><li><a href="../ref/polynomialRemainder.html"><code class="lean">polynomialRemainder</code></a></li><li><a href="../ref/polynomialQuotientRemainder.html"><code class="lean">polynomialQuotientRemainder</code></a></li><li><a href="../ref/interpolatingPolynomial.html"><code class="lean">interpolatingPolynomial</code></a></li><li><a href="../ref/groebner.html"><code class="lean">groebner</code></a></li><li><a href="../ref/member.html"><code class="lean">member</code></a></li></ul></details><details><summary><a href="../guide/calculus.html">Calculus</a></summary><ul><li><a href="../ref/derive.html"><code class="lean">derive</code></a></li><li><a href="../ref/grad.html"><code class="lean">grad</code></a></li><li><a href="../ref/integrate.html"><code class="lean">integrate</code></a></li><li><a href="../ref/nintegrate.html"><code class="lean">nintegrate</code></a></li><li><a href="../ref/cas-integrate-primitive.html"><code class="lean"><span class="t">cas</span> [integrate primitive := F]</code></a></li><li><a href="../ref/maximize.html"><code class="lean">maximize</code></a></li><li><a href="../ref/minimize.html"><code class="lean">minimize</code></a></li></ul></details><details><summary><a href="../guide/series-limits.html">Series and limits</a></summary><ul><li><a href="../ref/series.html"><code class="lean">series</code></a></li><li><a href="../ref/limit.html"><code class="lean">limit</code></a></li></ul></details><details><summary><a href="../guide/equations.html">Equations</a></summary><ul><li><a href="../ref/solve.html"><code class="lean">solve</code></a></li><li><a href="../ref/reduce.html"><code class="lean">reduce</code></a></li><li><a href="../ref/roots.html"><code class="lean">roots</code></a></li><li><a href="../ref/findRoot.html"><code class="lean">findRoot</code></a></li></ul></details><details><summary><a href="../guide/sums.html">Sums and recurrences</a></summary><ul><li><a href="../ref/sum.html"><code class="lean">sum</code></a></li><li><a href="../ref/product.html"><code class="lean">product</code></a></li><li><a href="../ref/rsolve.html"><code class="lean">rsolve</code></a></li></ul></details><details><summary><a href="../guide/special-functions.html">Special functions</a></summary><ul><li><a href="../ref/gamma.html"><code class="lean">gamma</code></a></li><li><a href="../ref/zeta.html"><code class="lean">zeta</code></a></li><li><a href="../ref/BernoulliB.html"><code class="lean">BernoulliB</code></a></li><li><a href="../ref/erf.html"><code class="lean">erf</code></a></li><li><a href="../ref/BesselJ.html"><code class="lean">BesselJ</code></a></li><li><a href="../ref/LegendreP.html"><code class="lean">LegendreP</code></a></li><li><a href="../ref/ChebyshevT.html"><code class="lean">ChebyshevT</code></a></li><li><a href="../ref/ChebyshevU.html"><code class="lean">ChebyshevU</code></a></li><li><a href="../ref/HermiteH.html"><code class="lean">HermiteH</code></a></li><li><a href="../ref/HermiteHe.html"><code class="lean">HermiteHe</code></a></li></ul></details><details><summary><a href="../guide/number-theory.html">Number theory</a></summary><ul><li><a href="../ref/primeQ.html"><code class="lean">primeQ</code></a></li><li><a href="../ref/factorInteger.html"><code class="lean">factorInteger</code></a></li><li><a href="../ref/moebiusMu.html"><code class="lean">moebiusMu</code></a></li><li><a href="../ref/divisors.html"><code class="lean">divisors</code></a></li><li><a href="../ref/divisorSigma.html"><code class="lean">divisorSigma</code></a></li><li><a href="../ref/eulerPhi.html"><code class="lean">eulerPhi</code></a></li><li><a href="../ref/powerMod.html"><code class="lean">powerMod</code></a></li><li><a href="../ref/modularInverse.html"><code class="lean">modularInverse</code></a></li><li><a href="../ref/chineseRemainder.html"><code class="lean">chineseRemainder</code></a></li><li><a href="../ref/extendedGCD.html"><code class="lean">extendedGCD</code></a></li><li><a href="../ref/jacobiSymbol.html"><code class="lean">jacobiSymbol</code></a></li><li><a href="../ref/integerDigits.html"><code class="lean">integerDigits</code></a></li><li><a href="../ref/continuedFraction.html"><code class="lean">continuedFraction</code></a></li><li><a href="../ref/fromContinuedFraction.html"><code class="lean">fromContinuedFraction</code></a></li><li><a href="../ref/binomial.html"><code class="lean">binomial</code></a></li><li><a href="../ref/factorial.html"><code class="lean">factorial</code></a></li><li><a href="../ref/fibonacci.html"><code class="lean">fibonacci</code></a></li></ul></details><details><summary><a href="../guide/linear-algebra.html">Linear algebra</a></summary><ul><li><a href="../ref/dot.html"><code class="lean">dot</code></a></li><li><a href="../ref/matrixPower.html"><code class="lean">matrixPower</code></a></li><li><a href="../ref/transpose.html"><code class="lean">transpose</code></a></li><li><a href="../ref/trace.html"><code class="lean">trace</code></a></li><li><a href="../ref/det.html"><code class="lean">det</code></a></li><li><a href="../ref/inverse.html"><code class="lean">inverse</code></a></li><li><a href="../ref/matrixRank.html"><code class="lean">matrixRank</code></a></li><li><a href="../ref/rowReduce.html"><code class="lean">rowReduce</code></a></li><li><a href="../ref/nullSpace.html"><code class="lean">nullSpace</code></a></li><li><a href="../ref/linearSolve.html"><code class="lean">linearSolve</code></a></li><li><a href="../ref/characteristicPolynomial.html"><code class="lean">characteristicPolynomial</code></a></li><li><a href="../ref/eigenvalues.html"><code class="lean">eigenvalues</code></a></li><li><a href="../ref/eigenvectors.html"><code class="lean">eigenvectors</code></a></li><li><a href="../ref/positiveDefinite.html"><code class="lean">positiveDefinite</code></a></li><li><a href="../ref/eigenvalueBounds.html"><code class="lean">eigenvalueBounds</code></a></li></ul></details><details><summary><a href="../guide/differential-equations.html">Differential equations</a></summary><ul><li><a href="../ref/dsolve.html"><code class="lean">dsolve</code></a></li><li><a href="../ref/ndsolve.html"><code class="lean">ndsolve</code></a></li><li><a href="../ref/laplace.html"><code class="lean">laplace</code></a></li><li><a href="../ref/inverseLaplace.html"><code class="lean">inverseLaplace</code></a></li><li><a href="../ref/fourierTransform.html"><code class="lean">fourierTransform</code></a></li><li><a href="../ref/fourier.html"><code class="lean">fourier</code></a></li><li><a href="../ref/fourierCos.html"><code class="lean">fourierCos</code></a></li><li><a href="../ref/fourierSin.html"><code class="lean">fourierSin</code></a></li></ul></details><details><summary><a href="../guide/numerics.html">Numerics</a></summary><ul><li><a href="../ref/N.html"><code class="lean">N</code></a></li><li><a href="../ref/enclose.html"><code class="lean">enclose</code></a></li><li><a href="../ref/maximize.html"><code class="lean">maximize</code></a></li><li><a href="../ref/minimize.html"><code class="lean">minimize</code></a></li><li><a href="../ref/nintegrate.html"><code class="lean">nintegrate</code></a></li><li><a href="../ref/findRoot.html"><code class="lean">findRoot</code></a></li><li><a href="../ref/ndsolve.html"><code class="lean">ndsolve</code></a></li><li><a href="../ref/eigenvalueBounds.html"><code class="lean">eigenvalueBounds</code></a></li><li><a href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="../ref/cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/certificates.html">Certificates</a></summary><ul><li><a href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="../ref/enclose.html"><code class="lean">enclose</code></a></li><li><a href="../ref/cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/tactics.html">Tactics</a></summary><ul><li><a href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="../ref/cas-using.html"><code class="lean"><span class="t">cas</span> <span class="t">using</span></code></a></li><li><a href="../ref/cega.html"><code class="lean"><span class="t">cega</span></code></a></li><li><a href="../ref/cega-using.html"><code class="lean"><span class="t">cega</span> <span class="t">using</span></code></a></li><li><a href="../ref/cas-query.html"><code class="lean"><span class="t">cas?</span></code></a></li><li><a href="../ref/cega-query.html"><code class="lean"><span class="t">cega?</span></code></a></li><li><a href="../ref/cas_nf.html"><code class="lean"><span class="t">cas_nf</span></code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/oracles.html">Oracles</a></summary><ul><li><a href="../ref/oracle.html"><code class="lean">oracle</code></a></li><li><a href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="../ref/cas-integrate-primitive.html"><code class="lean"><span class="t">cas</span> [integrate primitive := F]</code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/hex.html">Hex</a></summary><ul><li><a href="../ref/cas.html"><code class="lean"><span class="t">cas</span></code></a></li><li><a href="../ref/factor.html"><code class="lean">factor</code></a></li><li><a href="../ref/apart.html"><code class="lean">apart</code></a></li><li><a href="../ref/product.html"><code class="lean">product</code></a></li><li><a href="../ref/eigenvalues.html"><code class="lean">eigenvalues</code></a></li><li><a href="../ref/eigenvectors.html"><code class="lean">eigenvectors</code></a></li><li><a href="../ref/primeQ.html"><code class="lean">primeQ</code></a></li><li><a href="../ref/moebiusMu.html"><code class="lean">moebiusMu</code></a></li><li><a href="../ref/factorInteger.html"><code class="lean">factorInteger</code></a></li><li><a href="../ref/eulerPhi.html"><code class="lean">eulerPhi</code></a></li><li><a href="../ref/det.html"><code class="lean">det</code></a></li><li><a href="../ref/options.html"><code class="lean">Options</code></a></li></ul></details><details><summary><a href="../guide/library.html">The library</a></summary><ul></ul></details><p class="nav-heading">Tutorials</p><ul class="nav-flat"><li><a href="first-hour.html" aria-current="page">Getting started with SymLean</a></li><li><a href="proving.html">Proving with <code class="lean"><span class="t">cas</span></code></a></li><li><a href="trust.html">What you trust</a></li></ul><p class="nav-heading"><a href="../all.html">Index A to Z</a></p></nav><main class="doc" id="main"><nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Documentation</a> <span class="sep">›</span> <a href="../index.html#tutorials">Tutorials</a> <span class="sep">›</span> <span aria-current="page">Getting started with SymLean</span></nav><header class="page-head"><p class="kind">Tutorial</p><h1>Getting started with SymLean</h1><p class="summary">From an empty Lean file to derivatives, integrals, roots and a proof, one command at a time.</p></header><p>Let’s start with a few calculations and then use one of them in a proof. Everything here runs in an ordinary Lean file.</p>
+<h2 id="setup">Setting up<a class="anchor" href="#setup" aria-label="Link to this section">#</a></h2>
+<p>SymLean builds with Lean 4.35.0 and Mathlib v4.35.0. In a project on the same toolchain, add it to <code class="lean">lakefile.lean</code>:</p>
+<pre class="shell">require SymLean from git &quot;https://github.com/Robertboy18/SymLean.git&quot; @ &quot;main&quot;</pre>
+<p>Then fetch it, get Mathlib’s cache, and build:</p>
+<pre class="shell">lake update SymLean
+lake exe cache get
+lake build</pre>
+<p>Mathlib comes from its cache, but SymLean itself is compiled on the first build, and the kernel checks every proof in it, every numerical certificate included. So that first build takes about ten minutes on 8 cores. I think it’s worth the wait, since every proof in the library is then checked on your machine. After that, a file that uses SymLean starts with</p>
+<pre class="shell">import CAS</pre>
+<p>which brings in <code class="lean"><span class="k">#cas</span></code> and the tactics <code class="lean"><span class="t">cas</span></code>, <code class="lean"><span class="t">cas?</span></code>, <code class="lean"><span class="t">cas_nf</span></code>, <code class="lean"><span class="t">cega</span></code> and <code class="lean"><span class="t">cega?</span></code>.</p>
+<h2 id="first">A first calculation<a class="anchor" href="#first" aria-label="Link to this section">#</a></h2>
+<p>To differentiate, write the mode in brackets and the expression after it. Variables need no declaration: <code class="lean">x</code>, <code class="lean">a</code> and <code class="lean">b</code> are real numbers, and <code class="lean">x</code> is the one named in the mode. Multiplication is Lean’s <code class="lean">*</code>, so you write <code class="lean"><span class="n">3</span> * x</code> and not <code class="lean"><span class="n">3</span>x</code>.</p>
+<div class="cells"><div class="cell in" id="in-1"><a class="label" href="#in-1">In[1]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [derive x] e` differentiates `e` with respect to `x` and prints the derivative with the
+conditions under which it holds; the other variables of `e` are parameters." title="`#cas [derive x] e` differentiates `e` with respect to `x` and prints the derivative with the
+conditions under which it holds; the other variables of `e` are parameters."><span class="k">#cas</span></span> [<span class="m">derive</span> x] (a * x ^ <span class="n">3</span> + b * x)</pre></div></div><div class="cell out" id="out-1"><span class="label">Out[1]=</span><div class="cell-body"><div class="report"><div class="result"><div class="tf"><math alttext="\displaystyle a \cdot 3{x}^{2} + b" xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mstyle displaystyle="true" scriptlevel="0"><mi>a</mi><mo>&#x000B7;</mo><mn>3</mn><msup><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msup><mo>&#x0002B;</mo><mi>b</mi></mstyle></mrow></math></div><code class="plain">a*3*x^2 + b</code></div><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Derivative of the input</p><pre class="lean">∀ (x a b : <span class="ty">ℝ</span>), HasDerivAt (<span class="k">fun</span> x ↦ a * x ^ <span class="n">3</span> + b * x) (a * (<span class="n">3</span> * x ^ <span class="n">2</span>) + b) x</pre><p class="by">from <code>CAS.Command.hasDerivAt_of_displayRoute</code></p></div><details class="cert"><summary>The certificate: 5 checked steps</summary><ol class="steps"><li><p class="step-title">Derivative of the input</p><pre class="lean">∀ (x a b : <span class="ty">ℝ</span>), HasDerivAt (<span class="k">fun</span> x ↦ a * x ^ <span class="n">3</span> + b * x) (a * (<span class="n">3</span> * x ^ <span class="n">2</span>) + b) x</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.hasDerivAt_of_displayRoute</code></p></li><li><p class="step-title">Partial derivative in x: indexed rules compute Expr.diff</p><pre class="lean">(CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+      ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>]))).rawDerivative =
+  CAS.Verified.Expr.diff <span class="n">0</span> ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>]))</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Verified.Expr.DiffDerivation.rawDerivative_eq_diff</code></p></li><li><p class="step-title">Partial derivative in x: normalization preserves evaluation</p><pre class="lean">∀ (ρ : Fin <span class="n">3</span> → <span class="ty">ℝ</span>),
+  CAS.Verified.Expr.eval ρ
+      (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+          ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>]))).simplifiedDerivative =
+    CAS.Verified.Expr.eval ρ
+      (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span> ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>]))).rawDerivative</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Verified.Expr.DiffDerivation.eval_simplifiedDerivative_eq_rawDerivative</code></p></li><li><p class="step-title">Partial derivative in x: side-conditioned display normalization</p><pre class="lean">∀ (ρ : Fin <span class="n">3</span> → <span class="ty">ℝ</span>),
+  CAS.Verified.Expr.Alg.SideHolds ρ
+      (CAS.Command.displayDerivativeRoute
+          (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span> ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>])))).nonzero →
+    CAS.Verified.Expr.eval ρ
+        (CAS.Command.displayDerivativeRoute
+            (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span> ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>])))).rhs =
+      CAS.Verified.Expr.eval ρ
+        (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+            ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>]))).simplifiedDerivative</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.displayDerivativeRoute_sound</code></p></li><li><p class="step-title">Partial derivative in x: analytic semantics of the displayed result</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>^<span class="n">3</span>),
+  CAS.Verified.Expr.ValidAt x.ofLp ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>])) →
+    CAS.Verified.Expr.Alg.SideHolds x.ofLp
+        (CAS.Command.displayDerivativeRoute
+            (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span> ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>])))).nonzero →
+      (fderiv <span class="ty">ℝ</span> (<span class="k">fun</span> y ↦ CAS.Verified.Expr.eval y.ofLp ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>]))) x)
+          (EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>) =
+        CAS.Verified.Expr.eval x.ofLp
+          (CAS.Command.displayDerivativeRoute
+              (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span> ((𝕏[<span class="n">1</span>].mul (𝕏[<span class="n">0</span>].pow <span class="n">3</span>)).add (𝕏[<span class="n">2</span>].mul 𝕏[<span class="n">0</span>])))).rhs</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.fderiv_apply_single_eq_eval_displayDerivative</code></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><pre class="node-body">Variables: x, a, b</pre></li><li><p class="node-title">Analytic domain conditions</p><pre class="node-body">Raw checked nonzero requirements: (none)
+Raw checked positivity requirements: (none)</pre></li><li><p class="node-title">Partial derivative in x</p><ul class="tree"><li><p class="node-title">1. Apply symbolic differentiation rules</p><pre class="node-body">raw result: 0*x^3 + a*3*x^2*1 + 0*x + b*1</pre></li><li><p class="node-title">2. Normalize the symbolic derivative unconditionally</p><pre class="node-body">normalized result: a*3*x^2 + b</pre></li><li><p class="node-title">3. Apply checked side-conditioned cleanup</p><pre class="node-body">displayed result: a*3*x^2 + b
+additional nonzero requirements: (none)</pre></li></ul></li></ul></details></div></div></div></div>
+<p>The answer comes with the theorem behind it, which the kernel checked. Look at that theorem for a moment. It is a <code class="lean">HasDerivAt</code> statement for every <code class="lean">x</code>, <code class="lean">a</code> and <code class="lean">b</code>, so it’s a fact you can use later, not just a formula on the screen. In the editor the evidence is folded under <code class="lean">More details</code>. Here it sits under the report, as the certificate and the computation.</p>
+<p>When a rule needs a condition, the answer says so. The rule for a square root needs a positive argument, so this derivative holds where <span class="inline-math"><math alttext="x + 1 &gt; 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x0002B;</mo><mn>1</mn><mo>&#x0003E;</mo><mn>0</mn></mrow></math></span> (the theorem writes the same condition as <code class="lean"><span class="n">0</span> &lt; <span class="n">2</span> * x + <span class="n">2</span></code>):</p>
+<div class="cells"><div class="cell in" id="in-2"><a class="label" href="#in-2">In[2]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [derive x] e` differentiates `e` with respect to `x` and prints the derivative with the
+conditions under which it holds; the other variables of `e` are parameters." title="`#cas [derive x] e` differentiates `e` with respect to `x` and prints the derivative with the
+conditions under which it holds; the other variables of `e` are parameters."><span class="k">#cas</span></span> [<span class="m">derive</span> x] (sqrt (<span class="n">2</span> * x + <span class="n">2</span>))</pre></div></div><div class="cell out" id="out-2"><span class="label">Out[2]=</span><div class="cell-body"><div class="report"><div class="result"><div class="tf"><math alttext="\displaystyle \frac{1}{\sqrt{2x + 2}}" xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><mn>1</mn></mrow><mrow><msqrt><mrow><mn>2</mn><mi>x</mi><mo>&#x0002B;</mo><mn>2</mn></mrow></msqrt></mrow></mfrac></mstyle></mrow></math></div><code class="plain">1/sqrt(2*x + 2)</code></div><dl class="fields"><dt>Conditions</dt><dd><span class="conds"><math alttext="x + 1 &gt; 0" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi><mo>&#x0002B;</mo><mn>1</mn><mo>&#x0003E;</mo><mn>0</mn></mrow></math></span></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Derivative of the input</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), <span class="n">0</span> &lt; <span class="n">2</span> * x + <span class="n">2</span> → HasDerivAt (<span class="k">fun</span> x ↦ √(<span class="n">2</span> * x + <span class="n">2</span>)) (<span class="n">1</span> / √(<span class="n">2</span> * x + <span class="n">2</span>)) x</pre><p class="by">from <code>CAS.Command.hasDerivAt_of_displayRoute</code></p></div><details class="cert"><summary>The certificate: 5 checked steps</summary><ol class="steps"><li><p class="step-title">Derivative of the input</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), <span class="n">0</span> &lt; <span class="n">2</span> * x + <span class="n">2</span> → HasDerivAt (<span class="k">fun</span> x ↦ √(<span class="n">2</span> * x + <span class="n">2</span>)) (<span class="n">1</span> / √(<span class="n">2</span> * x + <span class="n">2</span>)) x</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.hasDerivAt_of_displayRoute</code></p></li><li><p class="step-title">Partial derivative in x: indexed rules compute Expr.diff</p><pre class="lean">(CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+      (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt).rawDerivative =
+  CAS.Verified.Expr.diff <span class="n">0</span> (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Verified.Expr.DiffDerivation.rawDerivative_eq_diff</code></p></li><li><p class="step-title">Partial derivative in x: normalization preserves evaluation</p><pre class="lean">∀ (ρ : Fin <span class="n">1</span> → <span class="ty">ℝ</span>),
+  CAS.Verified.Expr.eval ρ
+      (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+          (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt).simplifiedDerivative =
+    CAS.Verified.Expr.eval ρ
+      (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+          (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt).rawDerivative</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Verified.Expr.DiffDerivation.eval_simplifiedDerivative_eq_rawDerivative</code></p></li><li><p class="step-title">Partial derivative in x: side-conditioned display normalization</p><pre class="lean">∀ (ρ : Fin <span class="n">1</span> → <span class="ty">ℝ</span>),
+  CAS.Verified.Expr.Alg.SideHolds ρ
+      (CAS.Command.displayDerivativeRoute
+          (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+            (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt)).nonzero →
+    CAS.Verified.Expr.eval ρ
+        (CAS.Command.displayDerivativeRoute
+            (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+              (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt)).rhs =
+      CAS.Verified.Expr.eval ρ
+        (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+            (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt).simplifiedDerivative</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.displayDerivativeRoute_sound</code></p></li><li><p class="step-title">Partial derivative in x: analytic semantics of the displayed result</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>^<span class="n">1</span>),
+  CAS.Verified.Expr.ValidAt x.ofLp (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt →
+    CAS.Verified.Expr.Alg.SideHolds x.ofLp
+        (CAS.Command.displayDerivativeRoute
+            (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+              (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt)).nonzero →
+      (fderiv <span class="ty">ℝ</span>
+            (<span class="k">fun</span> y ↦
+              CAS.Verified.Expr.eval y.ofLp
+                (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt)
+            x)
+          (EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>) =
+        CAS.Verified.Expr.eval x.ofLp
+          (CAS.Command.displayDerivativeRoute
+              (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+                (((CAS.Verified.Expr.nat <span class="n">2</span>).mul 𝕏[<span class="n">0</span>]).add (CAS.Verified.Expr.nat <span class="n">2</span>)).sqrt)).rhs</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.fderiv_apply_single_eq_eval_displayDerivative</code></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><pre class="node-body">Variables: x</pre></li><li><p class="node-title">Analytic domain conditions</p><pre class="node-body">Raw checked nonzero requirements: (none)
+Raw checked positivity requirements: 2*x + 2</pre></li><li><p class="node-title">Partial derivative in x</p><ul class="tree"><li><p class="node-title">1. Apply symbolic differentiation rules</p><pre class="node-body">raw result: (0*x + 2*1 + 0)/(2*sqrt(2*x + 2))</pre></li><li><p class="node-title">2. Normalize the symbolic derivative unconditionally</p><pre class="node-body">normalized result: 1/sqrt(2*x + 2)</pre></li><li><p class="node-title">3. Apply checked side-conditioned cleanup</p><pre class="node-body">displayed result: 1/sqrt(2*x + 2)
+additional nonzero requirements: (none)</pre></li></ul></li></ul></details></div></div></div></div>
+<p>The condition is enough for the rule to apply, and that’s all it claims. It isn’t meant to be the whole set where the derivative exists.</p>
+<h2 id="more">Equations, integrals and digits<a class="anchor" href="#more" aria-label="Link to this section">#</a></h2>
+<p>The same command solves equations, and here the theorem is an if and only if: for every real <span class="inline-math"><math alttext="x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span>, the equation holds exactly at the solutions:</p>
+<div class="cells"><div class="cell in" id="in-3"><a class="label" href="#in-3">In[3]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [solve x] (lhs = rhs)` describes every real solution of a polynomial equation in the real
+variable `x` and proves that the description is complete." title="`#cas [solve x] (lhs = rhs)` describes every real solution of a polynomial equation in the real
+variable `x` and proves that the description is complete."><span class="k">#cas</span></span> [<span class="m">solve</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>] (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> - <span class="n">3</span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> + <span class="n">2</span> = <span class="n">0</span>)</pre></div></div><div class="cell out" id="out-3"><span class="label">Out[3]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">equivalent real solution predicate</p><div class="tf"><math alttext="\displaystyle x = 2 \lor x = 1" xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mstyle displaystyle="true" scriptlevel="0"><mi>x</mi><mo>&#x0003D;</mo><mn>2</mn><mo>&#x02228;</mo><mi>x</mi><mo>&#x0003D;</mo><mn>1</mn></mstyle></mrow></math></div><code class="plain">x = 2 ∨ x = 1</code></div><dl class="fields"><dt>Input <span class="qual-inline">(real relation)</span></dt><dd><code>(x ^ 2 - 3 * x + 2 = 0)</code></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Complete solution predicate for every real value</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), x ^ <span class="n">2</span> - <span class="n">3</span> * x + <span class="n">2</span> = <span class="n">0</span> ↔ x = <span class="n">2</span> ∨ x = <span class="n">1</span></pre></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Complete solution predicate for every real value</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>), x ^ <span class="n">2</span> - <span class="n">3</span> * x + <span class="n">2</span> = <span class="n">0</span> ↔ x = <span class="n">2</span> ∨ x = <span class="n">1</span></pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><pre class="node-body">Guarantee: the input and output are equivalent for every real value</pre></li></ul></details></div></div></div></div>
+<p>An antiderivative is checked by differentiating it back, and a definite integral comes out exact when it can be:</p>
+<div class="cells"><div class="cell in" id="in-4"><a class="label" href="#in-4">In[4]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [integrate x] e` finds an antiderivative of `e` with respect to `x`, checks it by
+differentiation, and prints it with the conditions under which it holds." title="`#cas [integrate x] e` finds an antiderivative of `e` with respect to `x`, checks it by
+differentiation, and prints it with the conditions under which it holds."><span class="k">#cas</span></span> [<span class="m">integrate</span> x] (x * exp x)</pre></div></div><div class="cell out" id="out-4"><span class="label">Out[4]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">antiderivative</p><div class="tf"><math alttext="\displaystyle e^{x}(x - 1)" xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mstyle displaystyle="true" scriptlevel="0"><msup><mi>e</mi><mrow><mi>x</mi></mrow></msup><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo></mstyle></mrow></math></div><code class="plain">exp(x)*(x - 1)</code></div><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Integral of the input</p><pre class="lean">∀ (a b : <span class="ty">ℝ</span>), ∫ (x : <span class="ty">ℝ</span>) <span class="k">in</span> a..b, x * Real.exp x = Real.exp b * (b - <span class="n">1</span>) - Real.exp a * (a - <span class="n">1</span>)</pre><p class="by">from <code>CAS.IntegrationCheck.AntiderivativeCert.intervalIntegral_eq_sub_of_line</code></p></div><details class="cert"><summary>The certificate: 9 checked steps</summary><ol class="steps"><li><p class="step-title">Integral of the input</p><pre class="lean">∀ (a b : <span class="ty">ℝ</span>), ∫ (x : <span class="ty">ℝ</span>) <span class="k">in</span> a..b, x * Real.exp x = Real.exp b * (b - <span class="n">1</span>) - Real.exp a * (a - <span class="n">1</span>)</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.IntegrationCheck.AntiderivativeCert.intervalIntegral_eq_sub_of_line</code></p></li><li><p class="step-title">Primitive derivative in x: indexed rules compute Expr.diff</p><pre class="lean">(CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+      (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))))).rawDerivative =
+  CAS.Verified.Expr.diff <span class="n">0</span> (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))))</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Verified.Expr.DiffDerivation.rawDerivative_eq_diff</code></p></li><li><p class="step-title">Primitive derivative in x: normalization preserves evaluation</p><pre class="lean">∀ (ρ : Fin <span class="n">1</span> → <span class="ty">ℝ</span>),
+  CAS.Verified.Expr.eval ρ
+      (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+          (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))))).simplifiedDerivative =
+    CAS.Verified.Expr.eval ρ
+      (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+          (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))))).rawDerivative</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Verified.Expr.DiffDerivation.eval_simplifiedDerivative_eq_rawDerivative</code></p></li><li><p class="step-title">Primitive derivative in x: side-conditioned display normalization</p><pre class="lean">∀ (ρ : Fin <span class="n">1</span> → <span class="ty">ℝ</span>),
+  CAS.Verified.Expr.Alg.SideHolds ρ
+      (CAS.Command.displayDerivativeRoute
+          (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+            (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>)))))).nonzero →
+    CAS.Verified.Expr.eval ρ
+        (CAS.Command.displayDerivativeRoute
+            (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+              (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>)))))).rhs =
+      CAS.Verified.Expr.eval ρ
+        (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+            (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))))).simplifiedDerivative</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.displayDerivativeRoute_sound</code></p></li><li><p class="step-title">Primitive derivative in x: analytic semantics of the displayed result</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>^<span class="n">1</span>),
+  CAS.Verified.Expr.ValidAt x.ofLp (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>)))) →
+    CAS.Verified.Expr.Alg.SideHolds x.ofLp
+        (CAS.Command.displayDerivativeRoute
+            (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+              (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>)))))).nonzero →
+      (fderiv <span class="ty">ℝ</span> (<span class="k">fun</span> y ↦ CAS.Verified.Expr.eval y.ofLp (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>)))))
+            x)
+          (EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>) =
+        CAS.Verified.Expr.eval x.ofLp
+          (CAS.Command.displayDerivativeRoute
+              (CAS.Verified.Expr.DiffDerivation.build <span class="n">0</span>
+                (𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>)))))).rhs</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Command.fderiv_apply_single_eq_eval_displayDerivative</code></p></li><li><p class="step-title">Residual route reaches zero</p><pre class="lean">(CAS.IntegrationCheck.route <span class="n">0</span> (𝕏[<span class="n">0</span>].mul 𝕏[<span class="n">0</span>].exp)
+      { candidate := 𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))), routeZero := ⋯ }.candidate).rhs =
+  <span class="n">0</span></pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.IntegrationCheck.AntiderivativeCert.routeZero</code></p></li><li><p class="step-title">Symbolic antiderivative identity under the displayed requirements</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>^<span class="n">1</span>),
+  { candidate := 𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))), routeZero := ⋯ }.requirements.Holds
+      x.ofLp →
+    CAS.Verified.Expr.eval x.ofLp
+        (CAS.Verified.Expr.diff <span class="n">0</span>
+          { candidate := 𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))), routeZero := ⋯ }.candidate) =
+      CAS.Verified.Expr.eval x.ofLp (𝕏[<span class="n">0</span>].mul 𝕏[<span class="n">0</span>].exp)</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.IntegrationCheck.AntiderivativeCert.eval_diff_eq</code></p></li><li><p class="step-title">Coordinate-line derivative theorem</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>^<span class="n">1</span>) (t : <span class="ty">ℝ</span>),
+  { candidate := 𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))), routeZero := ⋯ }.requirements.Holds
+      (x.ofLp + t • (EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>).ofLp) →
+    HasDerivAt
+      (<span class="k">fun</span> s ↦
+        CAS.Verified.Expr.eval (x + s • EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>).ofLp
+          { candidate := 𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))), routeZero := ⋯ }.candidate)
+      (CAS.Verified.Expr.eval (x + t • EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>).ofLp (𝕏[<span class="n">0</span>].mul 𝕏[<span class="n">0</span>].exp)) t</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.IntegrationCheck.AntiderivativeCert.hasDerivAt_eval_add_smul_single</code></p></li><li><p class="step-title">Coordinate-line fundamental theorem of calculus</p><pre class="lean">∀ (x : <span class="ty">ℝ</span>^<span class="n">1</span>) (a b : <span class="ty">ℝ</span>),
+  (∀ t ∈ Set.uIcc a b,
+      { candidate := 𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))), routeZero := ⋯ }.requirements.Holds
+        (x.ofLp + t • (EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>).ofLp)) →
+    ∫ (t : <span class="ty">ℝ</span>) <span class="k">in</span> a..b, CAS.Verified.Expr.eval (x + t • EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>).ofLp (𝕏[<span class="n">0</span>].mul 𝕏[<span class="n">0</span>].exp) =
+      CAS.Verified.Expr.eval (x + b • EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>).ofLp
+          { candidate := 𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))), routeZero := ⋯ }.candidate -
+        CAS.Verified.Expr.eval (x + a • EuclideanSpace.single <span class="n">0</span> <span class="n">1</span>).ofLp
+          { candidate := 𝕏[<span class="n">0</span>].exp.mul (𝕏[<span class="n">0</span>].add (CAS.Verified.Expr.int (-<span class="n">1</span>))), routeZero := ⋯ }.candidate</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.IntegrationCheck.AntiderivativeCert.intervalIntegral_eq_sub_eval_add_smul_single</code></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><pre class="node-body">Variables: x</pre></li><li><p class="node-title">Checked antiderivative computation</p><ul class="tree"><li><p class="node-title">1. Differentiate the proposed primitive</p><pre class="node-body">Raw derivative: exp(x)*1*(x - 1) + exp(x)*(1 + 0)</pre></li><li><p class="node-title">2. Form the derivative residual</p><pre class="node-body">Raw residual: exp(x)*1*(x - 1) + exp(x)*(1 + 0) - x*exp(x)
+Definition: CAS.IntegrationCheck.residual</pre></li><li><p class="node-title">3. Check the residual normal form</p><pre class="node-body">Checked residual normal form: 0
+Certificate condition: checked residual normal form = 0</pre></li><li><p class="node-title">4. Record analytic domain requirements</p><pre class="node-body">Certificate nonzero requirements (compacted): (none)
+Certificate positivity requirements (compacted): (none)</pre></li></ul></li></ul></details></div></div></div></div>
+<div class="cells"><div class="cell in" id="in-5"><a class="label" href="#in-5">In[5]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [integrate x in [a, b]] e` evaluates the definite integral of `e` from `a` to `b` as
+`F b - F a` for the antiderivative `F` that `integrate?` finds (the search of `#cas [integrate x]`
+without its backends), where an endpoint is a real term, `∞` or `-∞` and `F` is replaced by its
+limit at an infinite endpoint. It proves the printed theorem `∫ x in a..b, e = v` with `cas`, or,
+over `Set.Ioi a`, `Set.Iic b` or the whole line, the integrability of `e` there together with the
+value of its integral, such as `IntegrableOn (fun x ↦ e) (Set.Ioi a) ∧ ∫ x in Set.Ioi a, e = v`." title="`#cas [integrate x in [a, b]] e` evaluates the definite integral of `e` from `a` to `b` as
+`F b - F a` for the antiderivative `F` that `integrate?` finds (the search of `#cas [integrate x]`
+without its backends), where an endpoint is a real term, `∞` or `-∞` and `F` is replaced by its
+limit at an infinite endpoint. It proves the printed theorem `∫ x in a..b, e = v` with `cas`, or,
+over `Set.Ioi a`, `Set.Iic b` or the whole line, the integrability of `e` there together with the
+value of its integral, such as `IntegrableOn (fun x ↦ e) (Set.Ioi a) ∧ ∫ x in Set.Ioi a, e = v`."><span class="k">#cas</span></span> [<span class="m">integrate</span> x <span class="k">in</span> [<span class="n">0</span>, <span class="n">1</span>]] (<span class="n">1</span> / (<span class="n">1</span> + x ^ <span class="n">2</span>))</pre></div></div><div class="cell out" id="out-5"><span class="label">Out[5]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">definite integral</p><div class="tf"><math alttext="\displaystyle \frac{1}{4}\,\pi" xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><mn>1</mn></mrow><mrow><mn>4</mn></mrow></mfrac><mspace width="0.167em" /><mi>&#x003C0;</mi></mstyle></mrow></math></div><code class="plain">1/4*pi</code></div><dl class="fields"><dt>Primitive</dt><dd><code>atan(x)</code></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Definite integral, proved by <code class="lean"><span class="t">cas</span></code></p><pre class="lean">∫ (x : <span class="ty">ℝ</span>) <span class="k">in</span> <span class="n">0</span>..<span class="n">1</span>, <span class="n">1</span> / (<span class="n">1</span> + x ^ <span class="n">2</span>) = <span class="n">1</span> / <span class="n">4</span> * Real.pi</pre></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Definite integral, proved by <code class="lean"><span class="t">cas</span></code></p><pre class="lean">∫ (x : <span class="ty">ℝ</span>) <span class="k">in</span> <span class="n">0</span>..<span class="n">1</span>, <span class="n">1</span> / (<span class="n">1</span> + x ^ <span class="n">2</span>) = <span class="n">1</span> / <span class="n">4</span> * Real.pi</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><pre class="node-body">Variables: x</pre></li></ul></details></div></div></div></div>
+<p>Digits are proved too. Each of these twenty is a digit of <span class="inline-math"><math alttext="e" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>e</mi></mrow></math></span>, because the theorem traps <span class="inline-math"><math alttext="e" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>e</mi></mrow></math></span> between the truncated decimal and the next one up:</p>
+<div class="cells"><div class="cell in" id="in-6"><a class="label" href="#in-6">In[6]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [N d] e` prints the first `d` significant decimal digits of the closed real expression
+`e`, truncated toward zero, and proves them." title="`#cas [N d] e` prints the first `d` significant decimal digits of the closed real expression
+`e`, truncated toward zero, and proves them."><span class="k">#cas</span></span> [<span class="m">N</span> <span class="n">20</span>] (exp <span class="n">1</span>)</pre></div></div><div class="cell out" id="out-6"><span class="label">Out[6]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">first 20 significant digits, truncated</p><code class="plain only">2.7182818284590452353</code></div><dl class="fields"><dt>Domain</dt><dd><code>closed real expression</code></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Certified decimal digits</p><pre class="lean"><span class="n">27182818284590452353</span> / <span class="n">10</span> ^ <span class="n">19</span> ≤ Real.exp <span class="n">1</span> ∧ Real.exp <span class="n">1</span> &lt; (<span class="n">27182818284590452353</span> + <span class="n">1</span>) / <span class="n">10</span> ^ <span class="n">19</span></pre><p class="by">from <code>CAS.Continuum.DigitsEval.eval_sound</code></p></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Certified decimal digits</p><pre class="lean"><span class="n">27182818284590452353</span> / <span class="n">10</span> ^ <span class="n">19</span> ≤ Real.exp <span class="n">1</span> ∧ Real.exp <span class="n">1</span> &lt; (<span class="n">27182818284590452353</span> + <span class="n">1</span>) / <span class="n">10</span> ^ <span class="n">19</span></pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Continuum.DigitsEval.eval_sound</code></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><p class="node-title">Certified numerical evaluation</p><pre class="node-body">Working precision: 106 bits, 44 series terms, 84 logarithm terms
+Guarantee: every printed digit is a digit of the real value, truncated toward zero</pre></li></ul></details></div></div></div></div>
+<p>No formula in radicals gives the roots of <span class="inline-math"><math alttext="x^5 - x - 1" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mi>x</mi><mn>5</mn></msup><mo>&#x02212;</mo><mi>x</mi><mo>&#x02212;</mo><mn>1</mn></mrow></math></span>. Its real root still has digits, though, and the theorem says it is the only real root:</p>
+<div class="cells"><div class="cell in" id="in-7"><a class="label" href="#in-7">In[7]:=</a><div class="cell-body"><pre class="lean"><span class="lean-hover" tabindex="0" data-lean-hover="`#cas [roots x] (lhs = rhs)` lists every real solution of a polynomial equation in `x`, the
+rational ones exactly and the others as truncated decimals, and proves that the list is
+complete." title="`#cas [roots x] (lhs = rhs)` lists every real solution of a polynomial equation in `x`, the
+rational ones exactly and the others as truncated decimals, and proves that the list is
+complete."><span class="k">#cas</span></span> [<span class="m">roots</span> x] (x ^ <span class="n">5</span> - x - <span class="n">1</span> = <span class="n">0</span>)</pre></div></div><div class="cell out" id="out-7"><span class="label">Out[7]=</span><div class="cell-body"><div class="report"><div class="result"><p class="qual">the only real solution, by 20 decimals, truncated</p><code class="plain only">1.16730397826141868425</code></div><dl class="fields"><dt>Input <span class="qual-inline">(polynomial equation)</span></dt><dd><code>(x ^ 5 - x - 1 = 0)</code></dd></dl><div class="theorem"><p class="badge kernel"><span class="tick" aria-hidden="true">✓</span> Checked by Lean’s kernel: Complete list of real solutions</p><pre class="lean">(∃! x,
+    x ∈ Set.Ioo (<span class="n">116730397826141868425</span> / <span class="n">10</span> ^ <span class="n">20</span>) (<span class="n">116730397826141868426</span> / <span class="n">10</span> ^ <span class="n">20</span>) ∧ x ^ <span class="n">5</span> - x - <span class="n">1</span> = <span class="n">0</span>) ∧
+  ∀ (x : <span class="ty">ℝ</span>), x ^ <span class="n">5</span> - x - <span class="n">1</span> = <span class="n">0</span> → x ∈ Set.Ioo (<span class="n">116730397826141868425</span> / <span class="n">10</span> ^ <span class="n">20</span>) (<span class="n">116730397826141868426</span> / <span class="n">10</span> ^ <span class="n">20</span>)</pre><p class="by">from <code>CAS.Polynomial.RealRoot.of_exprRootCheck</code></p></div><details class="cert"><summary>The certificate: 1 checked step</summary><ol class="steps"><li><p class="step-title">Complete list of real solutions</p><pre class="lean">(∃! x,
+    x ∈ Set.Ioo (<span class="n">116730397826141868425</span> / <span class="n">10</span> ^ <span class="n">20</span>) (<span class="n">116730397826141868426</span> / <span class="n">10</span> ^ <span class="n">20</span>) ∧ x ^ <span class="n">5</span> - x - <span class="n">1</span> = <span class="n">0</span>) ∧
+  ∀ (x : <span class="ty">ℝ</span>), x ^ <span class="n">5</span> - x - <span class="n">1</span> = <span class="n">0</span> → x ∈ Set.Ioo (<span class="n">116730397826141868425</span> / <span class="n">10</span> ^ <span class="n">20</span>) (<span class="n">116730397826141868426</span> / <span class="n">10</span> ^ <span class="n">20</span>)</pre><p class="step-meta"><span class="badge kernel">Checked by Lean’s kernel</span> · <code>CAS.Polynomial.RealRoot.of_exprRootCheck</code></p></li></ol></details><details class="comp"><summary>The computation</summary><ul class="tree"><li><p class="node-title">Certified isolation</p><pre class="node-body">Square-free polynomial of degree 5, Cauchy bound 3, 7 cells
+Guarantee: the listed solutions are distinct, each rational is a solution, each decimal interval contains exactly one solution, and there are no other real solutions</pre></li></ul></details></div></div></div></div>
+<h2 id="theorem">From a calculation to a theorem<a class="anchor" href="#theorem" aria-label="Link to this section">#</a></h2>
+<p>This is the part I care about most. In a proof you state the result in Mathlib’s language and let a tactic prove it. The first derivative above becomes an ordinary <code class="lean">HasDerivAt</code> statement:</p>
+<div class="cells"><div class="cell in" id="in-8"><a class="label" href="#in-8">In[8]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) :
+    <span class="lean-hover" tabindex="0" data-lean-hover="HasDerivAt : {𝕜 : Type} →
+  [inst : NontriviallyNormedField 𝕜] →
+    {F : Type} →
+      [inst_1 : AddCommGroup F] →
+        [inst_2 : Module 𝕜 F] → [inst_3 : TopologicalSpace F] → [ContinuousSMul 𝕜 F] → (𝕜 → F) → F → 𝕜 → Prop
+
+`f` has the derivative `f&#x27;` at the point `x`.
+
+That is, `f x&#x27; = f x + (x&#x27; - x) • f&#x27; + o(x&#x27; - x)` where `x&#x27;` converges to `x`.
+" title="HasDerivAt : {𝕜 : Type} →
+  [inst : NontriviallyNormedField 𝕜] →
+    {F : Type} →
+      [inst_1 : AddCommGroup F] →
+        [inst_2 : Module 𝕜 F] → [inst_3 : TopologicalSpace F] → [ContinuousSMul 𝕜 F] → (𝕜 → F) → F → 𝕜 → Prop
+
+`f` has the derivative `f&#x27;` at the point `x`.
+
+That is, `f x&#x27; = f x + (x&#x27; - x) • f&#x27; + o(x&#x27; - x)` where `x&#x27;` converges to `x`.
+">HasDerivAt</span> (<span class="k">fun</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> : <span class="ty">ℝ</span> ↦ <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> * <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> ^ <span class="n">3</span> + <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span> * <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span>) (<span class="n">3</span> * <span class="lean-hover" tabindex="0" data-lean-hover="a : ℝ" title="a : ℝ">a</span> * <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ^ <span class="n">2</span> + <span class="lean-hover" tabindex="0" data-lean-hover="b : ℝ" title="b : ℝ">b</span>) <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b x : ℝ
+⊢ HasDerivAt (fun t ↦ a * t ^ 3 + b * t) (3 * a * x ^ 2 + b) x
+
+After
+no goals" title="Before
+
+a b x : ℝ
+⊢ HasDerivAt (fun t ↦ a * t ^ 3 + b * t) (3 * a * x ^ 2 + b) x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+a b x : ℝ
+⊢ HasDerivAt (fun t ↦ a * t ^ 3 + b * t) (3 * a * x ^ 2 + b) x
+
+After
+no goals" title="Before
+
+a b x : ℝ
+⊢ HasDerivAt (fun t ↦ a * t ^ 3 + b * t) (3 * a * x ^ 2 + b) x
+
+After
+no goals"><span class="t">cas</span></span></pre></div></div><div class="cell out" id="out-8"><span class="label">Out[8]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<p>When you don’t know which call to use, <code class="lean"><span class="t">cas?</span></code> proves the goal and suggests the one to keep in the source:</p>
+<div class="cells"><div class="cell in" id="in-9"><a class="label" href="#in-9">In[9]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> : (∫ <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> <span class="k">in</span> (<span class="n">0</span> : <span class="ty">ℝ</span>)..<span class="n">1</span>, <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span> * <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> <span class="lean-hover" tabindex="0" data-lean-hover="t : ℝ" title="t : ℝ">t</span>) = <span class="n">1</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∫ (t : ℝ) in 0..1, t * Real.exp t = 1
+
+After
+no goals" title="Before
+
+⊢ ∫ (t : ℝ) in 0..1, t * Real.exp t = 1
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+⊢ ∫ (t : ℝ) in 0..1, t * Real.exp t = 1
+
+After
+no goals" title="Before
+
+⊢ ∫ (t : ℝ) in 0..1, t * Real.exp t = 1
+
+After
+no goals"><span class="t">cas?</span></span></pre></div></div><div class="cell out" id="out-9"><span class="label">Out[9]=</span><div class="cell-body"><div class="msg try"><p class="try-label">Try this</p><pre class="lean"><span class="t">cas</span>
+
+Lean checked the suggested replacement against the original goal. Selected route: CAS route: checked integration, bounded antiderivative search.</pre></div></div></div></div>
+<p>Numerical goals go to <code class="lean"><span class="t">cega</span></code>, which reads the box from the hypotheses, here <span class="inline-math"><math alttext="0 \le x \le 1" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mo>&#x02264;</mo><mi>x</mi><mo>&#x02264;</mo><mn>1</mn></mrow></math></span>:</p>
+<div class="cells"><div class="cell in" id="in-10"><a class="label" href="#in-10">In[10]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h0 : 0 ≤ x" title="h0 : 0 ≤ x">h0</span> : <span class="n">0</span> ≤ <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="h1 : x ≤ 1" title="h1 : x ≤ 1">h1</span> : <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ≤ <span class="n">1</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> ≤ <span class="n">2</span> + <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ Real.exp x ≤ 2 + x
+
+After
+no goals" title="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ Real.exp x ≤ 2 + x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ Real.exp x ≤ 2 + x
+
+After
+no goals" title="Before
+
+x : ℝ
+h0 : 0 ≤ x
+h1 : x ≤ 1
+⊢ Real.exp x ≤ 2 + x
+
+After
+no goals"><span class="t">cega</span></span></pre></div></div><div class="cell out" id="out-10"><span class="label">Out[10]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<h2 id="fails">When a call fails<a class="anchor" href="#fails" aria-label="Link to this section">#</a></h2>
+<p>Sooner or later a call fails, and I think it’s worth seeing what that looks like early. A goal that SymLean can’t prove stays as it was, and the message says what stopped the call. This statement is false, because Mathlib’s <code class="lean">Real.log</code> is defined everywhere and <span class="inline-math"><math alttext="\exp(\log(-1)) = \exp(0) = 1" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>exp</mi><mo stretchy="false">&#x00028;</mo><mi>log</mi><mo stretchy="false">&#x00028;</mo><mo>&#x02212;</mo><mn>1</mn><mo stretchy="false">&#x00029;</mo><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mi>exp</mi><mo stretchy="false">&#x00028;</mo><mn>0</mn><mo stretchy="false">&#x00029;</mo><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span>:</p>
+<div class="cells"><div class="cell in" id="in-11"><a class="label" href="#in-11">In[11]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) = <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ Real.exp (Real.log x) = x
+
+After
+
+x : ℝ
+⊢ Real.exp (Real.log x) = x" title="Before
+
+x : ℝ
+⊢ Real.exp (Real.log x) = x
+
+After
+
+x : ℝ
+⊢ Real.exp (Real.log x) = x"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+⊢ Real.exp (Real.log x) = x
+
+After
+
+x : ℝ
+⊢ Real.exp (Real.log x) = x" title="Before
+
+x : ℝ
+⊢ Real.exp (Real.log x) = x
+
+After
+
+x : ℝ
+⊢ Real.exp (Real.log x) = x"><span class="t">cas</span></span></pre></div></div><div class="cell out" id="out-11"><span class="label">Out[11]=</span><div class="cell-body"><div class="msg error"><p class="sev">Error</p><pre>cas could not close this ordinary arithmetic goal.
+This goal contains branch-sensitive operations and may need appropriate logarithm-branch hypotheses (`x ≠ 0` gives `exp (log x) = |x|`; use `0 &lt; x` to remove the absolute value). Put those facts in the local context; pass one explicit fact as `cas using h` when needed. The corresponding `#cas [simplify]` report shows the exact generated conditions. Detected candidate conditions: x ≠ 0 (or 0 &lt; x for the positive branch).</pre><details class="more"><summary>The rest of the message</summary><pre>Polynomial equation route:
+  `grind` failed
+  case grind
+  x : ℝ
+  h : ¬Real.exp (Real.log x) = x
+  ⊢ False
+  [grind] Goal diagnostics
+    [facts] Asserted facts
+      [prop] ¬Real.exp (Real.log x) = x
+    [eqc] False propositions
+      [prop] Real.exp (Real.log x) = x
+    [limits] Thresholds reached
+      [limit] maximum number of E-matching rounds has been reached, threshold: `(ematch := 0)`
+      [limit] maximum number of case-splits has been reached, threshold: `(splits := 0)`
+Checked identity route:
+  cas could not prove the real analytic domain conditions.
+  A denominator or logarithm argument may need to be nonzero, a square-root argument may need to be positive, or an inverse-trigonometric argument may need to avoid a branch endpoint. Supply the relevant ordinary hypothesis with `cas using h`.
+  Unproved conditions:
+    0 &lt; x
+Elementary rewrite route:
+  no elementary rewrite applies
+Grind fallback:
+  `grind` failed (`set_option trace.cas.fallback true` shows its diagnostics)</pre></details></div></div></div></div>
+<p>The message points at the fix. With the hypothesis <span class="inline-math"><math alttext="0 &lt; x" xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0</mn><mo>&#x0003C;</mo><mi>x</mi></mrow></math></span>, which makes the statement true, the same call works:</p>
+<div class="cells"><div class="cell in" id="in-12"><a class="label" href="#in-12">In[12]:=</a><div class="cell-body"><pre class="lean"><span class="k">example</span> (<span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> : <span class="ty">ℝ</span>) (<span class="lean-hover" tabindex="0" data-lean-hover="hx : 0 &lt; x" title="hx : 0 &lt; x">hx</span> : <span class="n">0</span> &lt; <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) : <span class="lean-hover" tabindex="0" data-lean-hover="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential " title="Real.exp : ℝ → ℝ
+
+The real exponential function, defined as the real part of the complex exponential ">Real.exp</span> (<span class="lean-hover" tabindex="0" data-lean-hover="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. " title="Real.log : ℝ → ℝ
+
+The real logarithm function, equal to the inverse of the exponential for `x &gt; 0`,
+to `log |x|` for `x &lt; 0`, and to `0` for `0`. We use this unconventional extension to
+`(-∞, 0]` as it gives the formula `log (x * y) = log x + log y` for all nonzero `x` and `y`, and
+the derivative of `log` is `1/x` away from `0`. ">Real.log</span> <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span>) = <span class="lean-hover" tabindex="0" data-lean-hover="x : ℝ" title="x : ℝ">x</span> := <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : 0 &lt; x
+⊢ Real.exp (Real.log x) = x
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : 0 &lt; x
+⊢ Real.exp (Real.log x) = x
+
+After
+no goals"><span class="k">by</span></span>
+  <span class="lean-hover" tabindex="0" data-lean-hover="Before
+
+x : ℝ
+hx : 0 &lt; x
+⊢ Real.exp (Real.log x) = x
+
+After
+no goals" title="Before
+
+x : ℝ
+hx : 0 &lt; x
+⊢ Real.exp (Real.log x) = x
+
+After
+no goals"><span class="t">cas</span></span></pre></div></div><div class="cell out" id="out-12"><span class="label">Out[12]=</span><div class="cell-body"><div class="msg ok"><p><span class="tick" aria-hidden="true">✓</span> Lean accepts the proof.</p></div></div></div></div>
+<p>A refusal says only that no route of SymLean found a proof. It never adds an assumption or changes the statement, and I find that reassuring, because what you see in the file is what was proved. The reference page of each mode shows, under Possible Issues, the ways it can fail and the messages Lean prints. When you’re ready for longer proofs, <a class="sym" href="proving.html">Proving with <code class="lean"><span class="t">cas</span></code></a> is the next tutorial.</p></main></div>
+<footer class="footer"><p>Examples built with Lean 4.35.0. Quoted examples link to their source.</p><p><a href="https://github.com/Robertboy18/SymLean">SymLean on GitHub</a> · Apache License 2.0</p></footer>
+<script defer src="../../static/site.js"></script>
+</body>
+</html>
