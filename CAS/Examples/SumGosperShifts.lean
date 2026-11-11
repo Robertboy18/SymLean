@@ -1,0 +1,86 @@
+/-
+Copyright (c) 2026 SymLean Team. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: SymLean Team
+-/
+
+module
+
+public import CAS
+
+/-!
+# Gosper's algorithm at large shifts
+
+`1 / (k (k + h))` needs polynomials of degree about `h` in Gosper's algorithm, and the command
+works with degree at most `100`. These are the shifts around three limits: the dispersion was cut
+off at `59`, from `96` the factoring of the closed form did not end, and `101`, whose closed form
+has degree `100`, is the last shift that the command proves, while `102` is refused. Each closed
+form is proved for every `n`; the shifts `59`, `60` and `61` take about 16 s each, `96`, `97` and
+`101` about 40 s. `CAS/Examples/SumGosper.lean` has the shift `70` and the refusal at `1000`.
+-/
+
+/-! ## Executed checks -/
+
+set_option linter.hashCommand false
+set_option linter.privateModule false
+
+/--
+info: #cas [sum k 1 n]
+Domain: k ∈ [1, n]
+Input (hypergeometric summand): (1 / (k * (k + 59)))
+Output (closed form (Gosper)): n*(729367679251933803848121523015752281393231483679275396307476453109066176204367533958047465472000000000000 + 2862756635489085235814080350093505999126860264743804325297677336842952428663433428410136755437568000000000*n
+-/
+#guard_msgs (info, substring := true) in
+#cas [sum k 1 n] (1 / (k * (k + 59)))
+
+/--
+info: #cas [sum k 1 n]
+Domain: k ∈ [1, n]
+Input (hypergeometric summand): (1 / (k * (k + 60)))
+Output (closed form (Gosper)): n*(43769527078360139116426580078522950429592490033643527464540557924666788833967563391000033361920000000000000 + 172529582795119961139936499999970788876766010370692687459477463279668065432200210130540613945262080000000000*n
+-/
+#guard_msgs (info, substring := true) in
+#cas [sum k 1 n] (1 / (k * (k + 60)))
+
+/--
+info: #cas [sum k 1 n]
+Domain: k ∈ [1, n]
+Input (hypergeometric summand): (1 / (k * (k + 61)))
+Output (closed form (Gosper)): n*(162893289022256876840164743783464027314108619061580778965486510694927266993333144250572991700664320000000000000 + 644778307863298478015014902103376710131351569350759514596331780958871587418074746754911357804142919680000000000*n
+-/
+#guard_msgs (info, substring := true) in
+#cas [sum k 1 n] (1 / (k * (k + 61)))
+
+/--
+info: #cas [sum k 1 n]
+Domain: k ∈ [1, n]
+Input (hypergeometric summand): (1 / (k * (k + 96)))
+Output (closed form (Gosper)): n*(1165098236330901075704839560738005604122021159261075814932431218365234911692929974829875619522003671060235796160029677910930695751482978753538934766040858173928323520921600000000000000000000 + 5139714648946015845984051595796082939882361797027202857673710010880928204016920785623612245646827363535220878462806028573338650459447873393231085935287099908469042370838528000000000000000000*n
+-/
+#guard_msgs (info, substring := true) in
+#cas [sum k 1 n] (1 / (k * (k + 96)))
+
+/--
+info: #cas [sum k 1 n]
+Domain: k ∈ [1, n]
+Input (hypergeometric summand): (1 / (k * (k + 97)))
+Output (closed form (Gosper)): n*(10963122090768646458254324497582007194620964505746527235405260923178529878140420775668295566426700666242379659699081031865162313146207599584884031706527872222828967078815334400000000000000000000 + 48476258197102537055618450527556810627315525965420824240142931902138391391283841929508873404477347253566764381844764858558567472340636895022253229590735268441758186326460465152000000000000000000*n
+-/
+#guard_msgs (info, substring := true) in
+#cas [sum k 1 n] (1 / (k * (k + 97)))
+
+/--
+info: #cas [sum k 1 n]
+Domain: k ∈ [1, n]
+Input (hypergeometric summand): (1 / (k * (k + 101)))
+Output (closed form (Gosper)): n*(4341158356801360414150612012613545538243695887125696150088724541872260182855878798043785134806932346349549242627185915009171993188071473272676768009450816965120905576048585758212096000000000000000000000 + 19370865161255611362012172741511816915114389657916485048156999387880458651023981103391129136097571861572553003180808269417952963591590388441332747230883628751045739459887010374075023360000000000000000000*n
+-/
+#guard_msgs (info, substring := true) in
+#cas [sum k 1 n] (1 / (k * (k + 101)))
+
+/--
+error: sum: Gosper's algorithm needs a polynomial of degree at least 101 for this summand, whose
+ratio has factors 101 apart, and the command searches up to degree 100
+-/
+#guard_msgs in
+#cas [sum k 1 n] (1 / (k * (k + 102)))

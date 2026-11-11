@@ -1,0 +1,14 @@
+#!/bin/sh
+# Copyright (c) 2026 SymLean Team. All rights reserved.
+# Released under Apache 2.0 license as described in the file LICENSE.
+# A deliberately wrong Gappa for the trust-boundary tests (tests/oracle/Refusals.lean): a child
+# keeps both output streams open for 60 s, beyond the test's deadline; SymLean ends the process
+# group when this program exits, so the (wrong) enclosure arrives at once.
+problem=$(cat)
+sleep 60 &
+echo "Results:" >&2
+echo "  v0 in [0, 0.1]" >&2
+# For the product v0 * v0, an enclosure followed by a failure.
+case "$problem" in
+  *"v0 * v0"*) exit 2 ;;
+esac

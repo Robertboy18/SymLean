@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+# Copyright (c) 2026 SymLean Team. All rights reserved.
+# Released under Apache 2.0 license as described in the file LICENSE.
+"""A deliberately wrong Maxima for the trust-boundary tests (tests/oracle/Refusals.lean).
+
+SymLean runs it as `maxima --very-quiet --batch-string <script>`. By the integrand, its answers
+are outside the checked language, use an undeclared variable, are left unevaluated, or are too
+large to be read.
+"""
+
+import sys
+
+script = sys.argv[-1]
+request = script.replace(" ", "")
+# Maxima echoes its input; no line of the script may be taken for an answer.
+print(script.replace("$", "$\n"))
+if "factor(((v0^2)-16))" in request:
+    print("@@ product " + "*".join(["v0"] * 201))
+elif "factor(((v0^2)-25))" in request:
+    print("@@ product 2^(1000*1000*1000*1000)*(v0-5)*(v0+5)")
+elif "factor(((v0^2)-36))" in request:
+    c = "(2^1000)^30"
+    print("@@ product " + "*".join([f"({c}*v0)"] * 4))
+elif "factor(((v0^2)-4))" in request:
+    print("@@ product (v0-2)*(v0+2)*(((2^1000)^1000)^1000)^1000")
+elif "factor(" in request:
+    print("@@ product (z-1)*(z+1)")
+elif "integrate(exp((-(v0^2))),v0)" in request:
+    print("@@ antiderivative (sqrt(%pi)*erf(v0))/2")
+elif "integrate(v0,v0)" in request:
+    print("@@ antiderivative " + "7" * 3000 + "*v0")
+elif "integrate((v0^2),v0)" in request:
+    print("@@ antiderivative " + "(" * 600 + "v0" + ")" * 600)
+elif "integrate((v0^3),v0)" in request:
+    print("@@ antiderivative v0" + "+v0" * 1500)
+elif "integrate(sin(v0),v0)" in request:
+    print("@@ antiderivative " + "tanh(" * 15 + "v0" + ")" * 15)
+elif "integrate(cos(v0),v0)" in request:
+    print("@@ antiderivative " + "v0+" * 7000 + "v0")
+else:
+    print("@@ antiderivative 'integrate(exp(v0^v0),v0)")

@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+# Copyright (c) 2026 SymLean Team. All rights reserved.
+# Released under Apache 2.0 license as described in the file LICENSE.
+"""A deliberately wrong Python for the trust-boundary tests (tests/oracle/Refusals.lean).
+
+SymLean runs it as `python -c <program>` in place of the real Python of `sympy`, `pari` and
+`flint`. It reads the call at the end of the program and answers by backend: `sympy` gives a
+plausible but wrong answer to every task except three sums of squares and one Gröbner basis,
+which are right so that the scripts they lead to and the accepted answer can be pinned, `flint`
+never answers (timeout) and ignores SIGTERM, with a child that does too, and `pari` prints
+something that is not an answer.
+"""
+
+import os
+import signal
+import subprocess
+import sys
+import time
+
+call = sys.argv[2].strip().splitlines()[-1]
+request = call.replace(" ", "")
+
+
+def out(*records):
+    for record in records:
+        print("@@", record)
+
+
+if "FlintBackend" in call:
+    # Never answers, ignores SIGTERM, and leaves a child that ignores it too; the pids go to
+    # SYMLEAN_TEST_PIDFILE so that the test can check that SymLean ended both.
+    signal.signal(signal.SIGTERM, signal.SIG_IGN)
+    child = subprocess.Popen(["sleep", "60"])
+    if os.environ.get("SYMLEAN_TEST_PIDFILE"):
+        with open(os.environ["SYMLEAN_TEST_PIDFILE"], "w") as handle:
+            handle.write(f"{os.getpid()} {child.pid}\n")
+    time.sleep(60)
+elif "PariBackend" in call:
+    print("Traceback (most recent call last): not an answer")
+elif ".integrate(" in call and "cos(v0)" in request:
+    out("antiderivative sin(v0)", "antiderivative sin(v0) + 1")
+elif ".integrate(" in call and "sin(v0)" in request:
+    out("primitive -cos(v0)")
+elif ".integrate(" in call and "(v0**4)" in request:
+    out("antiderivative atan((1 + v0)**100)")
+elif ".integrate(" in call and "(v0**5)" in request:
+    out("antiderivative atan((18446744073709551616*v0)**1000)")
+elif ".integrate(" in call and "(v0**3)" in request:
+    out("antiderivative v0**4/4")
+    sys.stdout.flush()
+    sys.exit(3)
+elif ".integrate(" in call:
+    # The primitive of x * exp x is (x - 1) exp x; this is off by a sign.
+    out("antiderivative (v0 + 1)*exp(v0)")
+elif ".factor(" in call and "(v0**2)-49" in request:
+    out("constant 1", "factor 1000 (1 + v0)**10")
+elif ".factor(" in call and "(v0**2)-4" in request:
+    out("factor 1 v0 - 2", "factor 1 v0 + 2")
+elif ".factor(" in call and "(v0**2)-9" in request:
+    out("constant 1", "factor 1234567890123 v0 - 3", "factor 1 v0 + 3")
+elif ".factor(" in call:
+    # x ^ 4 + 4 = (x^2 - 2x + 2)(x^2 + 2x + 2); the constant term is wrong here.
+    out("constant 1", "factor 1 v0**2 - 2*v0 + 1", "factor 1 v0**2 + 2*v0 + 2")
+elif ".member(" in call and call.count("read(") == 2:
+    out("power 12345678901234", "cofactors v0 + 1")
+elif ".member(" in call:
+    # Cofactors that do not combine the hypotheses into the goal.
+    generators = call.count("read(") - 1
+    out("power 1", "cofactors " + " ; ".join(["1"] * generators))
+elif ".groebner(" in call and "(v0**2)-v1" in request and "v1**2" in request:
+    # The inputs x^2 - y, y^2 - x themselves, with the identity as cofactors both ways: they
+    # span the ideal but are not a Gröbner basis.
+    out("basis v0**2 - v1", "to_basis 1 ; 0", "basis v1**2 - v0", "to_basis 0 ; 1",
+        "from_basis 1 ; 0", "from_basis 0 ; 1")
+elif ".groebner(" in call and "(v0**2)-v1" in request:
+    out("to_basis 1 ; 0", "basis v0", "from_basis 1", "from_basis 1")
+elif ".groebner(" in call and '[read("v0",["v0","v1"]),read("v1",["v0","v1"])]' in request:
+    # Right, for x, y: the basis x, 0, y, with an explicit zero element.
+    out("basis v0", "to_basis 1 ; 0", "basis 0", "to_basis 0 ; 0", "basis v1", "to_basis 0 ; 1",
+        "from_basis 1 ; 0 ; 0", "from_basis 0 ; 0 ; 1")
+elif ".groebner(" in call:
+    out("basis v0", "to_basis 1 ; 0", "from_basis 1", "from_basis 1")
+elif ".solve(" in call and "(v0**2)+1" in request:
+    pass  # No real solution: an empty answer.
+elif ".solve(" in call:
+    out("solution 3 ; 1")
+elif ".nroots(" in call and "(v0**2)+1" in request:
+    pass  # No real root: an empty answer.
+elif ".nroots(" in call:
+    # cos x = x has its root near 0.739085, not at 0.5; and 2 is outside the interval asked.
+    out("root 5.0000000000e-1", "root 2.0000000000e+0")
+elif ".nintegrate(" in call:
+    # The integral of exp (-x ^ 2) on [0, 1] is 0.746824…, not 0.75.
+    out("value 7.5000000000e-1")
+elif ".eigenvalues(" in call and '["0", "1"], ["-1", "0"]' in call:
+    pass  # No real eigenvalue: an empty answer.
+elif ".eigenvalues(" in call:
+    out("eigenvalue 2.5000000000e+0")
+elif ".sum(" in call:
+    # The sum of k on [1, n] is n (n + 1) / 2, not n ^ 2 / 2.
+    out("closed_form n0**2/2")
+elif ".sos(" in call and 'V("v0"),strict=[0]' in request and "**2" in request:
+    # Right, for 1 < x ^ 2 under 1 < x: x ^ 2 - 1 = (x - 1) ^ 2 + 2 (x - 1).
+    out("square 1 ; v0 - 1", "multiplied 0 ; 2 ; 1")
+elif ".sos(" in call and 'V("v0"),strict=[0]' in request:
+    # Right, for 0 < x + 1 under 0 < x, with the premise as multiplier: x (x + 1) = x ^ 2 + x.
+    out("multiplier_multiplied 0 ; 1 ; 1", "square 1 ; v0", "multiplied 0 ; 1 ; 1")
+elif ".sos(" in call and 'V("v0"),strict=' in request:
+    # x ^ 2 = x ^ 2 holds, but no term of the sum is positive.
+    out("square 1 ; v0")
+elif ".sos(" in call and 'V("v0","v1"),strict=' in request:
+    # (1 + y ^ 2) ((x y - 1) ^ 2 + x ^ 2) = 1 + (x - y + x y ^ 2) ^ 2; the multiplier here is y ^ 2.
+    out("multiplier_square 1 ; v1", "square 1 ; 1", "square 1 ; v0 - v1 + v0*v1**2")
+elif ".sos(" in call and "strict=" in request:
+    pass  # No certificate: an empty answer.
+elif request == 'run(lambda:SympyBackend().sos(read("(v0**2)",["v0"]),[],V("v0")))':
+    # Right, for 0 ≤ a ^ 2 over one atom `a` with no premise, and for no other request:
+    # a ^ 2 = a ^ 2.
+    out("square 1 ; v0")
+elif ".sos(" in call:
+    # x ^ 2 + y ^ 2 is not (x + y) ^ 2.
+    out("square 1 ; v0 + v1")
+elif ".dsolve(" in call and "(2*d0)" in request:
+    out("constants 99999999999999", "solution C1*exp(2*v0)")
+elif ".dsolve(" in call and "/" in call.split("read(", 1)[1].split(",", 1)[0]:
+    # For y' = 1 / y: the zero function, which Lean's 1 / 0 = 0 would make a solution.
+    out("constants 0", "solution 0")
+elif ".dsolve(" in call:
+    # y' = y is solved by C1 exp x, not by C1 exp (2 x).
+    out("constants 1", "solution C1*exp(2*v0)")
+else:
+    out("unsupported no such task")

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 304" role="img" aria-labelledby="relations-title relations-desc">
+  <title id="relations-title">Where the answers come from and who checks them</title>
+  <desc id="relations-desc">Three sources propose answers: the searches inside SymLean, the optional verified library Hex, and external systems such as SymPy, SageMath, Maxima, PARI/GP and FLINT through DSLean. Every proposal goes to SymLean, which turns it into a certificate and a proof stated with Mathlib's definitions, and Lean's kernel checks that proof. Mathlib lies under all of it: its definitions are in every statement and its tactics are routes of cas.</desc>
+  <defs>
+    <marker id="relations-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" class="f-arrowhead" fill="#8d929a"/>
+    </marker>
+  </defs>
+
+  <!-- Sources -->
+  <rect class="f-box" x="6" y="10" width="262" height="60" rx="8" fill="#ffffff" stroke="#e4e1d9" stroke-width="1.2"/>
+  <text class="f-title" x="22" y="36" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#1d232a">Its own searches</text>
+  <text class="f-text" x="22" y="58" font-family="STIX Two Text, Georgia, serif" font-size="14.5" fill="#6a7078">compiled code inside SymLean</text>
+
+  <rect class="f-box" x="6" y="82" width="262" height="60" rx="8" fill="#ffffff" stroke="#e4e1d9" stroke-width="1.2"/>
+  <text class="f-title" x="22" y="108" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#1d232a">Hex</text>
+  <text class="f-text" x="22" y="130" font-family="STIX Two Text, Georgia, serif" font-size="14.5" fill="#6a7078">verified algorithms, optional</text>
+
+  <rect class="f-box" x="6" y="154" width="262" height="74" rx="8" fill="#ffffff" stroke="#e4e1d9" stroke-width="1.2"/>
+  <text class="f-title" x="22" y="180" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#1d232a">External systems</text>
+  <text class="f-text" font-family="STIX Two Text, Georgia, serif" font-size="14.5" fill="#6a7078">
+    <tspan x="22" y="201">SymPy, SageMath, Maxima, PARI/GP</tspan>
+    <tspan x="22" y="219">and FLINT, through DSLean, optional</tspan>
+  </text>
+
+  <line class="f-arrow" x1="272" y1="40" x2="310" y2="98" stroke="#8d929a" stroke-width="1.6" marker-end="url(#relations-arrow)"/>
+  <line class="f-arrow" x1="272" y1="112" x2="310" y2="117" stroke="#8d929a" stroke-width="1.6" marker-end="url(#relations-arrow)"/>
+  <line class="f-arrow" x1="272" y1="191" x2="310" y2="138" stroke="#8d929a" stroke-width="1.6" marker-end="url(#relations-arrow)"/>
+
+  <!-- SymLean -->
+  <rect class="f-box" x="316" y="10" width="262" height="218" rx="8" fill="#ffffff" stroke="#e4e1d9" stroke-width="1.2"/>
+  <text class="f-title" x="332" y="40" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#1d232a">SymLean</text>
+  <text class="f-text" font-family="STIX Two Text, Georgia, serif" font-size="14.5" fill="#6a7078">
+    <tspan x="332" y="70">turns each proposal into a</tspan>
+    <tspan x="332" y="90">certificate and a proof, stated</tspan>
+    <tspan x="332" y="110">with Mathlib’s definitions:</tspan>
+  </text>
+  <rect class="f-code" x="330" y="126" width="234" height="54" rx="5" fill="#f4f2ec"/>
+  <text class="f-mono" font-family="JuliaMono, monospace" font-size="12.5" fill="#1d232a">
+    <tspan x="342" y="148">HasDerivAt  ∫ x in a..b</tspan>
+    <tspan x="342" y="168">Real.Gamma  Matrix.det</tspan>
+  </text>
+  <text class="f-tag" x="332" y="210" font-family="system-ui, sans-serif" font-size="12" fill="#8d929a">a proposal that fails is refused</text>
+
+  <line class="f-arrow" x1="582" y1="119" x2="620" y2="119" stroke="#8d929a" stroke-width="1.6" marker-end="url(#relations-arrow)"/>
+
+  <!-- Kernel -->
+  <rect class="f-box f-kernel" x="626" y="10" width="268" height="218" rx="8" fill="#ffffff" stroke="#2e7d4f" stroke-width="2"/>
+  <text class="f-title" x="642" y="40" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#1d232a">Lean’s kernel</text>
+  <text class="f-text" font-family="STIX Two Text, Georgia, serif" font-size="14.5" fill="#6a7078">
+    <tspan x="642" y="70">checks the proof. What comes</tspan>
+    <tspan x="642" y="90">out is a theorem you can use</tspan>
+    <tspan x="642" y="110">in any Mathlib proof, with the</tspan>
+    <tspan x="642" y="130">three standard axioms and no</tspan>
+    <tspan x="642" y="150">axioms of SymLean.</tspan>
+  </text>
+  <text class="f-tag f-tag-kernel" x="642" y="210" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#2e7d4f">✓ the trusted step</text>
+
+  <!-- Mathlib underneath -->
+  <rect class="f-box f-base" x="6" y="258" width="888" height="40" rx="8" fill="#f3f1eb" stroke="#e4e1d9" stroke-width="1.2"/>
+  <text x="450" y="283" text-anchor="middle" font-family="STIX Two Text, Georgia, serif" font-size="14.5" fill="#6a7078" class="f-text"><tspan class="f-title" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#1d232a">Mathlib</tspan>   its definitions are in every statement, and its tactics ring, norm_num and linarith are routes of cas</text>
+</svg>

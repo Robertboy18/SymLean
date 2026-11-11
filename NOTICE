@@ -1,0 +1,61 @@
+SymLean
+Copyright (c) 2026 SymLean Team. Released under the Apache License 2.0 (see LICENSE).
+
+SymLean is built by a team at Caltech: Robert Joseph George and Anima Anandkumar, in
+collaboration with Thomas Y. Hou, Changhe Yang and Peicong Song.
+
+Required dependencies
+=====================
+
+SymLean requires two libraries, which Lake fetches when it builds SymLean; neither is bundled
+here. FloatLib (https://github.com/lean-dojo/FloatLib, 3.1.0 at 0fe4f04) is released under the MIT
+License, and Mathlib (https://github.com/leanprover-community/mathlib4, v4.35.0) under the
+Apache License 2.0.
+
+Third-party acknowledgements
+============================
+
+DSLean
+------
+Source:   https://github.com/taterowney/DSLean; SymLean requires the Lean 4.35.0 port
+          https://github.com/Robertboy18/DSLean, branch leancas, revision 1b5f22f
+Author:   taterowney (GitHub) and the DSLean contributors
+License:  Creative Commons Attribution 4.0 International (CC BY 4.0),
+          https://creativecommons.org/licenses/by/4.0/legalcode
+          DSLean is provided "as is", without warranties of any kind; see Section 5 of that
+          license.
+
+The optional oracle library of SymLean (CASOracle/) depends on DSLean, which SymLean fetches only
+with `lake -R -Koracle=on`. DSLean's grammars translate between Lean and the languages of the
+oracles, and its runner runs them. The branch leancas is DSLean's update to Lean 4.35.0 with five
+changes: operand precedences that follow the precedence option, pattern priorities that hold in
+toExternal', a runner with a deadline and a bounded output (DSLean/Process.lean), Gappa's input
+grammar in a module of its own, and info trees turned off while the gappa tactic elaborates the
+proof it generates. No DSLean file is copied into SymLean.
+
+Hex
+---
+Source:   https://github.com/leanprover/hex (v0.10.0)
+Author:   the Lean FRO and the Hex contributors
+License:  Apache License 2.0
+
+The optional routes of CASHex/ use Hex's libraries, which SymLean fetches only with
+`lake -R -Khex=on update`. The file in CASHex/patches is a modification of a Hex source file
+(HexLLL) that lets it build on glibc systems with this toolchain; it is applied by hand to the
+fetched package, as Site/Pages/guide/hex.md describes.
+
+JuliaMono
+---------
+Source:   https://github.com/cormullion/juliamono
+Author:   Copyright (c) 2020 - 2023, cormullion, with Reserved Font Name JuliaMono
+License:  SIL Open Font License, Version 1.1; see Site/Static/fonts/JuliaMono-OFL.txt
+
+STIX Two
+--------
+Source:   https://github.com/stipub/stixfonts
+Author:   Copyright 2001-2021 The STIX Fonts Project Authors, with Reserved Font Name "TM Math"
+License:  SIL Open Font License, Version 1.1; see Site/Static/fonts/STIX-OFL.txt
+
+The website in Site/ uses these fonts, in Site/Static/fonts: JuliaMono-Regular.woff2,
+STIXTwoMath-Regular.woff2 and the four STIXTwoText files. The STIX Two files were converted to
+WOFF2 from the OTF files of the upstream release v2.13 b171.
