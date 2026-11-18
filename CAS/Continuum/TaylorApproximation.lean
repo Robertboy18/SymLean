@@ -99,7 +99,7 @@ noncomputable def taylorApproxCertIcc
         C * (b - a) ^ (n + 1) / n.factorial
     rw [scalarTaylorPolynomialWithin_eval]
     have hlocal :=
-      taylor_mean_remainder_bound hab hf hx hderiv
+      taylor_mean_remainder_bound hf hx hderiv
     calc
       ‖f x - taylorWithinEval f n (Set.Icc a b) a x‖
           ≤ C * (x - a) ^ (n + 1) / n.factorial :=

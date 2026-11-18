@@ -166,7 +166,7 @@ where
   atom (e : Lean.Expr) : StateT (Array Lean.Expr) MetaM (Verified.Expr ℕ) := do
     let atoms ← get
     for h : i in [0:atoms.size] do
-      if ← withReducible (isDefEq atoms[i] e) then return .var i
+      if ← withReducible (Elaboration.DefEq.agree atoms[i] e) then return .var i
     set (atoms.push e)
     return .var atoms.size
 
@@ -958,9 +958,9 @@ def groebnerGoalProof (ring set target : Lean.Expr) : TermElabM Lean.Expr := do
   let some n ← finVariables? ring |
     throwError "cas: a Gröbner goal must be in `MvPolynomial (Fin n) ℚ` for a numeral `n`"
   let ctx ← Ctx.mvPolynomial n
-  unless ← isDefEq ring ctx.ring do
+  unless ← Elaboration.DefEq.agree ring ctx.ring do
     throwError "cas: a Gröbner goal must be in `MvPolynomial (Fin n) ℚ` for a numeral `n`"
-  unless ← withReducible (isDefEq (← lexGroebnerStatement n set) target) do
+  unless ← withReducible (Elaboration.DefEq.agree (← lexGroebnerStatement n set) target) do
     throwError "cas: on a goal `∀ p ∈ Ideal.span S, p ≠ 0 → ∃ …`, `cas` proves only the \
       Gröbner property for `MonomialOrder.lex`, `∃ g ∈ S, MonomialOrder.lex.leadingTerm g ∣ \
       MonomialOrder.lex.leadingTerm p` with the same set `S`; other monomial orders and other \
@@ -970,7 +970,7 @@ def groebnerGoalProof (ring set target : Lean.Expr) : TermElabM Lean.Expr := do
   let terms := members.map (·.1)
   let polys ← terms.mapM fun t ↦ polynomialOver n t
   let proof ← groebnerProperty "cas" ctx polys terms
-  unless ← isDefEq (← inferType proof) target do
+  unless ← Elaboration.DefEq.agree (← inferType proof) target do
     throwError "cas: the goal is not the Gröbner property for `MonomialOrder.lex`"
   return proof
 

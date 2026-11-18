@@ -32,7 +32,7 @@ file only, so it holds nothing else.
 
 The grammar language, the translations `toExternal'` and `fromExternal'` that run a grammar,
 and `Gappa_input` come from DSLean. CASOracle uses DSLean as a Lake package and copies none of
-its code. The revision we pin is DSLean's port to Lean 4.35.0 (`CASOracle.Oracle` lists its
+its code. The revision we pin is DSLean's port to Lean 4.36.0 (`CASOracle.Oracle` lists its
 changes), and the grammars below rely on two of them: the reading grammars on operand
 precedences that follow the `precedence` option, the writing grammars on pattern priorities that
 hold in `toExternal'`.

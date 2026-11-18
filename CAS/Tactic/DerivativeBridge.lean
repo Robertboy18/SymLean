@@ -161,7 +161,7 @@ private def describeUnprovedConditions (goal : MVarId) : MetaM (Option MessageDa
         (← `(tactic|
           ($unfold:tactic
            try (repeat' constructor)
-           all_goals try (first | assumption | positivity))))
+           all_goals try (first | cas_assumption | positivity))))
     catch _ =>
       pure [copy.mvarId!]
   if remaining.isEmpty then
@@ -207,14 +207,14 @@ def closeValidity
        try (repeat' constructor)
        all_goals
          first
-           | assumption
+           | cas_assumption
            | positivity
            | symbolic_assumptions
            | (apply ne_of_gt; positivity)
            | (apply ne_of_lt; positivity)
            | nlinarith
            | (ring_nf at *
-              first | assumption | positivity | linarith | nlinarith)))
+              first | cas_assumption | positivity | linarith | nlinarith)))
   let core : TSyntax `tactic ←
     `(tactic|
       first
@@ -231,7 +231,7 @@ def closeValidity
     | some evidence =>
         `(tactic|
           first
-            | exact $evidence
+            | cas_staged exact $evidence
             | (have hcasValidity := $evidence
                $core:tactic))
   let remaining ←
@@ -526,7 +526,7 @@ example after the lowering of `abs`, `tan`, or hyperbolic functions) an equality
 def transportToFunction
     (derivative : Derivative) (function : Expr) (predicate : Expr → MetaM Expr) :
     MetaM (Expr × Option MVarId) := do
-  if ← isDefEq function derivative.function then
+  if ← Elaboration.DefEq.agree function derivative.function then
     return (derivative.proof, none)
   let functionType ← inferType function
   let equality ← mkFreshExprSyntheticOpaqueMVar (← mkEq function derivative.function)
@@ -612,7 +612,7 @@ def mathlibCleanup (goals : List MVarId) : MetaM (List MVarId) := do
       | rw [tangent_derivative_mul_normalize]
       | rw [tangent_derivative_div_normalize]
       | rw [← tangent_scaled_sum_normalize]
-      | (congr 1
+      | ((cas_sealed congr 1)
          funext t
          rw [Real.tanh_eq]
          ring)
@@ -657,7 +657,7 @@ def loweringBridgeSyntax : MetaM (TSyntax `tactic) :=
   -- `Nat.cast_sub`, so that the structurally reflected exponents of the reifier match.
   `(tactic|
     first
-      | rfl
+      | cas_rfl
       | (simp +decide (disch := omega) only
           [Verified.Expr.eval, Verified.Expr.ofLp_lineEmbed, Verified.Expr.ofLp_paramEmbed,
             Fin.reduceFinMk, reduceFinAppend, Fin.append_left, Fin.append_right, Fin.isValue,
@@ -974,7 +974,7 @@ def closeRealEqualityGoal
   let target ← instantiateMVars (← goal.getType)
   let some (type, lhs, rhs) := target.consumeMData.eq?
     | throwError "{operation} checked identity route expected an equality"
-  unless ← isDefEq type (mkConst ``Real) do
+  unless ← Elaboration.DefEq.agree type (mkConst ``Real) do
     throwError
       "{operation} proves checked identities between real numbers; this equality is in\
        {indentExpr type}"

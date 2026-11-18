@@ -26,13 +26,13 @@ the elaborator's cancellation, and on every exit path an attempt to end its proc
 `SIGTERM`, then `SIGKILL` through the system `kill` when there is one, with bounded waits of
 about five seconds in all (a descendant that leaves the group, or a process in an
 uninterruptible wait, is not covered). It opens no socket and starts no server. CASOracle copies
-none of DSLean's code. The revision we pin is DSLean's port to Lean 4.35.0, the branch
-<https://github.com/Robertboy18/DSLean/tree/leancas>, with five changes: operand precedences that
-follow the precedence option, pattern priorities that hold in `toExternal'`, a runner with a
-deadline and a bounded output (`DSLean/Process.lean`), Gappa's input grammar in a module of its
-own, and info trees turned off while the `gappa` tactic elaborates the proof it generates. The
-files of `CASOracle` are ordinary files, not `module`s, because DSLean's are, so a `module` file
-cannot import them.
+none of DSLean's code. The revision we pin is DSLean's port to Lean 4.36.0, the tag `v4.36.0` of
+<https://github.com/Robertboy18/DSLean> (on its branch `leancas`), with five changes: operand
+precedences that follow the precedence option, pattern priorities that hold in `toExternal'`, a
+runner with a deadline and a bounded output (`DSLean/Process.lean`), Gappa's input grammar in a
+module of its own, and info trees turned off while the `gappa` tactic elaborates the proof it
+generates. The files of `CASOracle` are ordinary files, not `module`s, because DSLean's are, so a
+`module` file cannot import them.
 
 The program of each oracle comes from an environment variable:
 

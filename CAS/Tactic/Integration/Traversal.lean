@@ -9,6 +9,7 @@ module
 public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import CAS.Expr.Syntax
+public meta import CAS.Elaboration.DefEq
 public meta import CAS.Tactic.Integration.Basic
 
 /-!
@@ -74,7 +75,7 @@ def uniqueCoordinate (target : Expr) : MetaM Expr := do
         "cas expected a coordinate line containing \
          EuclideanSpace.single"
   for other in coordinates[1:] do
-    unless ← isDefEq coordinate other do
+    unless ← Elaboration.DefEq.agree coordinate other do
       throwError
         "cas found multiple coordinate directions in the target"
   return coordinate

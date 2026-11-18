@@ -9,6 +9,7 @@ module
 public meta import Lean.Meta.Tactic.Unfold
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.Tactic.Positivity
+public import CAS.Elaboration.DefEq -- shake: keep: the conversion quotes `cas_rfl` and `cas_staged`
 public import CAS.Expr.Syntax
 
 /-!
@@ -23,15 +24,17 @@ that differs from the stated one fails, with the first conversion goal that rema
 
 We unfold the caller's local definitions that reflection unfolded, then match the theorem
 against the goal with Mathlib's `Lean.MVarId.convert` at depth one under a cheap configuration.
-Integrands are aligned pointwise first (`intervalIntegral.integral_congr`). Then `simp` with the
-evaluation equations of `Verified.Expr.eval` and `Verified.Expr.diff` and the rewrites of the
-tangent, the hyperbolic functions, the arccosine, `Real.sqrt_sq_eq_abs` and `Real.cos_sq'`
-brings both sides to ordinary syntax, and `ring_nf` normalizes them. What remains goes to
-`field_simp`, whose side conditions are discharged by assumption, `positivity` or `nlinarith`,
-followed by `ring`, to `simp` with a Pythagorean identity and `ring`, or to `ring` after the
-logarithm of a negative number is written as that of its absolute value (`Real.log_neg_eq_log`),
-as the value of a primitive with `log |x|` at negative points has it. The failure message points
-to `#cas [integrate x]`, which shows the computed primitive.
+Integrands are aligned pointwise first (`intervalIntegral.integral_congr`, under `cas_staged`),
+and a conversion goal that holds by unfolding the evaluator closes by `cas_rfl`; neither unfolds
+the real numbers when it fails. Then `simp`
+with the evaluation equations of `Verified.Expr.eval` and `Verified.Expr.diff` and the rewrites
+of the tangent, the hyperbolic functions, the arccosine, `Real.sqrt_sq_eq_abs` and
+`Real.cos_sq'` brings both sides to ordinary syntax, and `ring_nf` normalizes them. What remains
+goes to `field_simp`, whose side conditions are discharged by assumption, `positivity` or
+`nlinarith`, followed by `ring`, to `simp` with a Pythagorean identity and `ring`, or to `ring`
+after the logarithm of a negative number is written as that of its absolute value
+(`Real.log_neg_eq_log`), as the value of a primitive with `log |x|` at negative points has it.
+The failure message points to `#cas [integrate x]`, which shows the computed primitive.
 -/
 
 public meta section
@@ -59,10 +62,10 @@ def close (proof : Expr) (localDefinitions : Array Name) : TacticM Unit := do
     withSuppressedMessages <| evalTactic (← `(tactic|
       all_goals
         try
-          apply intervalIntegral.integral_congr
+          (cas_staged apply intervalIntegral.integral_congr)
           intro t ht
         first
-          | rfl
+          | cas_rfl
           | (funext t
              simp [Verified.Expr.eval, Verified.Expr.diff,
                PiLp.single_apply, Real.tan_eq_sin_div_cos,
@@ -85,9 +88,9 @@ def close (proof : Expr) (localDefinitions : Array Name) : TacticM Unit := do
         solve
           | (field_simp
               (disch := first
-                | assumption
+                | cas_assumption
                 | positivity
-                | nlinarith [sq_pos_of_ne_zero (by assumption)]) <;>
+                | nlinarith [sq_pos_of_ne_zero (by cas_assumption)]) <;>
               ring)
           | (simp [Real.cos_sq'] <;> ring)
           | (simp [Real.sin_sq] <;> ring)

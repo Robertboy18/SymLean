@@ -186,7 +186,7 @@ def approach? (filter : Expr) : MetaM (Option (Expr × Approach)) := do
     return none
   let point := filter.getAppArgs[2]!
   let set := filter.getAppArgs[3]!.consumeMData
-  let samePoint (e : Expr) : MetaM Bool := isDefEq e point
+  let samePoint (e : Expr) : MetaM Bool := Elaboration.DefEq.agree e point
   if set.isAppOfArity ``Compl.compl 3 then
     let inner := set.appArg!.consumeMData
     if inner.isAppOfArity ``Singleton.singleton 4 && (← samePoint inner.appArg!) then
@@ -267,7 +267,8 @@ def closeLimit : TacticM Name := withMainContext do
     throwError "cas limit route expected a `Filter.Tendsto` goal"
   let arguments := target.getAppArgs
   let real := mkConst ``Real
-  unless (← isDefEq arguments[0]! real) && (← isDefEq arguments[1]! real) do
+  unless (← Elaboration.DefEq.agree arguments[0]! real) &&
+      (← Elaboration.DefEq.agree arguments[1]! real) do
     throwError "cas limit route proves limits of real functions of a real variable"
   let function := arguments[2]!
   let source := arguments[3]!.consumeMData
@@ -357,9 +358,9 @@ def closeLimit : TacticM Name := withMainContext do
 def relation? (target : Expr) : MetaM (Option (Expr × Expr × Bool)) := do
   let target ← whnfR target
   if let some (type, lhs, rhs) := target.le? then
-    if ← isDefEq type (mkConst ``Real) then return some (lhs, rhs, false)
+    if ← Elaboration.DefEq.agree type (mkConst ``Real) then return some (lhs, rhs, false)
   if let some (type, lhs, rhs) := target.lt? then
-    if ← isDefEq type (mkConst ``Real) then return some (lhs, rhs, true)
+    if ← Elaboration.DefEq.agree type (mkConst ``Real) then return some (lhs, rhs, true)
   return none
 
 /-- The certificate terms `cert`, `locs`, `cuts`, `signs` of `reduceCheck`. -/
@@ -435,7 +436,7 @@ partial def closeSign (interval? : Option (Expr × ℚ × ℚ × Expr) := none) 
       let (membership, goal) ← goal.intro1P
       replaceMainGoal [goal]
       return ← closeSign (some (element, a, b, mkFVar membership))
-    unless ← goal.withContext (isDefEq domain (mkConst ``Real)) do
+    unless ← goal.withContext (Elaboration.DefEq.agree domain (mkConst ``Real)) do
       throwError "cas sign route expected a quantifier over ℝ"
     let (_, goal) ← goal.intro1P
     replaceMainGoal [goal]
@@ -447,7 +448,7 @@ partial def closeSign (interval? : Option (Expr × ℚ × ℚ × Expr) := none) 
     let [variableId] := fvars.toList
       | throwError "cas sign route expected a relation in one real variable"
     let x := mkFVar variableId
-    unless ← isDefEq (← inferType x) (mkConst ``Real) do
+    unless ← Elaboration.DefEq.agree (← inferType x) (mkConst ``Real) do
       throwError "cas sign route expected a relation in one real variable"
     let difference ← mkAppM ``HSub.hSub #[rhs, lhs]
     let marks := match interval? with
@@ -555,7 +556,7 @@ def rootSetPolynomial? (card : Expr) : MetaM (Option Expr) := do
   let arguments := rootSet.getAppArgs
   let some polynomial := arguments[2]? | return none
   let some carrier := arguments[3]? | return none
-  unless ← isDefEq carrier (mkConst ``Real) do return none
+  unless ← Elaboration.DefEq.agree carrier (mkConst ``Real) do return none
   return some polynomial
 
 /-- Prove `statement`, the hypothesis `∀ y : ℝ, aeval y p = quoted.eval ![y]` of
@@ -671,7 +672,7 @@ def closeRootExistence : TacticM Unit := withMainContext do
   let target := (← instantiateMVars (← goal.getType)).consumeMData
   unless target.isAppOfArity ``Exists 2 do
     throwError "cas root route expected an existential statement"
-  unless ← isDefEq target.getAppArgs[0]! (mkConst ``Real) do
+  unless ← Elaboration.DefEq.agree target.getAppArgs[0]! (mkConst ``Real) do
     throwError "cas root route expected an existential over ℝ"
   let body := target.getAppArgs[1]!
   let (expr, poly, data, difference, bounds) ← withLocalDeclD `x (mkConst ``Real) fun x ↦ do
@@ -680,7 +681,7 @@ def closeRootExistence : TacticM Unit := withMainContext do
     let mut bounds : Array (Bool × ℚ × Bool) := #[]
     for part in parts do
       if let some (type, lhs, rhs) := part.eq? then
-        if equation?.isNone && (← isDefEq type (mkConst ``Real)) then
+        if equation?.isNone && (← Elaboration.DefEq.agree type (mkConst ``Real)) then
           equation? := some (← mkAppM ``HSub.hSub #[lhs, rhs])
           continue
       let some bound ← bound? x part
@@ -754,7 +755,7 @@ def closeFindRoot : TacticM Unit := withMainContext do
   let unique := target.isAppOfArity ``ExistsUnique 2
   unless target.isAppOfArity ``Exists 2 || unique do
     throwError "cas root route expected an existential statement"
-  unless ← isDefEq target.getAppArgs[0]! (mkConst ``Real) do
+  unless ← Elaboration.DefEq.agree target.getAppArgs[0]! (mkConst ``Real) do
     throwError "cas root route expected an existential over ℝ"
   let body := target.getAppArgs[1]!
   let (expr, difference, bounds, shapeOk) ← withLocalDeclD `x (mkConst ``Real) fun x ↦ do
@@ -764,7 +765,7 @@ def closeFindRoot : TacticM Unit := withMainContext do
     let mut interval := false
     for part in parts do
       if let some (type, lhs, rhs) := part.eq? then
-        if equation?.isNone && (← isDefEq type (mkConst ``Real)) then
+        if equation?.isNone && (← Elaboration.DefEq.agree type (mkConst ``Real)) then
           equation? := some (← mkAppM ``HSub.hSub #[lhs, rhs])
           continue
       if part.isAppOfArity ``Membership.mem 5 && part.getArg! 4 == x then
@@ -807,9 +808,9 @@ def closeFindRoot : TacticM Unit := withMainContext do
   let rootSyntax ← Term.exprToSyntax root
   let bridgeSyntax ← Term.exprToSyntax (← bridge (← Command.quoteVerifiedExpr expr) difference)
   let leaf ← `(tactic| first
-    | assumption
+    | cas_assumption
     | linarith
-    | (norm_num at *; first | assumption | linarith | (constructor <;> linarith))
+    | (norm_num at *; first | cas_assumption | linarith | (constructor <;> linarith))
     | (simp only [Set.mem_Icc] at *; constructor <;> linarith))
   let script ← if unique then `(tactic|
       (obtain ⟨x, ⟨hx, hfx⟩, huniq⟩ := $rootSyntax:term

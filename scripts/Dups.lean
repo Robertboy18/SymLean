@@ -16,7 +16,8 @@ Authors: SymLean Team
 -- The library is `CAS` without `CAS.Examples`. Statements and values are compared as terms, up to
 -- the names of bound variables and of universe parameters; a name quoted in meta code (``n``) is
 -- a use of `n`. Proofs count: theorem bodies are read with `allowOpaque`. Generated declarations
--- (`_proof_n`, matchers, `eq_n`, `eq_def` and the like) are not counted.
+-- (`_proof_n`, matchers, `eq_n`, `eq_def`, the equation `T.brecOn.eq` of an auxiliary recursor and
+-- the like) are not counted.
 
 open Lean Meta Compiler
 
@@ -71,7 +72,8 @@ def stripForall : Expr → Nat → Expr × Nat
   let skip (n : Name) := n.isInternalDetail || isAuxRecursor env n || isNoConfusion env n ||
     (env.isProjectionFn n) || isMatcherCore env n ||
     (match n with
-      | .str _ s => s == "eq_def" || s == "eq_unfold" || s == "induct" || s == "fun_cases"
+      | .str p s => s == "eq_def" || s == "eq_unfold" || s == "induct" || s == "fun_cases" ||
+          (s == "eq" && isAuxRecursor env p)
       | _ => false)
   let canon (c : ConstantInfo) (e : Expr) : Expr :=
     e.instantiateLevelParams c.levelParams

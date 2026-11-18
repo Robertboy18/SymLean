@@ -9,10 +9,10 @@ Let’s start with a few calculations and then use one of them in a proof. Every
 
 ## Setting up {#setup}
 
-SymLean builds with Lean 4.35.0 and Mathlib v4.35.0. In a project on the same toolchain, add it to `lakefile.lean`:
+SymLean builds with Lean 4.36.0 and Mathlib v4.36.0. In a project on the same toolchain, add it to `lakefile.lean`:
 
 ```
-require SymLean from git "https://github.com/Robertboy18/SymLean.git" @ "main"
+require SymLean from git "https://github.com/Robertboy18/SymLean.git" @ "v4.36.0"
 ```
 
 Then fetch it, get Mathlib’s cache, and build:

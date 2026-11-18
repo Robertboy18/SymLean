@@ -48,6 +48,7 @@ unchanged.
 @[expose] public section
 
 open Inclusion
+open Inclusion.IntervalDyadicReal (Dyadic.toReal)
 
 namespace CAS.Continuum.CEGAInclusion
 
@@ -114,7 +115,8 @@ def closed (lo hi : Dyadic) : Interval Dyadic := Interval.Icc lo hi
 
 /-- A real `x` with `lo ≤ x ≤ hi` (endpoints read as reals) lies in the dyadic interval
 `closed lo hi`. -/
-theorem mem_closed {lo hi : Dyadic} {x : ℝ} (hlo : lo.toReal ≤ x) (hhi : x ≤ hi.toReal) :
+theorem mem_closed {lo hi : Dyadic} {x : ℝ} (hlo : Dyadic.toReal lo ≤ x)
+    (hhi : x ≤ Dyadic.toReal hi) :
     x ∈ closed lo hi :=
   Interval.mem_map_Icc Dyadic.toReal hlo hhi
 
@@ -122,7 +124,7 @@ theorem mem_closed {lo hi : Dyadic} {x : ℝ} (hlo : lo.toReal ≤ x) (hhi : x �
 def atLeast (lo : Dyadic) : Interval Dyadic := Interval.Ici lo
 
 /-- A real `x` with `lo ≤ x` (`lo` read as a real) lies in the dyadic interval `atLeast lo`. -/
-theorem mem_atLeast {lo : Dyadic} {x : ℝ} (hlo : lo.toReal ≤ x) : x ∈ atLeast lo :=
+theorem mem_atLeast {lo : Dyadic} {x : ℝ} (hlo : Dyadic.toReal lo ≤ x) : x ∈ atLeast lo :=
   ⟨WithBot.coe_le_coe.mpr hlo, le_top⟩
 
 end CAS.Continuum.CEGAInclusion

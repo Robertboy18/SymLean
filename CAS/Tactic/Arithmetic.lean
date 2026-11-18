@@ -150,7 +150,7 @@ private def closeEquality
     evalTactic (← `(tactic|
       first
         | (norm_num; done)
-        | (field_simp (disch := (first | positivity | assumption | linarith)) <;>
+        | (field_simp (disch := (first | positivity | cas_assumption | linarith)) <;>
            ring_nf <;>
            simp [Real.exp_neg]; done)))
   else if features.hasDivision then
@@ -173,7 +173,7 @@ private def closeOrder
   if !features.hasVariables then
     evalTactic (← `(tactic| solve | norm_num | positivity | nlinarith | linarith))
   else if features.hasPositivitySyntax then
-    evalTactic (← `(tactic| first | assumption | positivity | nlinarith))
+    evalTactic (← `(tactic| first | cas_assumption | positivity | nlinarith))
   else if features.hasNonlinearSyntax then
     evalTactic (← `(tactic| nlinarith))
   else
@@ -197,14 +197,17 @@ private def closeDisequality
 /--
 Close an equality using hypotheses, definitional equality, ring operations, or commutativity.
 
-Ring normalization precedes AC simplification so arithmetic proofs can keep expensive
-functions as atoms. In particular, an integral can commute with another summand without
-being evaluated.
+The three closers that compare terms by unfolding run in the stages of `Elaboration.DefEq.agree`
+(`cas_assumption`, `cas_rfl`, `cas_staged ac_rfl`), so an equality that none of them proves is
+refused without unfolding the real numbers. Ring normalization precedes AC simplification so
+arithmetic proofs can keep expensive functions as atoms. In particular, an integral can commute
+with another summand without being evaluated.
 Associativity and commutativity also apply in additive groups that are not rings.
 The caller restores the proof state if none of these closing tactics applies.
 -/
 def closeAlgebraicEquality : TacticM Unit := focus do
-  evalTactic (← `(tactic| first | assumption | rfl | ring1 | ac_rfl))
+  evalTactic (← `(tactic|
+    first | cas_assumption | cas_rfl | ring1 | cas_staged ac_rfl))
 
 /-- Product, quotient, and exponent-addition identities with their actual sign conditions. -/
 private def closeElementaryEquality : TacticM Unit := do
@@ -214,7 +217,7 @@ private def closeElementaryEquality : TacticM Unit := do
         (e.isAppOf ``HPow.hPow && e.getAppArgs[1]? == some (mkConst ``Real))).isSome do
     throwError "no elementary power identity"
   evalTactic (← `(tactic|
-    simp (disch := (first | assumption | positivity)) only
+    simp (disch := (first | cas_assumption | positivity)) only
       [Real.sqrt_mul, Real.sqrt_div, Real.div_rpow, ← Real.rpow_add, mul_div_cancel₀]))
   unless (← getGoals).isEmpty do
     evalTactic (← `(tactic|
@@ -227,7 +230,7 @@ private def closeQuadraticOrder : TacticM Unit := do
   evalTactic (← `(tactic|
     apply CAS.Analysis.Scalar.mixed_energy_le_of_discriminant <;>
       first
-        | assumption
+        | cas_assumption
         | positivity
         | (field_simp (disch := cas_nonvanishing) <;> norm_num <;> nlinarith)))
 

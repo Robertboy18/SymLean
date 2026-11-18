@@ -52,7 +52,7 @@ intersect them with FloatLib's enclosure.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
 * NIST Digital Library of Mathematical Functions, §4.19 Maclaurin Series and Laurent Series,
   Version 1.2.8 (2026-09-15), <https://dlmf.nist.gov/4.19>. Equations (4.19.1) and (4.19.2), the
   series of `sin z` and `cos z`.
@@ -203,6 +203,10 @@ theorem sinEndpoint_sound {I : RationalInterval} {x : ℝ}
     (hprincipal : -(piInterval.lo / 2) ≤ I.lo ∧ I.hi ≤ piInterval.lo / 2)
     (hx : I.MemReal x) :
     (sinEndpoint I hprincipal).MemReal (Real.sin x) := by
+  -- Unfold first: the kernel then meets projections of a constructor. Left folded, it compares
+  -- `sinEndpoint I _` with `sinPoint I.lo` as structures and unfolds FloatLib's sine on `I.lo`,
+  -- which ends in `deep recursion detected` (`BUGS.md`, N50).
+  unfold sinEndpoint
   constructor
   · exact (sinPoint_sound I.lo).1.trans <|
       Real.monotoneOn_sin
@@ -231,6 +235,8 @@ theorem cosEndpoint_sound {I : RationalInterval} {x : ℝ}
     (hprincipal : 0 ≤ I.lo ∧ I.hi ≤ piInterval.lo)
     (hx : I.MemReal x) :
     (cosEndpoint I hprincipal).MemReal (Real.cos x) := by
+  -- Unfold first, as in `sinEndpoint_sound`.
+  unfold cosEndpoint
   constructor
   · exact (cosPoint_sound I.hi).1.trans <|
       Real.antitoneOn_cos

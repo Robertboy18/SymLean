@@ -30,11 +30,11 @@ forms for reversed limits, transport the checked bounds to the integral as writt
 
 The elaborator takes the one interval integral of the goal (`intervalIntegrals`), checks that it is
 over the volume measure with rational limits, reflects the integrand into `Verified.Expr (Fin 1)`
-and abstracts the integral from the goal (`kabstract`). `validityOn?` reduces the domain checker
-`RationalInterval.validIteratesOnIcc?` with the kernel's evaluator; its certificate gives the
-continuity of the integrand (`continuousOn_of_valid`) and admits Simpson panels, and without it
-`fun_prop` must prove continuity and only range panels remain. Compiled code, which is not trusted,
-then searches. The panel count doubles from one to `cega.maxIntegrationPanels` unless
+and abstracts the integral from the goal (`Elaboration.DefEq.abstract`). `validityOn?` reduces the
+domain checker `RationalInterval.validIteratesOnIcc?` with the kernel's evaluator; its certificate
+gives the continuity of the integrand (`continuousOn_of_valid`) and admits Simpson panels, and
+without it `fun_prop` must prove continuity and only range panels remain. Compiled code, which is
+not trusted, then searches. The panel count doubles from one to `cega.maxIntegrationPanels` unless
 `(panels := n)` gives it, and the search takes the leanest working precision and the shortest
 decimal bounds whose panel enclosure (`BatchSimpson.sharedPanels`, `panels (BatchRange.panel p f)`)
 passes a test of the goal's relations by `DigitsEval.eval`; `(digits := d)` fixes the working
@@ -417,7 +417,7 @@ private def realComparison? (target : Lean.Expr) :
       some (arguments[0]!, arguments[3]!, arguments[2]!, true)
     else none
   let some (type, smaller, larger, strict) := sides? | return none
-  unless ← isDefEq type (mkConst ``Real) do return none
+  unless ← Elaboration.DefEq.agree type (mkConst ``Real) do return none
   return some (smaller, larger, strict)
 
 /-- Read one relation of the goal over the generalized integral `y`. -/
@@ -562,7 +562,7 @@ private def attempt (config : BareConfig) (problem : IntegralProblem) (q : Panel
         Int.cast_one, Int.cast_neg, Int.cast_natCast, one_div, Real.tan_eq_sin_div_cos,
         Real.sinh_eq, Real.cosh_eq, Real.tanh_eq, Real.sqrt_sq_eq_abs, ← Real.rpow_natCast,
         Real.rpow_intCast, $definitions,*]; done)
-    | rfl)))
+    | cas_rfl)))
   -- The limits of the lemma are those of the integral as written, in either order of `a, b`.
   let bounds := mkAppN (mkConst transport) (arguments ++
     #[problem.view.lower, problem.view.upper, problem.view.function, hypothesis, checkMVar, ha,
@@ -642,7 +642,7 @@ def close (config : BareConfig) : TacticM (TSyntax `tactic) := withMainContext d
   let (f, definitions) ← reflectIntegrand view.function
   discard <| validateQueryInput .plain config.precision f
   let quoted ← CAS.Command.quoteVerifiedExpr f
-  let motive ← kabstract target integral
+  let motive ← Elaboration.DefEq.abstract target integral
   let ok ← goalTest motive reversed
   let cap := cega.maxIntegrationPanels.get (← getOptions)
   let counts := panelCounts config.panels? cap
@@ -664,7 +664,7 @@ def close (config : BareConfig) : TacticM (TSyntax `tactic) := withMainContext d
         prove type (← `(tactic|
           (unfold Verified.Expr.univariateEval
            dsimp only [Verified.Expr.eval]
-           fun_prop)))
+           cas_staged fun_prop)))
       catch _ =>
         throwError "cega: the integral route needs the integrand to be continuous on \
           [{showRational a}, {showRational b}]: the domain checker found no certificate that \

@@ -61,7 +61,7 @@ interval.
   SIAM, Philadelphia, 2009, <https://doi.org/10.1137/1.9780898717716>. Chapter 5 for interval
   extensions of real functions and their fundamental properties.
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>. We use its interval
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. We use its interval
   type `Interval ℚ`, its exact rational operations and its sine and cosine enclosures.
 -/
 

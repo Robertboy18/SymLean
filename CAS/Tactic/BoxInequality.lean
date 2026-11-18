@@ -356,7 +356,7 @@ def describeHead (target : Expr) : MetaM String := do
           return s!"the proposition{(← Meta.ppExpr target).pretty}"
 
 private def isRealComparison (type : Expr) : MetaM Bool :=
-  isDefEq type (mkConst ``Real)
+  Elaboration.DefEq.agree type (mkConst ``Real)
 
 /-- The argument of a real absolute value `|a|`. -/
 private def absArgument? (term : Expr) : Option Expr :=
@@ -793,13 +793,13 @@ private def proveBoxMembership
         (intro i
          fin_cases i <;>
            first
-             | assumption
+             | cas_assumption
              | (simp only [CAS.Continuum.RationalInterval.MemReal,
                   CAS.Continuum.RationalInterval.ofBounds, List.get,
                   Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
                   Matrix.head_cons, Matrix.cons_val_succ, Fin.isValue, Fin.zero_eta,
                   Fin.mk_one, Fin.reduceFinMk] at *
-                assumption))))
+                cas_assumption))))
       goal
   unless remaining.isEmpty do
     refuse operation m!"internal error: the box membership of the coordinates was not closed"
@@ -814,7 +814,7 @@ private def proveEvaluation (operation : String) (evaluationGoal : MVarId) : Tac
       evalTacticAt
         (← `(tactic|
           first
-            | rfl
+            | cas_rfl
             | (simp only [Verified.Expr.eval, Matrix.cons_val_zero, Matrix.cons_val_one,
                 Matrix.cons_val_two, Matrix.head_cons, Matrix.cons_val_succ, Fin.isValue,
                 Fin.reduceFinMk, Nat.cast_ofNat, Nat.cast_zero, Nat.cast_one, Int.cast_ofNat,
@@ -882,12 +882,12 @@ private def closeRecognizedGoalWith
     | refuse operation m!"internal error: the transport lemma has no membership argument"
   let some evaluation := explicitArguments[3]?
     | refuse operation m!"internal error: the transport lemma has no evaluation argument"
-  unless ← isDefEq certificateArgument certificate do
+  unless ← Elaboration.DefEq.agree certificateArgument certificate do
     refuse operation m!"the certificate{indentExpr (← inferType certificate)}\ndoes not have the \
       shape the transport lemma expects"
-  unless ← isDefEq vectorArgument coordinateVector do
+  unless ← Elaboration.DefEq.agree vectorArgument coordinateVector do
     refuse operation m!"internal error: the coordinate vector did not unify"
-  unless ← isDefEq conclusion target do
+  unless ← Elaboration.DefEq.agree conclusion target do
     refuse operation m!"the transported certificate proves{indentExpr conclusion}\nbut the goal \
       is{indentExpr target}"
   proveBoxMembership operation membership.mvarId! box bounds
@@ -895,7 +895,7 @@ private def closeRecognizedGoalWith
   for comparison in explicitArguments[4:] do
     let comparisonType ← instantiateMVars (← inferType comparison)
     let proof ← proveEndpoint "comparison with the stated bound" comparisonType
-    unless ← isDefEq comparison proof do
+    unless ← Elaboration.DefEq.agree comparison proof do
       refuse operation m!"internal error: the endpoint comparison did not unify"
   let proof ← instantiateMVars (mkAppN lemmaConstant arguments)
   let proof ← Tactic.ProofCarrier.checkCompletedProof s!"{operation} box route" proof
@@ -1715,7 +1715,10 @@ private partial def splitFacts (proof type : Expr) :
   if let some (set, element) := membership? type then
     if (intervalStrictness? set).isSome then
       return #[(proof, type)]
-    let predicate ← withTransparency .all <| whnf set
+    -- A set unfolds to `Set.ofPred predicate`, and membership in it to `predicate element`.
+    let set ← withTransparency .all <| whnf set
+    unless set.isAppOfArity ``Set.ofPred 2 do return #[]
+    let predicate ← withTransparency .all <| whnf set.appArg!
     if let .lam _ _ body _ := predicate then
       let unfolded ← Core.betaReduce (body.instantiate1 element)
       return ← splitFacts (← mkExpectedTypeHint proof unfolded) unfolded
@@ -1773,7 +1776,7 @@ private def coordinateTemplate? (point term : Expr) : Option (Expr × Expr) :=
 private def normToAbs (term : Expr) : MetaM Expr :=
   Meta.transform term (post := fun t ↦ do
     if t.isAppOfArity ``Norm.norm 3 then
-      if ← isDefEq t.getAppArgs[0]! (mkConst ``Real) then
+      if ← Elaboration.DefEq.agree t.getAppArgs[0]! (mkConst ``Real) then
         return .done (← mkAppM ``abs #[t.getAppArgs[2]!])
     return .continue)
 

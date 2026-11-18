@@ -79,7 +79,7 @@ theorem residual_norm_lt_one (bounds : ResidualEntryBounds n)
   rw [Matrix.linfty_opNorm_def, NNReal.coe_le_coe]
   refine Finset.sup_le fun i _ ↦ ?_
   rw [← NNReal.coe_le_coe]
-  simpa only [NNReal.coe_sum, coe_nnnorm] using bounds.row_norm_sum_le candidate hcert i
+  simpa only [NNReal.coe_sum, coe_nnNorm] using bounds.row_norm_sum_le candidate hcert i
 
 /-- Entrywise row-sum verification proves that the proposed product `B A` is a unit. -/
 theorem proposedInverse_mul_matrix_isUnit

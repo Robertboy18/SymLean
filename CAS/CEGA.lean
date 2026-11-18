@@ -157,7 +157,7 @@ private def appliedRelationDefEq?
   unless lhsArgs.size = rhsArgs.size do
     return false
   for (lhsArg, rhsArg) in lhsArgs.zip rhsArgs do
-    let equivalent ← withTransparency .all <| isDefEq lhsArg rhsArg
+    let equivalent ← withTransparency .all <| Elaboration.DefEq.agree lhsArg rhsArg
     unless equivalent do
       return false
   return true
@@ -172,9 +172,9 @@ domain is not definitionally the query box.
 -/
 private def inferDomainSubsetProof
     (targetDomain sourceDomain : Lean.Expr) : TacticM Lean.Expr := do
-  -- Retain set-builder syntax so `simp_all` can use `Set.mem_ofPred_eq` after unfolding a name.
-  let predicate ← withTransparency .all <| whnf targetDomain
-  let targetDomain ← mkAppM ``Set.ofPred #[predicate]
+  -- A named domain unfolds to its set-builder form `Set.ofPred _`, whose membership `simp_all`
+  -- reads with `Set.mem_ofPred_eq`.
+  let targetDomain ← withTransparency .all <| whnf targetDomain
   let expected ← mkAppM ``Set.Subset #[targetDomain, sourceDomain]
   let proof ← mkFreshExprMVar expected
   let tactic ← `(tactic|
@@ -196,7 +196,7 @@ private def inferDomainSubsetProof
 /-- Use reflexivity when both domains coincide, or prove the needed box inclusion. -/
 private def domainSubsetProof
     (targetDomain sourceDomain : Lean.Expr) : TacticM Lean.Expr := do
-  if ← withTransparency .all <| isDefEq targetDomain sourceDomain then
+  if ← withTransparency .all <| Elaboration.DefEq.agree targetDomain sourceDomain then
     mkAppM ``Set.Subset.refl #[sourceDomain]
   else
     inferDomainSubsetProof targetDomain sourceDomain

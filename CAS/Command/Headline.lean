@@ -139,9 +139,9 @@ private def headlineFactsSyntax : MetaM (TSyntax `tactic) := do
      try (repeat' constructor)
      all_goals
        first
-         | assumption
+         | cas_assumption
          | positivity
-         | (apply ne_of_gt; assumption)
+         | (apply ne_of_gt; cas_assumption)
          | (apply ne_of_gt; positivity)))
 
 /-- Prove the reflected conditions `goal` (a `SideHolds` or `ValidAt` statement at a vector of
@@ -197,7 +197,7 @@ def headlineLine (line coordinate base : Expr) : MetaM Expr := do
       (← mkAppM ``Function.update #[line.beta #[base], coordinate, s])))
   let remaining ← Tactic.KernelReadBack.withSuppressedMessagesMeta <|
     Tactic.KernelReadBack.runTacticOnGoal goal.mvarId! (← `(tactic|
-      (intro s; funext i; fin_cases i <;> first | rfl | simp [Function.update_apply])))
+      (intro s; funext i; fin_cases i <;> first | cas_rfl | simp [Function.update_apply])))
   unless remaining.isEmpty do
     throwError "the line through the point was not identified"
   instantiateMVars goal
@@ -326,7 +326,7 @@ private def exampleStates (stx : Syntax) (type : Expr) : CommandElabM Bool := do
           mkForallFVars (← Term.addAutoBoundImplicits xs none) body
         let stated ← instantiateMVars stated
         if stated.hasMVar || stated.hasSorry then return false
-        withTransparency .instances <| isDefEq stated type
+        withTransparency .instances <| Elaboration.DefEq.agree stated type
     catch _ => pure false
   return states && !(← get).messages.hasErrors
 
@@ -385,7 +385,7 @@ private def exampleProves (stx : Syntax) (type : Expr) :
     return .error .notElaborated
   let same ← try
       liftTermElabM <| withEnv env <| withTransparency .instances <|
-        isDefEq declaration.type type
+        Elaboration.DefEq.agree declaration.type type
     catch _ => pure false
   return if same then .ok () else .error .otherDeclaration
 

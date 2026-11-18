@@ -36,6 +36,14 @@ search of depth eight (`provePremise`) through the local hypotheses, the continu
 (`ContDiff.continuous` and its local forms), `fun_prop`, a supplied `HasDerivAt` family or
 `RealDeriv.close`, and a few consequences such as `Continuous.intervalIntegrable`,
 `ContinuousOn.intervalIntegrable` and `Continuous.stronglyMeasurableAtFilter`.
+
+Every rule is tried on speculation, and most do not fit the goal. A rule is therefore applied
+in stages (`Elaboration.DefEq.applyConst`): with reducible definitions unfolded and, when that
+fails, at the default transparency in the view of a module. Without that view the unifier,
+once the pattern has failed, unfolds `intervalIntegral` and then, in a file outside the module
+system, `MeasureTheory.integral` and the operations of `ℝ`, which took all the heartbeats of
+`∫ x in (0 : ℝ)..1, x * Real.exp x = 1` before any other route ran. Hypotheses and supplied
+evidence are compared with `Elaboration.DefEq.agree`, and `fun_prop` runs under `cas_staged`.
 -/
 
 public meta section
@@ -108,10 +116,10 @@ private def provePremise (evidence : Array Expr) (goal : MVarId) :
   | fuel + 1 => goal.withContext do
       if ← goal.isAssigned then return #[]
       let target ← instantiateMVars (← goal.getType)
-      if ← goal.assumptionCore then return #[]
+      if ← Elaboration.DefEq.assumption goal then return #[]
       for proof in evidence do
         let saved ← saveState
-        if ← isDefEq (← inferType proof) target then
+        if ← Elaboration.DefEq.agree (← inferType proof) target then
           goal.assign proof
           return #[]
         saved.restore
@@ -121,7 +129,7 @@ private def provePremise (evidence : Array Expr) (goal : MVarId) :
           let saved ← saveState
           try
             let continuous ← mkAppM theoremName #[proof]
-            if ← isDefEq (← inferType continuous) target then
+            if ← Elaboration.DefEq.agree (← inferType continuous) target then
               goal.assign continuous
               return #[theoremName]
           catch error =>
@@ -133,7 +141,7 @@ private def provePremise (evidence : Array Expr) (goal : MVarId) :
       if #[``Continuous, ``ContinuousOn, ``ContinuousAt].contains (head target) then
         let saved ← saveState
         try
-          let goals ← KernelReadBack.runTacticOnGoal goal (← `(tactic| fun_prop))
+          let goals ← KernelReadBack.runTacticOnGoal goal (← `(tactic| cas_staged fun_prop))
           if goals.isEmpty then return #[]
         catch error =>
           if error.isRuntime then throw error
@@ -143,7 +151,7 @@ private def provePremise (evidence : Array Expr) (goal : MVarId) :
           if (← evidenceHead (← inferType proof)) == ``HasDerivAt then
             let saved ← saveState
             try
-              let goals ← goal.apply proof
+              let goals ← Elaboration.DefEq.apply goal proof
               let mut steps := #[]
               for subgoal in goals do
                 steps := steps ++ (← provePremise evidence subgoal fuel)
@@ -164,7 +172,7 @@ private def provePremise (evidence : Array Expr) (goal : MVarId) :
       for theoremName in premiseRules target do
         let saved ← saveState
         try
-          let goals ← goal.applyConst theoremName
+          let goals ← Elaboration.DefEq.applyConst goal theoremName
           let mut steps := #[theoremName]
           for subgoal in goals do
             steps := steps ++ (← provePremise evidence subgoal fuel)
@@ -212,7 +220,7 @@ def close? (evidence? : Option (TSyntax `term) := none) : TacticM (Option Result
     for theoremName in candidates do
       let attempt ← ProofCarrier.attemptClosingMainGoal "structural interval calculus" do
         let goal ← getMainGoal
-        let goals ← goal.applyConst theoremName
+        let goals ← Elaboration.DefEq.applyConst goal theoremName
         let mut steps := #[theoremName]
         let mut analyticEvidence := #[]
         for subgoal in goals do

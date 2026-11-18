@@ -95,11 +95,11 @@ private def tryOn (goal : MVarId) (tactic : TSyntax `tactic) : TacticM (List MVa
   catch _ =>
     return [goal]
 
-/-- Close the goal from a hypothesis, up to definitional unfolding. -/
+/-- Close the goal from a hypothesis, up to definitional unfolding
+(`Elaboration.DefEq.assumption`). -/
 private def closeByAssumption (goal : MVarId) : TacticM Bool := do
   try
-    goal.assumption
-    return true
+    Elaboration.DefEq.assumption goal
   catch _ =>
     return false
 
@@ -256,7 +256,7 @@ private def expose (fuel : Nat) (goal : MVarId) : TacticM (List MVarId) := do
 private def finisher : TacticM (TSyntax `tactic) :=
   `(tactic|
     solve
-      | assumption
+      | cas_assumption
       | positivity
       | (apply ne_of_gt; positivity)
       | norm_num
@@ -265,14 +265,14 @@ private def finisher : TacticM (TSyntax `tactic) :=
       | (intro hzero; apply_assumption <;> linarith)
       | (intro hzero; apply_assumption <;> nlinarith)
       | (norm_num <;> solve
-          | assumption
+          | cas_assumption
           | positivity
           | nlinarith
           | (intro hzero; nlinarith)
           | (intro hzero; apply_assumption <;> linarith))
-      | (simp only [mul_comm, add_comm] at *; assumption)
+      | (simp only [mul_comm, add_comm] at *; cas_assumption)
       | (ring_nf <;> solve
-          | assumption
+          | cas_assumption
           | positivity
           | (apply ne_of_gt; positivity)
           | nlinarith
@@ -302,7 +302,7 @@ private def specializeDomainFamilies (goal : MVarId) : TacticM MVarId := goal.wi
         unless type.isForall do
           saved.restore
           continue
-        unless ← isDefEq type.bindingDomain! (← inferType member) do
+        unless ← Elaboration.DefEq.agree type.bindingDomain! (← inferType member) do
           saved.restore
           continue
         let proof := mkApp application member

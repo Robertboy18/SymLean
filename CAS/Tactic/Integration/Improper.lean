@@ -210,11 +210,11 @@ private def signTactic (evidence? : Option (TSyntax `term)) : TacticM (TSyntax `
   | some evidence =>
       `(tactic|
         first
-          | exact $evidence
+          | cas_staged exact $evidence
           | ($enter:tactic
              first
-               | exact $evidence t ht
-               | exact $evidence t
+               | cas_staged exact $evidence t ht
+               | cas_staged exact $evidence t
                | (have hcasEvidence := $evidence
                   simp [Verified.Expr.eval, PiLp.single_apply, smul_eq_mul] at hcasEvidence ⊢
                   all_goals $finish:tactic)
@@ -229,25 +229,25 @@ private def integrabilityTactic (evidence? : Option (TSyntax `term)) : TacticM (
   | none =>
       `(tactic|
         first
-          | assumption
-          | exact MeasureTheory.Integrable.integrableOn (by assumption)
+          | cas_assumption
+          | cas_staged exact MeasureTheory.Integrable.integrableOn (by cas_assumption)
           | (simp only [Verified.Expr.eval, PiLp.single_apply, smul_eq_mul]
              first
-               | assumption
-               | exact MeasureTheory.Integrable.integrableOn (by assumption)))
+               | cas_assumption
+               | cas_staged exact MeasureTheory.Integrable.integrableOn (by cas_assumption)))
   | some evidence =>
       `(tactic|
         first
-          | exact $evidence
-          | exact ($evidence).integrableOn
-          | assumption
-          | exact MeasureTheory.Integrable.integrableOn (by assumption)
+          | cas_staged exact $evidence
+          | cas_staged exact ($evidence).integrableOn
+          | cas_assumption
+          | cas_staged exact MeasureTheory.Integrable.integrableOn (by cas_assumption)
           | (simp [Verified.Expr.eval, PiLp.single_apply, smul_eq_mul]
              first
-               | exact $evidence
-               | exact ($evidence).integrableOn
-               | assumption
-               | exact MeasureTheory.Integrable.integrableOn (by assumption)))
+               | cas_staged exact $evidence
+               | cas_staged exact ($evidence).integrableOn
+               | cas_assumption
+               | cas_staged exact MeasureTheory.Integrable.integrableOn (by cas_assumption)))
 
 /-- The analytic theorem of a domain. `Set.Ici a` uses the theorem of `Set.Ioi a`, and `Set.Iio a`
 that of `Set.Iic a`; the whole line is split at `0`. -/
@@ -380,7 +380,7 @@ def prepare (application : Application) (requirementsSyntax? : Option (TSyntax `
       "cas internal error: the improper integral theorem has an unexpected argument shape"
   for (limitProof, k) in limitProofs.zipIdx do
     let limitGoal := arguments[k + 1]!.mvarId!
-    unless ← isDefEq (← limitGoal.getType) (← inferType limitProof) do
+    unless ← Elaboration.DefEq.agree (← limitGoal.getType) (← inferType limitProof) do
       throwError
         "cas internal error: the primitive's limit statement does not match the \
          improper integral theorem"
@@ -427,7 +427,7 @@ def prepare (application : Application) (requirementsSyntax? : Option (TSyntax `
         let rewrite ← domainRewrite application integrandFunction endpoint ``Set.Iio ``Set.Iic
           (← `(tactic|
             first
-              | exact MeasureTheory.integral_Iic_eq_integral_Iio.symm
+              | cas_staged exact MeasureTheory.integral_Iic_eq_integral_Iio.symm
               | rw [MeasureTheory.integral_Iic_eq_integral_Iio]))
           "the open half-line could not be reduced to the closed one"
         let moved ← moveIntegrability ``Set.Iio

@@ -123,7 +123,7 @@ def shape? (target : Expr) : MetaM (Option Shape) := do
   let overReals (scalarField codomain : Expr) : MetaM Bool := do
     unless scalarField.consumeMData.isConstOf ``Real do
       return false
-    isDefEqGuarded codomain real
+    Elaboration.DefEq.agreeGuarded codomain real
   if target.isAppOfArity ``DifferentiableAt 12 then
     unless ← overReals arguments[0]! arguments[6]! do
       return none
@@ -166,7 +166,7 @@ def shape? (target : Expr) : MetaM (Option Shape) := do
       | return none
     if codomain.hasLooseBVars then
       return none
-    unless ← isDefEqGuarded codomain real do
+    unless ← Elaboration.DefEq.agreeGuarded codomain real do
       return none
     return some
       { predicate := predicate arguments[arity - 1]!, function, domain, functionIndex }
@@ -175,7 +175,7 @@ def shape? (target : Expr) : MetaM (Option Shape) := do
 /-- Classify the domain of a recognised goal, failing closed with a message that names the
 obstruction. -/
 def resolveDomain (shape : Shape) : MetaM Domain := do
-  if ← isDefEqGuarded shape.domain (mkConst ``Real) then
+  if ← Elaboration.DefEq.agreeGuarded shape.domain (mkConst ``Real) then
     return .scalar
   match ← euclideanDimension? shape.domain with
   | some (some dimension) => return .euclidean dimension
@@ -198,7 +198,7 @@ def isRegularityGoal (target : Expr) : MetaM Bool := do
   let some shape ← shape? target
     | return false
   match shape.predicate with
-  | .differentiableAt _ => return !(← isDefEqGuarded shape.domain (mkConst ``Real))
+  | .differentiableAt _ => return !(← Elaboration.DefEq.agreeGuarded shape.domain (mkConst ``Real))
   | _ => return true
 
 /-- Expose current-module definitions that conceal the dependence of the function on its
@@ -283,7 +283,7 @@ unfolding the checked evaluator and the Mathlib normalisation script.
 private def transportToFunction (shape : Shape) (target proof : Expr) : MetaM Expr := do
   let proofType ← instantiateMVars (← inferType proof)
   let reflected := proofType.getAppArgs[shape.functionIndex]!
-  if ← isDefEq shape.function reflected then
+  if ← Elaboration.DefEq.agree shape.function reflected then
     return proof
   let equality ← mkFreshExprSyntheticOpaqueMVar (← mkEq shape.function reflected)
   let remaining ← mathlibCleanup (← unfoldEvaluation [equality.mvarId!])
@@ -304,7 +304,7 @@ private def finish (proof : Expr) : TacticM Unit := do
   let goal ← getMainGoal
   let target ← instantiateMVars (← goal.getType)
   let proofType ← instantiateMVars (← inferType proof)
-  unless ← isDefEq proofType target do
+  unless ← Elaboration.DefEq.agree proofType target do
     throwError
       "{operation} constructed a proof of{indentExpr proofType}\n\
        but the goal is{indentExpr target}"

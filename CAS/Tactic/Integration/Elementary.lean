@@ -62,10 +62,10 @@ def close (evidence? : Option (TSyntax `term) := none) : TacticM Unit :=
         replaceMainGoal [goal]
       evalTactic (← `(tactic|
         simp (disch := (solve
-          | assumption
+          | cas_assumption
           | norm_num
-          | (left; solve | assumption | norm_num | linarith)
-          | (right; solve | assumption | (constructor <;> assumption))
+          | (left; solve | cas_assumption | norm_num | linarith)
+          | (right; solve | cas_assumption | (constructor <;> cas_assumption))
           | linarith)) only
           [intervalIntegral.integral_same, intervalIntegral.integral_const,
             intervalIntegral.integral_const_mul, intervalIntegral.integral_mul_const,

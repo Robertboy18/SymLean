@@ -8,8 +8,8 @@ Required dependencies
 =====================
 
 SymLean requires two libraries, which Lake fetches when it builds SymLean; neither is bundled
-here. FloatLib (https://github.com/lean-dojo/FloatLib, 3.1.0 at 0fe4f04) is released under the MIT
-License, and Mathlib (https://github.com/leanprover-community/mathlib4, v4.35.0) under the
+here. FloatLib (https://github.com/lean-dojo/FloatLib, 4.0.0 at ba998b6) is released under the MIT
+License, and Mathlib (https://github.com/leanprover-community/mathlib4, v4.36.0) under the
 Apache License 2.0.
 
 Third-party acknowledgements
@@ -17,8 +17,8 @@ Third-party acknowledgements
 
 DSLean
 ------
-Source:   https://github.com/taterowney/DSLean; SymLean requires the Lean 4.35.0 port
-          https://github.com/Robertboy18/DSLean, branch leancas, revision 1b5f22f
+Source:   https://github.com/taterowney/DSLean; SymLean requires the Lean 4.36.0 port
+          https://github.com/Robertboy18/DSLean, tag v4.36.0 (branch leancas, revision 996f743)
 Author:   taterowney (GitHub) and the DSLean contributors
 License:  Creative Commons Attribution 4.0 International (CC BY 4.0),
           https://creativecommons.org/licenses/by/4.0/legalcode
@@ -27,7 +27,7 @@ License:  Creative Commons Attribution 4.0 International (CC BY 4.0),
 
 The optional oracle library of SymLean (CASOracle/) depends on DSLean, which SymLean fetches only
 with `lake -R -Koracle=on`. DSLean's grammars translate between Lean and the languages of the
-oracles, and its runner runs them. The branch leancas is DSLean's update to Lean 4.35.0 with five
+oracles, and its runner runs them. The branch leancas is DSLean's update to Lean 4.36.0 with five
 changes: operand precedences that follow the precedence option, pattern priorities that hold in
 toExternal', a runner with a deadline and a bounded output (DSLean/Process.lean), Gappa's input
 grammar in a module of its own, and info trees turned off while the gappa tactic elaborates the

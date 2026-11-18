@@ -7,6 +7,7 @@ Authors: SymLean Team
 module
 
 public import CAS.Elaboration.RealExpression.Operation
+public import Lean.Exception
 
 /-!
 # Frontend-neutral reflected real expressions

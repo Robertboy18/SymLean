@@ -118,18 +118,18 @@ def closeReflectedEquality (operation : String) (evidence? : Option (TSyntax `te
   let (environment, reflectedLhs, reflectedRhs, zeroSide) ←
     match evaluationArguments? lhs, evaluationArguments? rhs with
     | some (environment, a), some (environment', b) => do
-        unless ← isDefEq environment environment' do
+        unless ← Elaboration.DefEq.agree environment environment' do
           throwError "{operation} reflected route: the two sides use different environments"
         pure (environment, a, b, none)
     | some (environment, a), none => do
-        unless rhs.consumeMData.zero? ∨ (← isDefEq rhs (← mkAppOptM ``OfNat.ofNat
+        unless rhs.consumeMData.zero? ∨ (← Elaboration.DefEq.agree rhs (← mkAppOptM ``OfNat.ofNat
             #[some (mkConst ``Real), some (mkRawNatLit 0), none])) do
           throwError "{operation} reflected route expected an evaluation or the literal zero"
         let index := (← whnf (← inferType a)).appArg!
         let zero ← mkAppOptM ``Verified.Expr.nat #[some index, some (toExpr (0 : Nat))]
         pure (environment, a, zero, some false)
     | none, some (environment, b) => do
-        unless lhs.consumeMData.zero? ∨ (← isDefEq lhs (← mkAppOptM ``OfNat.ofNat
+        unless lhs.consumeMData.zero? ∨ (← Elaboration.DefEq.agree lhs (← mkAppOptM ``OfNat.ofNat
             #[some (mkConst ``Real), some (mkRawNatLit 0), none])) do
           throwError "{operation} reflected route expected an evaluation or the literal zero"
         let index := (← whnf (← inferType b)).appArg!
@@ -152,7 +152,7 @@ def closeReflectedEquality (operation : String) (evidence? : Option (TSyntax `te
     throwError "{operation} produced incomplete identity evidence"
   unless ← isTypeCorrect proof do
     throwError "{operation} produced ill-typed identity evidence"
-  unless ← isDefEq (← inferType proof) target do
+  unless ← Elaboration.DefEq.agree (← inferType proof) target do
     throwError "{operation} produced evidence for a different reflected equality"
   goal.assign proof
   replaceMainGoal []

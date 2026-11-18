@@ -81,11 +81,11 @@ private def kernelReducedArgument? (argument : Expr) : MetaM (Option (Expr × Ex
 Replace argument `index` of the application `fn args` in the goal by its full-transparency
 reduction.
 
-The result is a goal for the reduced statement. If `change` cannot identify the two statements at
-the default transparency, the equality of the original and reduced arguments is proved by
-`Eq.refl` under full transparency and transported with `transport`, a theorem of the shape
-`∀ {..}, original = reduced → P reduced → P original` whose explicit arguments are exactly the
-equality proof and the reduced-statement proof.
+The result is a goal for the reduced statement. If the two statements do not agree at the default
+transparency (`Elaboration.DefEq.agree`), the equality of the original and reduced arguments is
+proved by `Eq.refl` under full transparency and transported with `transport`, a theorem of the
+shape `∀ {..}, original = reduced → P reduced → P original` whose explicit arguments are exactly
+the equality proof and the reduced-statement proof.
 -/
 def reduceApplicationArgument (goal : MVarId) (fn : Name) (arity index : Nat)
     (transport : Name) (expected : String) : MetaM MVarId := goal.withContext do
@@ -100,16 +100,19 @@ def reduceApplicationArgument (goal : MVarId) (fn : Name) (arity index : Nat)
     let reducedProof ← mkFreshExprMVar reducedTarget
     goal.assign (← mkAppM transport #[equality, reducedProof])
     return reducedProof.mvarId!
-  let reduced ← withTransparency .all <|
-    reduce argument (skipTypes := false) (skipProofs := false)
+  -- The list is a reflected evaluation. In the view of a module its reduction stops at the
+  -- operations of `ℝ`, as it does in a module; the view is set only when the list can reach them.
+  let reduced ← Elaboration.DefEq.withModuleViewWhen
+    (Elaboration.DefEq.reachesSealed #[argument]) <| withTransparency .all <|
+      reduce argument (skipTypes := false) (skipProofs := false)
   let reducedTarget := mkAppN head (args.set! index reduced)
-  try
-    goal.change reducedTarget
-  catch _ =>
+  if ← Elaboration.DefEq.agreeGuarded target reducedTarget then
+    goal.replaceTargetDefEq reducedTarget
+  else
     let equality ← mkFreshExprMVar (← mkEq argument reduced)
     let reducedProof ← mkFreshExprMVar reducedTarget
     withTransparency .all do
-      unless ← isDefEq argument reduced do
+      unless ← Elaboration.DefEq.agree argument reduced do
         throwError
           "the checked side-condition list did not reduce definitionally; \
            provide its proof explicitly"

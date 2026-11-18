@@ -90,11 +90,12 @@ partial def qPolynomial? (e : Expr) : MetaM (Option Dense) := do
       return (fun p ↦ Dense.pow p k) <$> (← qPolynomial? a)
   | _ => return none
 
-/-- Whether `type` is `Polynomial ℚ`. -/
+/-- Whether `type` is `Polynomial ℚ`, which unfolds to `AddMonoidAlgebra ℚ ℕ`. -/
 def isRatPolynomial (type : Expr) : MetaM Bool := do
   let type ← whnfR type
-  unless type.isAppOfArity ``Polynomial 2 do return false
-  isDefEq type.appFn!.appArg! (mkConst ``Rat)
+  unless type.isAppOfArity ``AddMonoidAlgebra 3 do return false
+  Elaboration.DefEq.agree (type.getArg! 0) (mkConst ``Rat) <&&>
+    Elaboration.DefEq.agree (type.getArg! 1) (mkConst ``Nat)
 
 /-- The entries of a vector literal `![a, b, …]`. -/
 partial def vectorEntries? (e : Expr) : Option (List Expr) :=
@@ -174,7 +175,7 @@ def closeWith (description : String) (tactic : TSyntax `tactic) : TacticM Unit :
 /-- Close the main goal with a proof term. -/
 def closeWithTerm (proof : Expr) : TacticM Unit := do
   let goal ← getMainGoal
-  unless ← isDefEq (← goal.getType) (← inferType proof) do
+  unless ← Elaboration.DefEq.agree (← goal.getType) (← inferType proof) do
     throwError "cas: internal error: the proof does not have the goal's type"
   goal.assign proof
   replaceMainGoal []
@@ -310,8 +311,8 @@ def closeNumber (target : Expr) : TacticM Bool := do
       exact CAS.NumberTheory.Jacobi.jacobiSym_eq_of_loop $(natTerm fuel) (by decide +kernel)
         (by decide +kernel)))
     return true
-  if CAS.Tactic.CommandShapes.isModularPower lhs && (← isDefEq (← inferType lhs) (mkConst ``Nat))
-      then
+  if CAS.Tactic.CommandShapes.isModularPower lhs &&
+      (← Elaboration.DefEq.agree (← inferType lhs) (mkConst ``Nat)) then
     let power := (lhs.getArg! 4).consumeMData
     let (some a, some b, some m, some r) := (← natValue? (power.getArg! 4),
         ← natValue? (power.getArg! 5), ← natValue? (lhs.getArg! 5), ← natValue? rhs)
@@ -367,7 +368,7 @@ def closeSumOrProduct (target : Expr) : TacticM Bool := do
   closeWith "finite sum or product by induction" (← `(tactic| (
     $intro:tactic
     induction $n:ident with
-    | zero => first | simp | norm_num [Finset.Icc_self] | rfl
+    | zero => first | simp | norm_num [Finset.Icc_self] | cas_rfl
     | succ $m:ident $ih:ident =>
         rw [$stepLemma, $ih:ident]
         (try simp only [Nat.factorial_succ])
@@ -395,7 +396,7 @@ def closeGamma (lhs : Expr) : TacticM Bool := do
     closeWith "Gamma value" (← `(tactic| (
       $script:tactic
       first
-        | exact $fact:ident
+        | cas_staged exact $fact:ident
         | (rw [$fact:ident]; ring1)
         | (rw [$fact:ident]; norm_num)
         | linarith [$fact:ident])))

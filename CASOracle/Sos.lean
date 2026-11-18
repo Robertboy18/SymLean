@@ -418,7 +418,7 @@ def proveBySos (oracle : Oracle) (asked : IO.Ref Bool) (goal : MVarId) : TermEla
       if decl.isImplementationDetail || decl.userName.hasMacroScopes then continue
       if candidates.size ≥ 8 then break
       let some (α, low, high, strictFact) := orderFact? (← instantiateMVars decl.type) | continue
-      unless ← isDefEq α type do continue
+      unless ← Elaboration.DefEq.agree α type do continue
       let highRun ← Term.exprToSyntax high
       let highShown : Term ← PrettyPrinter.delab high
       if isZeroLiteral low then

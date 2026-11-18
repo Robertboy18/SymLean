@@ -63,7 +63,7 @@ that uses the values, such as the comparison of a stored table with `trigTable` 
   Section 2 gives the arctangent series and Machin's formula
   `π / 4 = 4 arctan (1/5) - arctan (1/239)`, evaluated through that series as here.
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
 * The mathlib Community, "The Lean Mathematical Library", in *Proceedings of the 9th ACM SIGPLAN
   International Conference on Certified Programs and Proofs (CPP 2020)*, ACM, 2020,
   pp. 367-381, <https://doi.org/10.1145/3372885.3373824>.
@@ -416,7 +416,7 @@ satisfies `2 ^ w * trigRadius (X / 2 ^ w) d ≤ 2 ^ w / (d + 1)!` in `ℝ`, for 
 theorem two_pow_mul_trigRadius_le (w X d : ℕ) (hX : X ≤ 2 ^ w) :
     2 ^ w * (trigRadius ((X : ℚ) / 2 ^ w) d : ℝ) ≤ 2 ^ w / (d + 1).factorial := by
   have hs : (0 : ℝ) < 2 ^ w := by positivity
-  rw [trigRadius]
+  rw [trigRadius_def]
   push_cast
   have ha : |(X : ℝ) / 2 ^ w| ≤ 1 := by
     rw [abs_of_nonneg (by positivity), div_le_one hs]
@@ -437,7 +437,7 @@ theorem abs_trigTaylorCos_sub_le (w X d : ℕ) (hX : X ≤ 2 ^ w) :
   have hpoly : (cosTaylor ((X : ℚ) / 2 ^ w) d : ℝ) =
       ∑ i ∈ Finset.range (d + 1), (cosTaylorSign i : ℝ) * ((X : ℝ) / 2 ^ w) ^ i /
         i.factorial := by
-    rw [cosTaylor]
+    rw [cosTaylor_def]
     push_cast [cast_cosCoefficient_eq]
     rfl
   have hsum := abs_signedTaylorSum_sub_le w X d hX cosTaylorSign abs_cast_cosTaylorSign_le
@@ -462,7 +462,7 @@ theorem abs_trigTaylorSin_sub_le (w X d : ℕ) (hX : X ≤ 2 ^ w) :
   have hpoly : (sinTaylor ((X : ℚ) / 2 ^ w) d : ℝ) =
       ∑ i ∈ Finset.range (d + 1), (sinTaylorSign i : ℝ) * ((X : ℝ) / 2 ^ w) ^ i /
         i.factorial := by
-    rw [sinTaylor]
+    rw [sinTaylor_def]
     push_cast [cast_sinCoefficient_eq]
     rfl
   have hsum := abs_signedTaylorSum_sub_le w X d hX sinTaylorSign abs_cast_sinTaylorSign_le

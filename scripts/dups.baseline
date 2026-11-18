@@ -1,7 +1,7 @@
 DUPDEF 7
 DUPTHM 0
 RESTATE 0
-UNUSED 409
+UNUSED 402
 EQUIV 18
 DUPDEF: CAS.CEGA.Elaboration.renderRational, CAS.Command.Algebra.ratText
 DUPDEF: CAS.Command.Algebra.Dense.degree, CAS.Command.SumGosper.pDeg
@@ -103,7 +103,6 @@ UNUSED: CAS.Command.FourierProductCmd.Ctx.ctorIdx
 UNUSED: CAS.Command.FourierProductCmd.Fac.ctorIdx
 UNUSED: CAS.Command.FourierProductCmd.FactoredFraction.ctorIdx
 UNUSED: CAS.Command.FullSimplify.Candidate.ctorIdx
-UNUSED: CAS.Command.FullSimplify.Form.brecOn.eq
 UNUSED: CAS.Command.FullSimplify.Writer.ctorIdx
 UNUSED: CAS.Command.GaussianIntegral.gaussianIntegralBackend
 UNUSED: CAS.Command.GaussianIntegral.gaussianIntegralRoute
@@ -171,7 +170,6 @@ UNUSED: CAS.Continuum.QuadratureRule.certOfApproxEvaluated
 UNUSED: CAS.Continuum.QuadratureTree.WithErrorAtMost.ext_iff
 UNUSED: CAS.Continuum.QuadratureTree.WithErrorAtMost.sound
 UNUSED: CAS.Continuum.QuadratureTree.WithErrorAtMost.weaken
-UNUSED: CAS.Continuum.QuadratureTree.brecOn.eq
 UNUSED: CAS.Continuum.QuadratureTree.improveLeaves_error_le
 UNUSED: CAS.Continuum.QuadratureTree.join
 UNUSED: CAS.Continuum.QuadratureTree.selectLowerError_sound
@@ -247,7 +245,6 @@ UNUSED: CAS.DiffExpr.Sym.sec
 UNUSED: CAS.DiffExpr.Sym.sech
 UNUSED: CAS.DiffExpr.Sym.tan
 UNUSED: CAS.DiffExpr.Sym.tanh
-UNUSED: CAS.DiffExpr.brecOn.eq
 UNUSED: CAS.Domain.PatchCover.bind
 UNUSED: CAS.Domain.PatchCover.ctorIdx
 UNUSED: CAS.Domain.PatchCover.restrict
@@ -255,11 +252,9 @@ UNUSED: CAS.Domain.PatchCover.union
 UNUSED: CAS.Domain.PositiveOn
 UNUSED: CAS.Elaboration.RealExpression.Config.ctorIdx
 UNUSED: CAS.Elaboration.RealExpression.ConstantBinding.ctorIdx
-UNUSED: CAS.Elaboration.RealExpression.ReflectedExpr.brecOn.eq
 UNUSED: CAS.Elaboration.RealExpression.Reification.ctorIdx
 UNUSED: CAS.Exact.CoveredExprNonzeroCerts.covers
 UNUSED: CAS.Exact.VectorResidual.ofDifference
-UNUSED: CAS.ExactTactic.SelectedRoute.brecOn.eq
 UNUSED: CAS.ExactTactic.casArgs.quot
 UNUSED: CAS.ExactTactic.evalCas
 UNUSED: CAS.ExactTactic.evalCasIntegratePrimitive
@@ -372,7 +367,6 @@ UNUSED: CAS.Verified.Expr.DiffDerivation.Packed.children
 UNUSED: CAS.Verified.Expr.DiffDerivation.Packed.ctorIdx
 UNUSED: CAS.Verified.Expr.DiffDerivation.Packed.rule
 UNUSED: CAS.Verified.Expr.DiffDerivation.Packed.ruleLabel
-UNUSED: CAS.Verified.Expr.DiffDerivation.brecOn.eq
 UNUSED: CAS.Verified.Expr.DiffVar.ctorIdx
 UNUSED: CAS.Verified.Expr.PartialFactorCancelResult.ctorIdx
 UNUSED: CAS.Verified.Expr.Pass.ctorIdx
@@ -412,7 +406,6 @@ UNUSED: CAS.evalCas?
 UNUSED: CAS.evalCega?
 UNUSED: CAS.integral_exp_neg_sq
 UNUSED: CAS.tendsto_erf_atTop
-UNUSED: FloatLib.Numerics.OutwardRounding.mk.congr_simp
 UNUSED: Lean.Parser.Category.casArgs
 UNUSED: Lean.Parser.Category.casIntegralEndpoint
 UNUSED: Lean.Parser.Category.cegaArgs

@@ -291,13 +291,13 @@ private def boxMembership (goal : Lean.Expr) (facts : Array Lean.Expr) : MetaM L
       (intro i
        fin_cases i <;>
          first
-           | assumption
+           | cas_assumption
            | (simp only [CAS.Continuum.RationalInterval.MemReal,
                 CAS.Continuum.RationalInterval.ofBounds, List.get,
                 Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
                 Matrix.head_cons, Matrix.cons_val_succ, Fin.isValue, Fin.zero_eta,
                 Fin.mk_one, Fin.reduceFinMk] at *
-              assumption))))
+              cas_assumption))))
   unless remaining.isEmpty do
     throwError "the variables of the headline were not placed in the box of the query"
   instantiateMVars proof
@@ -320,11 +320,11 @@ private def transportView (lemmaName : Name) (certificate : Lean.Expr)
       explicitArguments.extract 0 4
     | throwError "{lemmaName} is not a transport lemma of a box query"
   let ρ ← Tactic.RealExpression.parameterVector coordinates
-  unless ← isDefEq certificateArgument certificate do
+  unless ← Elaboration.DefEq.agree certificateArgument certificate do
     throwError "the checked view does not have the shape of {lemmaName}"
-  unless ← isDefEq vectorArgument ρ do
+  unless ← Elaboration.DefEq.agree vectorArgument ρ do
     throwError "the variables of the headline do not fit {lemmaName}"
-  unless ← isDefEq lemmaConclusion conclusion do
+  unless ← Elaboration.DefEq.agree lemmaConclusion conclusion do
     throwError "{lemmaName} does not conclude the headline{indentExpr conclusion}"
   let facts ← (box.toArray.zip (coordinates.zip hypotheses)).mapM
     fun (interval, coordinate, hypothesis) ↦ coordinateFact interval coordinate hypothesis
@@ -332,11 +332,12 @@ private def transportView (lemmaName : Name) (certificate : Lean.Expr)
   let some (_, value, term) := (← instantiateMVars (← inferType evaluation)).eq?
     | throwError "{lemmaName} has no evaluation hypothesis"
   let evaluationProof ← headlineBridge ρ value.appArg! term
-  unless (← isDefEq membership membershipProof) && (← isDefEq evaluation evaluationProof) do
+  unless (← Elaboration.DefEq.agree membership membershipProof) &&
+      (← Elaboration.DefEq.agree evaluation evaluationProof) do
     throwError "the box membership or the evaluation does not fit {lemmaName}"
   for comparison in explicitArguments.extract 4 explicitArguments.size do
     let proof ← comparisonProof (← instantiateMVars (← inferType comparison))
-    unless ← isDefEq comparison proof do
+    unless ← Elaboration.DefEq.agree comparison proof do
       throwError "a comparison with the certified value does not fit {lemmaName}"
   instantiateMVars (mkAppN lemmaConstant arguments)
 

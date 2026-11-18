@@ -6,6 +6,8 @@ Authors: SymLean Team
 
 module
 
+public import CAS.Elaboration.DefEq
+public meta import CAS.Elaboration.DefEq
 public import CAS.Elaboration.RealExpression.Syntax
 public meta import CAS.Elaboration.RealExpression.Syntax
 
@@ -32,14 +34,16 @@ CEGA and PDE models, and it produces syntax, not a proof.
 
 Turning a goal into syntax that a certified procedure then decides is proof by reflection
 [Boutin1997]; this is the first half, shared by the frontends. We read the term from the top. A
-subterm is first matched against the coordinate table and the distinguished constants by guarded
-definitional equality (`isDefEqGuarded`), so a definitionally equal occurrence reuses its
-coordinate. With `rationalLiterals`, a decimal literal is then read as the exact rational it
-denotes. What remains is offered to `opaque?`, which may freeze it as a new coordinate; otherwise,
-unless `unfoldLocal` is off, a definition of the current module at its head is unfolded, at most
-`unfoldLimit` in a chain, and `traversalFuel` bounds the whole traversal. Literal integer powers
-are normalized to natural powers and division during traversal; a power whose exponent has type
-`ℝ`, written either with `^` or as `Real.rpow`, becomes the checked real power `rpow`.
+subterm is first matched against the coordinate table and the distinguished constants by
+`DefEq.agreeGuarded` (the syntax, then reducible definitions, then the definitions a module could
+unfold), so a definitionally equal occurrence reuses its coordinate, and a subterm that is none
+of the coordinates is told apart without unfolding the real numbers. With `rationalLiterals`, a
+decimal literal is then read as the exact rational it denotes. What remains is offered to
+`opaque?`, which may freeze it as a new coordinate; otherwise, unless `unfoldLocal` is off, a
+definition of the current module at its head is unfolded, at most `unfoldLimit` in a chain, and
+`traversalFuel` bounds the whole traversal. Literal integer powers are normalized to natural
+powers and division during traversal; a power whose exponent has type `ℝ`, written either with
+`^` or as `Real.rpow`, becomes the checked real power `rpow`.
 
 Frontends that evaluate the reflected expression in the kernel enable
 `symbolicExponentsAsRealPowers`. For them a natural or integer power with a symbolic exponent is
@@ -71,7 +75,7 @@ open Lean Meta
 
 /-- Associate an elaborated real term with a distinguished symbolic constant. -/
 structure ConstantBinding where
-  /-- Elaborated real term recognized by guarded definitional equality. -/
+  /-- Elaborated real term recognized by `DefEq.agreeGuarded`. -/
   source : Lean.Expr
   /-- Checked nullary constant represented by `source`. -/
   value : Constant
@@ -124,9 +128,9 @@ end Reification
 def dependsOn (expression target : Lean.Expr) : Bool :=
   expression.hasAnyFVar fun fvarId ↦ fvarId == target.fvarId!
 
-/-- Check an inferred type by guarded definitional equality. -/
+/-- Check an inferred type by `DefEq.agreeGuarded`. -/
 def hasType (expression type : Lean.Expr) : MetaM Bool := do
-  isDefEqGuarded (← inferType expression) type
+  DefEq.agreeGuarded (← inferType expression) type
 
 /-- Traversal budget for an expression when at most `unfoldLimit` definitions are unfolded. -/
 def traversalFuel (expression : Lean.Expr) (unfoldLimit : Nat) : Nat :=
@@ -200,7 +204,7 @@ private def coordinateIndex?
     (expression : Lean.Expr) (coordinates : Array Lean.Expr) :
     MetaM (Option Nat) := do
   for index in [0:coordinates.size] do
-    if ← isDefEqGuarded expression coordinates[index]! then
+    if ← DefEq.agreeGuarded expression coordinates[index]! then
       return some index
   return none
 
@@ -208,7 +212,7 @@ private def constantValue?
     (expression : Lean.Expr) (constants : Array ConstantBinding) :
     MetaM (Option Constant) := do
   for binding in constants do
-    if ← isDefEqGuarded expression binding.source then
+    if ← DefEq.agreeGuarded expression binding.source then
       return some binding.value
   return none
 
@@ -276,7 +280,7 @@ private def decimalLiteral? (expression : Lean.Expr) :
   unless expression.isAppOfArity ``OfScientific.ofScientific 5 do
     return none
   let arguments := expression.getAppArgs
-  unless ← isDefEqGuarded arguments[0]! (mkConst ``Real) do
+  unless ← DefEq.agreeGuarded arguments[0]! (mkConst ``Real) do
     return none
   let literal (term : Lean.Expr) : Option Nat :=
     term.consumeMData.rawNatLit? <|> term.consumeMData.nat?
@@ -404,7 +408,7 @@ private def reifyAux
       if let some (base, exponent) :=
           binaryArguments? expression ``HPow.hPow then
         let exponentType ← inferType exponent
-        if ← isDefEqGuarded exponentType (mkConst ``Nat) then
+        if ← DefEq.agreeGuarded exponentType (mkConst ``Nat) then
           if config.symbolicExponentsAsRealPowers ∧ (← getNatValue? exponent).isNone then
             let castExponent ←
               mkAppOptM ``Nat.cast #[some (mkConst ``Real), none, some exponent]
@@ -418,7 +422,7 @@ private def reifyAux
                {indentExpr exponent}"
           let (baseExpression, coordinates) ← reifyAux config base coordinates fuel
           return (.pow baseExpression exponent, coordinates)
-        else if ← isDefEqGuarded exponentType (mkConst ``Int) then
+        else if ← DefEq.agreeGuarded exponentType (mkConst ``Int) then
           if config.symbolicExponentsAsRealPowers ∧ (← getIntValue? exponent).isNone then
             let castExponent ←
               mkAppOptM ``Int.cast #[some (mkConst ``Real), none, some exponent]
@@ -442,7 +446,7 @@ private def reifyAux
               coordinates)
           else
             return (.pow baseExpression naturalExponent, coordinates)
-        else if ← isDefEqGuarded exponentType (mkConst ``Real) then
+        else if ← DefEq.agreeGuarded exponentType (mkConst ``Real) then
           let (baseExpression, coordinates) ← reifyAux config base coordinates fuel
           let (exponentExpression, coordinates) ←
             reifyAux config exponent coordinates fuel
@@ -475,7 +479,7 @@ private def reifyAux
 /--
 Reify one elaborated real expression according to `config`.
 
-Predefined coordinates are matched by guarded definitional equality. When
+Predefined coordinates are matched by `DefEq.agreeGuarded`. When
 `opaque?` accepts a real subterm, it is appended to the coordinate table once
 and subsequent definitionally equal occurrences reuse that coordinate.
 -/

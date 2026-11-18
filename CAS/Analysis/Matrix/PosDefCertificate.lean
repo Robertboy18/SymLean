@@ -65,7 +65,7 @@ private theorem of_eq_unitLower_mul_diagonal {n : ℕ} {A l : Fin n → Fin n �
       _root_.Matrix.of (fun i j ↦ (unitLower l i j : ℝ)) * diagonal (fun k ↦ (D k : ℝ)) *
         (_root_.Matrix.of fun i j ↦ (unitLower l i j : ℝ))ᴴ := by
   ext i j
-  rw [mul_apply]
+  rw [_root_.Matrix.mul_apply]
   simp only [mul_diagonal, conjTranspose_apply, star_trivial, of_apply, h i j]
   push_cast
   rfl

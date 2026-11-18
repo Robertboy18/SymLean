@@ -14,7 +14,7 @@ public import CAS
 Each command below runs in the build inside `#guard_msgs`, which checks its report; each report's
 theorem is kernel-checked when the command runs.
 
-`CAS.erf x = 2 / √π ∫₀ˣ e^(-t²) dt` (`CAS.Analysis.SpecialFunctions.Erf`; Mathlib v4.35 has no
+`CAS.erf x = 2 / √π ∫₀ˣ e^(-t²) dt` (`CAS.Analysis.SpecialFunctions.Erf`; Mathlib v4.36 has no
 error function, this is the definition of Mathlib PR #34053). `#cas [N d] (erf q)` proves
 `lo ≤ CAS.erf q ∧ CAS.erf q ≤ hi ∧ hi - lo ≤ 1 / 10 ^ d` at a rational `|q| ≤ 10` (denominator at
 most 1000, `1 ≤ d ≤ 30`). `#cas [integrate x]` of a Gaussian `c e^(-α x² + β x + γ)` (rational, `α >

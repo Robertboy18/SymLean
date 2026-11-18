@@ -45,7 +45,7 @@ Euclidean ball and one operator-norm bound instead of the componentwise box incl
 interval software. Then `x ↦ x - B F(x)` is a contraction of a complete set, and Banach's
 fixed-point theorem (`ContractingWith.exists_fixedPoint'`, `ContractingWith.fixedPoint_unique'`)
 gives existence and uniqueness together; Mathlib has Banach's theorem and not Brouwer's. The mean
-value inequality `Convex.lipschitzOnWith_of_nnnorm_hasFDerivWithin_le` turns the residual bound
+value inequality `Convex.lipschitzOnWith_of_nnNorm_hasFDerivWithin_le` turns the residual bound
 into the Lipschitz constant. A fixed point is a zero only if `B` is injective, and we do not
 assume that: the residual bound at the center makes `B` a certified approximate inverse of
 `J(c)`, so `B` is a unit by `MatrixVerification.ApproximateInverseCandidate.proposedInverse_isUnit`.
@@ -164,7 +164,7 @@ theorem lipschitzOnWith_fixedPointMap
       (fixedPointMap function certificate.approximateInverse) certificate.domain := by
   have hconvex : Convex ℝ certificate.domain :=
     convex_closedBall certificate.center (certificate.radius : ℝ)
-  exact hconvex.lipschitzOnWith_of_nnnorm_hasFDerivWithin_le (𝕜 := ℝ)
+  exact hconvex.lipschitzOnWith_of_nnNorm_hasFDerivWithin_le (𝕜 := ℝ)
     (f' := fun x ↦ residualOperator certificate.approximateInverse (jacobian x))
     (fun x hx ↦ (hasFDerivAt_fixedPointMap (Certificate.hasFDerivAt hcert hx)).hasFDerivWithinAt)
     fun x hx ↦ Certificate.residual_nnnorm_le hcert hx

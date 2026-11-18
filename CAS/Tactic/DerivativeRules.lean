@@ -137,14 +137,14 @@ private def proveDerivative : Nat → MVarId → StateT Nat TacticM Unit
       if remaining = 0 then throwError "CAS derivative rules exhausted cas.maxDerivativeSteps"
       set (remaining - 1)
       let target ← instantiateMVars (← goal.getType)
-      if ← goal.assumptionCore then return
+      if ← Elaboration.DefEq.assumption goal then return
       if target.isForall then
         let (_, next) ← goal.intro1
         proveDerivative depth next
         return
       unless target.isAppOfArity ``HasDerivAt 10 do
         let goals ← KernelReadBack.runTacticOnGoal goal
-          (← `(tactic| first | assumption | positivity | (simp_all; done) |
+          (← `(tactic| first | cas_assumption | positivity | (simp_all; done) |
             (norm_num; done) | linarith | nlinarith))
         unless goals.isEmpty do throwError "unproved derivative rule premise:{indentExpr target}"
         return
@@ -153,7 +153,7 @@ private def proveDerivative : Nat → MVarId → StateT Nat TacticM Unit
           if (conclusion declaration.type).isAppOfArity ``HasDerivAt 10 then
             let saved ← liftM (saveState : TacticM Tactic.SavedState)
             try
-              let goals ← goal.apply (mkFVar declaration.fvarId)
+              let goals ← Elaboration.DefEq.apply goal (mkFVar declaration.fvarId)
               for subgoal in goals do proveDerivative depth subgoal
               return
             catch error =>
@@ -168,7 +168,7 @@ private def proveDerivative : Nat → MVarId → StateT Nat TacticM Unit
       for name in rules do
         let saved ← liftM (saveState : TacticM Tactic.SavedState)
         try
-          let goals ← goal.applyConst name
+          let goals ← Elaboration.DefEq.applyConst goal name
           for subgoal in goals do proveDerivative depth subgoal
           return
         catch error =>
@@ -202,7 +202,7 @@ private def proveDerivative : Nat → MVarId → StateT Nat TacticM Unit
           #[none, none, some point, none, none, none, some inner, some outer,
             some (← instantiateMVars innerValue), some (← instantiateMVars outerValue),
             some (← instantiateMVars outerGoal), some (← instantiateMVars innerGoal)]
-        unless ← isDefEq (← inferType proof) target do
+        unless ← Elaboration.DefEq.agree (← inferType proof) target do
           throwError "the derivative chain rule does not match the requested function"
         goal.assign proof
         return

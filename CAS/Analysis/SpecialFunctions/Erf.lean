@@ -16,7 +16,7 @@ public import CAS.Continuum.IntervalEval.Digits
 /-!
 # The error function
 
-`CAS.erf x = 2 / √π ∫₀ˣ e^(-t²) dt`. Mathlib v4.35 has no error function; we use the
+`CAS.erf x = 2 / √π ∫₀ˣ e^(-t²) dt`. Mathlib v4.36 has no error function; we use the
 definition of Mathlib PR #34053 (`Real.erf`). We prove the basic API (value at `0`,
 oddness, the derivative, continuity, the limit `1` at `+∞`), the interval integral of `e^(-t²)`,
 the primitive of every Gaussian `c e^(-α x² + β x + γ)` with `α > 0`, and the Taylor series

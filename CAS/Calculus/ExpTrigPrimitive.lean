@@ -91,14 +91,14 @@ theorem hasDerivAt_primPair {a b : ℝ} (h : a ^ 2 + b ^ 2 ≠ 0) : ∀ (k : ℕ
       unfold baseCos
       push_cast
       field_simp
-      try ring
+      ring
     · refine ((hp.fun_mul (hasDerivAt_baseSin x)).fun_sub
         (((hs.const_mul a).fun_sub (hc.const_mul b)).const_mul ((k + 1 : ℝ)) |>.div_const
           (a ^ 2 + b ^ 2))).congr_deriv ?_
       unfold baseSin
       push_cast
       field_simp
-      try ring
+      ring
 
 /-- Primitives of `xᵏ e ^ (a x)`, by parts: `e ^ (a x) / a`, then
 `xᵏ⁺¹ e ^ (a x) / a - (k + 1) / a ∫ xᵏ e ^ (a x)`. -/

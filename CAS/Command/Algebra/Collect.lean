@@ -29,8 +29,8 @@ For a polynomial `e` in several real variables and a chosen variable `x`:
 The coefficients are computed in compiled code (`coefficientsAlong` of
 `CAS/Command/Algebra/Basic.lean`) and only proposed: each statement is proved by a tactic script,
 and the kernel checks the proof as an auxiliary theorem (`checkedEvidence`). The theorem of
-`collect` is proved by `ring1`. The list is proved in one step: by `Polynomial.ext_iff` and
-Mathlib's `coeff_ofCoeffList` the statement is the identity `P = ofCoeffList [c₀, …, c_d]`,
+`collect` is proved by `ring1`. The list is proved in one step: by Mathlib's `coeff_ofCoeffList`
+the statement follows from the identity `P = ofCoeffList [c₀, …, c_d]`,
 which is proved by evaluation (`Polynomial.funext`, through `polynomialIdentityTactic`). A
 single coefficient and the degree rewrite `P` to its expanded form `∑ C cₖ * X ^ k` over the
 nonzero coefficients, proved the same way, and read the coefficient with `coeff_C_mul` and
@@ -166,18 +166,18 @@ def logCoefficient (ref : Syntax) (x : Name) (query : CoefficientQuery) (input :
       | .coefficient k =>
           let c := coefficients.getD k []
           let cT ← coefficientTerm vars parameters c
-          pure (← `(Polynomial.coeff ($P) $(natTerm k) = $cT),
+          pure (← `(AddMonoidAlgebra.coeff ($P) $(natTerm k) = $cT),
             ← `(tactic| ($rewrite:tactic; first | $read:tactic | simp)))
       | .list =>
           let entries ← coefficients.toList.mapM fun c ↦ coefficientTerm vars parameters c
           let list ← `([$(entries.toArray),*])
           let k := mkIdent `k
           -- `List.getD list k 0` is the coefficient of `ofCoeffList list`, so the statement says
-          -- that `P` and `ofCoeffList list` have the same coefficients.
-          pure (← `(∀ $k:ident : ℕ, Polynomial.coeff ($P) $k = List.getD $list $k 0),
+          -- that `P` and `ofCoeffList list` have the same coefficients, as equal polynomials do.
+          pure (← `(∀ $k:ident : ℕ, AddMonoidAlgebra.coeff ($P) $k = List.getD $list $k 0),
             ← `(tactic| (
               simp only [← Polynomial.coeff_ofCoeffList]
-              rw [← Polynomial.ext_iff]
+              refine fun $k:ident ↦ congrArg (fun p ↦ AddMonoidAlgebra.coeff p $k) ?_
               simp only [Polynomial.ofCoeffList_cons, Polynomial.ofCoeffList_nil]
               $identity:tactic)))
       | .exponent =>
@@ -331,9 +331,9 @@ constant term first.
 
 ## Theorem
 With `e` read as a polynomial `P` as for `#cas [coefficient x k]`, and the printed list
-`[c₀, …, c_d]`, the report proves `∀ k, P.coeff k = [c₀, …, c_d].getD k 0`. By
-`Polynomial.ext_iff` and Mathlib's `coeff_ofCoeffList` the statement is the identity
-`P = ofCoeffList [c₀, …, c_d]`, which is proved by evaluation.
+`[c₀, …, c_d]`, the report proves `∀ k, P.coeff k = [c₀, …, c_d].getD k 0`. By Mathlib's
+`coeff_ofCoeffList` the statement follows from the identity `P = ofCoeffList [c₀, …, c_d]`,
+which is proved by evaluation.
 
 ## Conditions and limits
 The input is a polynomial as for `#cas [collect x]`. The other variables stay symbolic in the

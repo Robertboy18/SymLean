@@ -201,7 +201,8 @@ def combineRealPowers : TacticM Bool := withMainContext do
       e.getAppArgs[1]? == some (mkConst ``Real)).isSome do
     return false
   evalTactic (← `(tactic|
-    try simp (disch := (first | assumption | positivity | (norm_num; done) | symbolic_assumptions))
+    try simp (disch := (first
+        | cas_assumption | positivity | (norm_num; done) | symbolic_assumptions))
       only [← Real.rpow_add, ← Real.rpow_add']))
   if (← getGoals).isEmpty then
     return true

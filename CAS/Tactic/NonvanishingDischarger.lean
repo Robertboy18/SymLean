@@ -13,6 +13,7 @@ public import Mathlib.Tactic.NormNum.Abs
 public import Mathlib.Tactic.NormNum.DivMod
 public import Mathlib.Tactic.NormNum.OfScientific
 public import Mathlib.Tactic.Positivity.Finset
+public import CAS.Elaboration.DefEq -- shake: keep: the discharger quotes `cas_assumption`, `cas_staged`
 
 /-!
 # The nonvanishing discharger of the arithmetic route
@@ -47,7 +48,7 @@ open Lean Elab Tactic
 
 /--
 Discharge a nonvanishing side goal `e ≠ 0` from the local context: `positivity`,
-`assumption`, `linarith`, structural splitting of powers, products and quotients, and
+`cas_assumption`, `linarith`, structural splitting of powers, products and quotients, and
 `simp_all` on atoms. Used as the `field_simp` discharger of the arithmetic and
 polynomial-equation routes.
 -/
@@ -59,11 +60,11 @@ elab_rules : tactic
     tryCatchRuntimeEx (evalTactic (← `(tactic|
       first
         | positivity
-        | assumption
+        | cas_assumption
         | linarith
-        | (apply pow_ne_zero; cas_nonvanishing)
-        | (apply mul_ne_zero <;> cas_nonvanishing)
-        | (apply div_ne_zero <;> cas_nonvanishing)
+        | ((cas_staged apply pow_ne_zero); cas_nonvanishing)
+        | ((cas_staged apply mul_ne_zero) <;> cas_nonvanishing)
+        | ((cas_staged apply div_ne_zero) <;> cas_nonvanishing)
         | (simp_all; done)
         | fail "cas_nonvanishing could not prove the nonvanishing side goal"))) fun error ↦ do
       saved.restore

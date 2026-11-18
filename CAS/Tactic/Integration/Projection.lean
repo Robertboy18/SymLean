@@ -210,7 +210,7 @@ def proveRequirements
         if requirementsTarget.isForall then
           `(tactic|
             first
-              | exact $evidenceSyntax
+              | cas_staged exact $evidenceSyntax
               | have hcasRequirements := $evidenceSyntax
                 $introduction:tactic
                 $pointEvidence:tactic
@@ -220,7 +220,7 @@ def proveRequirements
         else
           `(tactic|
             first
-              | exact $evidenceSyntax
+              | cas_staged exact $evidenceSyntax
               | have hcasRequirements := $evidenceSyntax
                 symbolic_assumptions
               | symbolic_assumptions)

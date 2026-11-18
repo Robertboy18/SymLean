@@ -34,7 +34,7 @@ SymLean imports this one; it serves certificates built on the library.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
 -/
 
 @[expose] public section
@@ -55,9 +55,9 @@ theorem mulUnits_eq (p q : ℤ × ℤ) :
     mulUnits p q =
       (min (min (p.1 * q.1) (p.1 * q.2)) (min (p.2 * q.1) (p.2 * q.2)),
         max (max (p.1 * q.1) (p.1 * q.2)) (max (p.2 * q.1) (p.2 * q.2))) := by
-  simp [mulUnits, FloatLib.Numerics.Interval.BinaryGrid.mul,
-    FloatLib.Numerics.Interval.BinaryGrid.roundDown,
-    FloatLib.Numerics.Interval.BinaryGrid.roundUp,
+  simp [mulUnits, FloatLib.Numerics.Interval.BinaryGrid.mul_def,
+    FloatLib.Numerics.Interval.BinaryGrid.roundDown_def,
+    FloatLib.Numerics.Interval.BinaryGrid.roundUp_def,
     FloatLib.Numerics.Interval.minOfFour, FloatLib.Numerics.Interval.maxOfFour]
 
 /-- The integer product interval is ordered. -/

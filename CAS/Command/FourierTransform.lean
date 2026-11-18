@@ -170,7 +170,7 @@ def logFourier (ref : Syntax) (x ξ : TSyntax `ident) (input : TSyntax `term) :
       have hf : (fun $x:ident : ℝ ↦ (($fT : ℝ) : ℂ)) = fun $x:ident : ℝ ↦
           (($cT * Real.exp (-$αT * $xT ^ 2 + $βT * $xT + $γT) : ℝ) : ℂ) := by
         funext $x:ident
-        congr 1
+        (cas_sealed congr 1)
         -- `congr 1` may already close the goal (e.g. `2 * x - 1` against `2 * x + -1`).
         try ring_nf
       rw [hf, CAS.Calculus.FourierGaussian.fourier_gaussian_real' (by norm_num)]

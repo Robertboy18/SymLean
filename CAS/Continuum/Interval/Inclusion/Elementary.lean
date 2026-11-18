@@ -41,6 +41,7 @@ ranges retain their own precision policies; increasing `prec` alone does not ref
 @[expose] public section
 
 open Inclusion
+open Inclusion.IntervalDyadicReal (Dyadic.toReal)
 
 namespace CAS.Continuum.CEGAInclusion
 
@@ -53,11 +54,11 @@ theorem mem_univ (x : ℝ) : x ∈ Interval.univ Dyadic :=
   Interval.mem_map_univ Dyadic.toReal x
 
 /-- The dyadic `1` read as a real is `1`. -/
-theorem toReal_one : (1 : Dyadic).toReal = 1 := by
+theorem toReal_one : Dyadic.toReal 1 = 1 := by
   simp [Dyadic.toReal, show (1 : Dyadic).toRat = 1 from rfl]
 
-/-- Reading dyadics as reals commutes with negation: `(-d).toReal = -d.toReal`. -/
-theorem toReal_neg (d : Dyadic) : (-d).toReal = -d.toReal := by
+/-- Reading dyadics as reals commutes with negation: `toReal (-d) = -toReal d`. -/
+theorem toReal_neg (d : Dyadic) : Dyadic.toReal (-d) = -Dyadic.toReal d := by
   simp [Dyadic.toReal, Dyadic.toRat_neg]
 
 /-- A real `x` with `-1 ≤ x ≤ 1` lies in the dyadic interval `closed (-1) 1`. -/

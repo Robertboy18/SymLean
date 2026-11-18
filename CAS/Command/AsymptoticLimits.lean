@@ -318,7 +318,7 @@ where
         normalize f (← mkAppM rule #[x.proof, y.proof, hc, h]) (if minus then -y.q else y.q)
           y.C y.a y.b y.k
     | .eq =>
-        unless ← isDefEq x.C y.C do
+        unless ← Elaboration.DefEq.agree x.C y.C do
           -- Constants equal in value: the dominant terms may still cancel.
           let same ← try
               let _ ← byTactic (← mkAppM ``Eq #[x.C, y.C]) (← `(tactic| norm_num))
@@ -456,8 +456,8 @@ where
           filter_upwards [$hQT:term] with x hq
           $unfoldSimp:tactic
           first
-            | exact div_sub_one hq.ne'
-            | exact div_sub_one hq.ne
+            | cas_staged exact div_sub_one hq.ne'
+            | cas_staged exact div_sub_one hq.ne
             | $hne:tactic)))
     | _, _, _ => pure ()
     -- Polynomials: expand.
@@ -511,7 +511,7 @@ def asymptoticTheorem (expr : Verified.Expr (Fin 1)) (positive : Bool) :
   let fTarget ← instantiateMVars fTarget
   let limitType ← instantiateMVars (← inferType limit)
   let expected := mkAppN limitType.getAppFn (limitType.getAppArgs.set! 2 fTarget)
-  unless ← isDefEq limitType expected do
+  unless ← Elaboration.DefEq.agree limitType expected do
     throwError "limit: the expression does not match its equivalent"
   let limit ← mkExpectedTypeHint limit expected
   let proof ← if positive then pure limit else do

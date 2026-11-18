@@ -118,7 +118,7 @@ def closeByCombination (oracle : Oracle) : TacticM (TSyntax `tactic) := do
       if declaration.isImplementationDetail then continue
       let declType ← instantiateMVars declaration.type
       if let some (hType, a, b) := declType.consumeMData.eq? then
-        if ← isDefEq hType type then
+        if ← Elaboration.DefEq.agree hType type then
           hypotheses := hypotheses.push (declaration.toExpr, a, b)
     if hypotheses.isEmpty then
       throwError "cas [oracle]: no hypothesis is an equation in the type of the goal"
@@ -191,7 +191,7 @@ def closeMembership (oracle : Oracle) : TacticM Unit := do
     closeGoal s!"cas [oracle := {oracle.name}]" fun goal ↦ do
       try
         let proof ← CAS.Command.Ideal.memberFrom ctx ideal member (facts.zip rows)
-        unless ← isDefEq (← inferType proof) (← goal.getType) do
+        unless ← Elaboration.DefEq.agree (← inferType proof) (← goal.getType) do
           throwError "the membership proof has another type"
         goal.assign proof
       catch error =>

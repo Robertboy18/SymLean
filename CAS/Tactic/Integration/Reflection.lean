@@ -242,7 +242,7 @@ def endpointPrimitive? (value lower upper : Expr) : TacticM (Option Expr) := do
   let value := value.consumeMData
   unless value.isAppOfArity ``HSub.hSub 6 do
     return none
-  if ← isDefEqGuarded lower upper then
+  if ← Elaboration.DefEq.agreeGuarded lower upper then
     return none
   let atUpper := value.getAppArgs[4]!
   let atLower := value.getAppArgs[5]!
@@ -253,9 +253,9 @@ def endpointPrimitive? (value lower upper : Expr) : TacticM (Option Expr) := do
     unless CAS.Elaboration.RealExpression.dependsOn body binder do
       return none
     let primitive ← mkLambdaFVars #[binder] body
-    unless ← isDefEqGuarded (mkApp primitive lower) atLower do
+    unless ← Elaboration.DefEq.agreeGuarded (mkApp primitive lower) atLower do
       return none
-    unless ← isDefEqGuarded (mkApp primitive upper) atUpper do
+    unless ← Elaboration.DefEq.agreeGuarded (mkApp primitive upper) atUpper do
       return none
     return some primitive
 
@@ -264,7 +264,7 @@ def ensureVolumeMeasure (measure : Expr) : TacticM Unit := do
   -- Fix the instance explicitly: a caller-local `MeasureSpace ℝ` may have a different volume.
   let volume ← mkAppOptM ``MeasureTheory.MeasureSpace.volume
     #[some (mkConst ``Real), some (mkConst ``Real.measureSpace)]
-  unless ← isDefEq measure volume do
+  unless ← Elaboration.DefEq.agree measure volume do
     throwError
       "cas proves interval integrals with Mathlib's default Lebesgue measure on ℝ only; a \
        different measure was supplied"

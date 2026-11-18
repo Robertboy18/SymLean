@@ -20,7 +20,7 @@ grid enclosure of a rational is its floor and ceiling on the grid (`grid_enclose
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
 -/
 
 @[expose] public section
@@ -38,7 +38,7 @@ theorem grid_enclose_lo (bits : ℕ) (q : ℚ) :
     conv_lhs => rw [← Rat.num_div_den q]
     push_cast; ring
   rw [eq_comm, Int.floor_eq_iff]
-  simp only [BinaryGrid.enclose, BinaryGrid.divBounds, Int.shiftLeft_eq]
+  simp only [BinaryGrid.enclose_def, BinaryGrid.divBounds_def, Int.shiftLeft_eq]
   rw [Int.fdiv_eq_ediv]
   simp only [hden.le, true_or, ↓reduceIte, sub_zero]
   rw [hq, le_div_iff₀ hd, div_lt_iff₀ hd]
@@ -52,7 +52,7 @@ theorem grid_enclose_hi (bits : ℕ) (q : ℚ) :
   have hlt := Int.lt_floor_add_one (q * 2 ^ bits)
   rw [← grid_enclose_lo] at hfl hlt
   have hd : (0 : ℚ) < q.den := by exact_mod_cast q.den_pos
-  simp only [BinaryGrid.enclose, BinaryGrid.divBounds] at hfl hlt ⊢
+  simp only [BinaryGrid.enclose_def, BinaryGrid.divBounds_def] at hfl hlt ⊢
   set a := q.num <<< bits
   have hq : q * 2 ^ bits = (a : ℚ) / q.den := by
     rw [show a = q.num * 2 ^ bits from Int.shiftLeft_eq _ _]

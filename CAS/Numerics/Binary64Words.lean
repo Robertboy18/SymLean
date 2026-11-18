@@ -6,7 +6,7 @@ Authors: SymLean Team
 
 module
 
-public import FloatLib.Floats.ExecFloat.Backends.Generic.Kernel.Proof
+public import FloatLib.Floats.ExecFloat.Backends.Compiled.Generic.Kernel.Proof
 public import FloatLib.Floats.Formats.BinaryInterchange.Spec.Dyadic
 public import CAS.Numerics.Binary64
 
@@ -41,12 +41,12 @@ without unfolding type classes or bit vectors.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>. The kernels
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The kernels
   `FiniteScaleAdd.roundSum` and `FiniteProductRound.round` and their proofs.
 * IEEE Computer Society, *IEEE Standard for Floating-Point Arithmetic*, IEEE Std 754-2019, IEEE,
   Piscataway, NJ, 2019, <https://doi.org/10.1109/IEEESTD.2019.8766229>. The binary64 format and
   rounding to nearest, ties to even.
-* Lean 4, release v4.35.0, <https://github.com/leanprover/lean4>. `type_checker::reduce_nat` in
+* Lean 4, release v4.36.0, <https://github.com/leanprover/lean4>. `type_checker::reduce_nat` in
   `src/kernel/type_checker.cpp` lists the operations the kernel evaluates on literals;
   `Nat.log2` is not among them.
 -/

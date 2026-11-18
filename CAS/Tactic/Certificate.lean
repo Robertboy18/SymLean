@@ -233,7 +233,7 @@ private def applyOneBudgetWeakening
   let goal ← getMainGoal
   let target ← instantiateMVars (← goal.getType)
   let proofType ← instantiateMVars (← inferType proof)
-  unless ← isDefEq proofType target do
+  unless ← Elaboration.DefEq.agree proofType target do
     return false
   goal.assign (← instantiateMVars proof)
   closeArithmeticGoals "certificate budget weakening"
@@ -258,7 +258,7 @@ private def applyQuadratureWeakening
   let goalsBefore ← getGoals
   let goal ← getMainGoal
   let proofType ← instantiateMVars (← inferType proof)
-  unless ← isDefEq proofType target do
+  unless ← Elaboration.DefEq.agree proofType target do
     return false
   goal.assign (← instantiateMVars proof)
   closeArithmeticGoals "quadrature error weakening"
@@ -307,7 +307,7 @@ private def applyEnclosureWeakening
   let goalsBefore ← getGoals
   let goal ← getMainGoal
   let proofType ← instantiateMVars (← inferType proof)
-  unless ← isDefEq proofType target do
+  unless ← Elaboration.DefEq.agree proofType target do
     return false
   goal.assign (← instantiateMVars proof)
   closeArithmeticGoals "certificate enclosure weakening"
@@ -381,7 +381,7 @@ def inferSubsetProof (smaller larger : Expr) : TacticM Expr := do
   let remaining ←
     try
       evalTacticAt
-        (← `(tactic| solve | assumption | simp_all [Set.Subset] | aesop)) proof.mvarId!
+        (← `(tactic| solve | cas_assumption | simp_all [Set.Subset] | aesop)) proof.mvarId!
     catch _ =>
       throwError
         "certificate domain restriction could not prove that the theorem domain is a subset \

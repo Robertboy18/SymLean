@@ -193,7 +193,7 @@ theorem certifiesOperatorNorm_of_frobeniusBoundSq_le
     (hbound : frobeniusBoundSq bounds ≤ bound ^ 2) :
     CertifiesOperatorNorm bounds (bound : NNReal) := by
   intro matrix hmatrix
-  rw [← NNReal.coe_le_coe, coe_nnnorm]
+  rw [← NNReal.coe_le_coe, coe_nnNorm]
   calc ‖matrix‖ ≤ Real.sqrt (∑ i, ∑ j, (matrix i j) ^ 2) := l2_opNorm_le_sqrt_sum_sq matrix
     _ ≤ (bound : ℝ) := Real.sqrt_le_iff.2
       ⟨NNRat.cast_nonneg bound, (sum_sq_le_frobeniusBoundSq hmatrix).trans (mod_cast hbound)⟩

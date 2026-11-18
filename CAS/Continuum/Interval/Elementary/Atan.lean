@@ -27,19 +27,19 @@ odd symmetry, `arctan x = π / 2 - arctan (1 / x)` for `x > 1` and
 its tail; `π / 4` is Machin's `4 arctan (1 / 5) - arctan (1 / 239)`. FloatLib proves the tail
 bound and takes Machin's identity from Mathlib.
 
-FloatLib's series `Enclosure.atanTaylor` is a `Finset` sum of rationals, which the kernel
-normalizes after every term; FloatLib compiles it to the binary splitting `Taylor.atan`, which
-composes integer Horner blocks and normalizes once (`atanTaylor_eq_binarySplit`). Kernel
-reduction does not use compiler substitutions, so `AtanSplit.bounds` restates FloatLib's
-`Interval.atanBounds` with `Taylor.atan` in place of the sum (`AtanSplit.bounds_eq`), and our
-enclosures use it. From about 80 terms on, as in the digits of `#cas [N d]`, the kernel
-evaluates it two to four times faster; at the 17 terms of `atanRange` the difference is within
-measurement noise.
+`AtanSplit.bounds` is FloatLib's `Interval.atanBounds` with its reductions written out and the
+series as the binary splitting `Taylor.atan`, which composes integer Horner blocks and normalizes
+once (`AtanSplit.bounds_eq`); our enclosures use it. It was written for FloatLib 3.1.0, whose
+`Enclosure.atanTaylor` was a `Finset` sum of rationals that the kernel normalized after every
+term and that only compiled code replaced by the binary splitting. Since FloatLib 4.0.0
+`Enclosure.atanTaylor` is `Taylor.atan` by definition (`atanTaylor_eq_binarySplit`), so both
+sum the same series in the kernel, and `AtanSplit` is kept for the statements about it
+(`BUGS.md`, N53).
 
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
 * NIST Digital Library of Mathematical Functions, §4.24 Inverse Trigonometric Functions: Further
   Properties, Version 1.2.8 (2026-09-15), <https://dlmf.nist.gov/4.24>. Equation (4.24.3), the
   series of `arctan z` for `|z| ≤ 1`.
@@ -81,8 +81,8 @@ def atan (x : ℚ) (degree : ℕ) : FloatLib.Numerics.RationalInterval :=
 /-- The binary-splitting arctangent is FloatLib's `Enclosure.atan`. -/
 theorem atan_eq : atan = Enclosure.atan := by
   funext x degree
-  simp only [atan, nonnegative, unit, piQuarter, small, Enclosure.atan, atanNonnegative, atanUnit,
-    Enclosure.piQuarter, atanSmall, atanTaylor_eq_binarySplit]
+  simp only [atan, nonnegative, unit, piQuarter, small, Enclosure.atan_def, atanNonnegative_def,
+    atanUnit_def, Enclosure.piQuarter_def, atanSmall, atanTaylor_eq_binarySplit]
 
 /-- FloatLib's interval arctangent `Interval.atanBounds` with the series by binary splitting. -/
 def bounds (I : Interval ℚ) (terms : ℕ) : Interval ℚ :=

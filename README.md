@@ -85,7 +85,7 @@ A few answers mention SymLean's own definitions, and then you read those too. Th
 
 - Special functions and algebraic numbers: `CAS.erf`, `CAS.Analysis.SpecialFunctions.legendre`,
   `CAS.AlgRoot.real` and `CAS.AlgRoot.complex`, two lines each, with the coefficient readers
-  `coeffEval` and `polyC` (Mathlib's `Polynomial.ofCoeffList` mapped to `ℂ`). Mathlib v4.35.0 has no
+  `coeffEval` and `polyC` (Mathlib's `Polynomial.ofCoeffList` mapped to `ℂ`). Mathlib v4.36.0 has no
   error function, so `CAS.erf` takes the definition of Mathlib pull request
   [#34053](https://github.com/leanprover-community/mathlib4/pull/34053).
 - Numerical bounds: the four certificate relations of `CAS/Certificate/Relations.lean` (`EnclosedOn`,
@@ -114,10 +114,10 @@ put the statement in your own file and prove it there. For `simplify`, `derive` 
 
 ## Using it
 
-SymLean builds with Lean `v4.35.0` and Mathlib `v4.35.0`. Add it to your `lakefile.lean`:
+SymLean builds with Lean `v4.36.0` and Mathlib `v4.36.0`. Add it to your `lakefile.lean`:
 
 ```lean4
-require SymLean from git "https://github.com/Robertboy18/SymLean.git" @ "main"
+require SymLean from git "https://github.com/Robertboy18/SymLean.git" @ "v4.36.0"
 ```
 
 then run `lake update SymLean` and `lake exe cache get`, and start a file with `import CAS`.
@@ -181,7 +181,7 @@ a list of solutions is complete, is printed as a hint and is not part of the the
 | `gappa` | Gappa | enclosures |
 
 The oracles live in the optional library `CASOracle`, which no module of `CAS` imports. Build it with
-`lake -R -Koracle=on build CASOracle`, which also fetches our Lean 4.35 port of
+`lake -R -Koracle=on build CASOracle`, which also fetches our Lean 4.36 port of
 [DSLean](https://github.com/taterowney/DSLean), the library that talks to the programs. SymPy, PARI
 and FLINT run in the Python of `SYMLEAN_ORACLE_PYTHON` (or `python3`) with `sympy` (and `cvxpy` for
 sums of squares), `cypari2` or `python-flint` installed, and SageMath, Maxima and Gappa are the
@@ -200,8 +200,8 @@ lake exe cache get
 lake build
 ```
 
-This builds FloatLib and SymLean's 630 modules, the examples included, with warnings as errors, in
-about ten minutes on 8 cores.
+This builds the 173 modules of FloatLib that SymLean uses and SymLean's 629 modules, the examples
+included, with warnings as errors, in about ten minutes on 8 cores.
 
 Inspect the axioms of a theorem proved by `cas`. They should be the three standard ones:
 
@@ -215,8 +215,8 @@ printf 'import CAS\ntheorem t : ∫ x in (0 : ℝ)..1, x * Real.exp x = 1 := by 
 
 You should also make sure that nothing in the library goes around the kernel: no extra axiom, and no compiled code
 that replaces a definition. A plain grep doesn't work well here, because a tactic library talks about
-`sorry` and axioms in its messages, so this script asks Lean instead, constant by constant (about four
-minutes and 4.5 GB):
+`sorry` and axioms in its messages, so this script asks Lean instead, constant by constant (about ten
+seconds and 4.9 GB):
 
 ```sh
 bash scripts/audit.sh
@@ -230,7 +230,10 @@ standard axioms. It lists 22 constants, and none of them can reach a theorem:
   `CAS.Numerics.natCompactImpl`, shows `lcProof` because it calls Lean's own `unsafeBaseIO`.
 - 6 `csimp` lemmas, one per constant, are proved equations that compiled code uses.
 
-It also counts 158 opaque and 481 partial constants, which come from `partial def`s and their compiled
+It also counts 89 constructor indices. Since v4.36.0 Lean implements the index function `T.ctorIdx` of
+an inductive type `T` with several constructors by an unsafe definition that it generates, which reads
+the constructor's tag; the script checks the name, the type and the body of each such pair. And it
+counts 159 opaque and 480 partial constants, which come from `partial def`s and their compiled
 copies. The kernel rejects any theorem or safe definition that mentions an unsafe constant. A `partial
 def` becomes a safe opaque constant, which definitions and theorems may mention (`CAS.Numerics.natOfLimbs`
 calls the partial `natOfLimbsRange`), but the kernel never unfolds it, so no proof can use its code.
@@ -262,17 +265,17 @@ the other analytic routes are checked in the kernel in every profile.
 
 SymLean is slower than Mathematica or SymPy, because every answer pays for a proof. I care about every
 answer being a theorem first and about speed second. Here is what the examples above cost, measured with
-Lean v4.35.0 on 8 cores of a shared 96-core machine, one `lake env lean` run per line. The first line is
-`import CAS` itself; each other line is what that example adds to it, the mean of two runs.
+Lean v4.36.0 on 8 cores of a shared 96-core machine, one `lake env lean` run per line. The first line is
+`import CAS` itself; each other line is what that example adds to it, the mean of three runs.
 
 | What | Time |
 | --- | ---: |
-| `import CAS` | 4.5 s, and 4 GB of memory (17 s the first time, while the files come from disk) |
+| `import CAS` | 2.7 s, and 4.6 GB of memory (longer the first time, while the files come from disk) |
 | `#cas [roots x] (x ^ 5 - x - 1 = 0)` | 0.3 s |
-| `∫ x in (0 : ℝ)..1, x * Real.exp x = 1 := by cas` | 0.4 s |
-| refusing Fateman's integral of `1 / x ^ 2` on [-1, 1] | 1.0 s |
-| `x * (1 - x) ≤ 1 / 4` on [0, 1] by `cega` | 0.3 s |
-| 2,000 integer inequalities, checked in the kernel | 3.3 s |
+| `∫ x in (0 : ℝ)..1, x * Real.exp x = 1 := by cas` | 0.5 s |
+| refusing Fateman's integral of `1 / x ^ 2` on [-1, 1] | 1.4 s |
+| `x * (1 - x) ≤ 1 / 4` on [0, 1] by `cega` | 0.4 s |
+| 2,000 integer inequalities, checked in the kernel | 3.7 s |
 | the same 2,000 with `cega [fast]` | under 0.1 s |
 | 20,000 with `cega [fast]` | under 0.1 s |
 | 20,000 in the kernel | stops at Lean's default recursion limit |
@@ -294,9 +297,10 @@ The documentation is the website in `Site/`: a page for every mode, function, ta
 by area, and tutorials. `bash Site/Tools/build.sh` builds it into `_out/site` and compiles every example
 on it, except the Hex and oracle examples, which it quotes from files that only their own builds compile.
 To contribute, follow Mathlib's conventions, keep every proof complete, and check a change with
-`lake build`, `bash tests/cega/run.sh`, `bash tests/docs/run.sh` and `bash tests/lake/run.sh`, and
-`bash scripts/dups.sh`, which fails when the library gains duplicate definitions or theorems,
-restatements of Mathlib, unused declarations or equivalence pairs (against `scripts/dups.baseline`).
+`lake build`, `bash tests/cega/run.sh`, `bash tests/docs/run.sh`, `bash tests/kinds/run.sh` and
+`bash tests/lake/run.sh`, and `bash scripts/dups.sh`, which fails when the library gains duplicate
+definitions or theorems, restatements of Mathlib, unused declarations or equivalence pairs (against
+`scripts/dups.baseline`).
 
 ## Related work
 

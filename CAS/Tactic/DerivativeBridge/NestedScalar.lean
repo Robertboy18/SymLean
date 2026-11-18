@@ -65,7 +65,7 @@ def innerDerivativeFunction
     (operation : String) (function : Expr) (evidence? : Option (TSyntax `term)) :
     MetaM (Expr × Expr) := do
   let real := mkConst ``Real
-  unless ← isDefEq (← inferType function) (← mkArrow real real) do
+  unless ← Elaboration.DefEq.agree (← inferType function) (← mkArrow real real) do
     throwError "{operation} nested derivative: the inner function is not of type ℝ → ℝ"
   withLocalDeclD `s real fun s ↦ do
     let body ← withTransparency .reducible <| whnf (mkApp function s)
@@ -95,7 +95,7 @@ def innerDerivativeSimproc
   -- Only the unapplied derivative `deriv g : ℝ → ℝ` is rewritten; applied occurrences
   -- reach this simproc through the extra-argument mechanism of the simproc index.
   let real := mkConst ``Real
-  unless ← isDefEq (← inferType e) (← mkArrow real real) do
+  unless ← Elaboration.DefEq.agree (← inferType e) (← mkArrow real real) do
     return .continue
   let function := e.appArg!
   try
@@ -237,7 +237,7 @@ private partial def eliminateNear (operation : String) (function point : Expr)
       let composed ← mkAppM ``Filter.EventuallyEq.comp_tendsto
         #[nearArgument, ← argumentTendsto operation binder argument point evidence?]
       let replacement := (mkApp derivative argument).headBeta
-      let abstracted ← kabstract current occurrence
+      let abstracted ← Elaboration.DefEq.abstract current occurrence
       let next := abstracted.instantiate1 replacement
       let pointwise ← mkLambdaFVars #[binder] (← mkEq occurrence replacement)
       let rewritten ← mkLambdaFVars #[binder] (← mkEq current next)
@@ -282,7 +282,7 @@ private partial def derivativeNear (operation : String) (function point : Expr)
   let reflected := arguments[3]!.appArg!
   let value := arguments[4]!
   let key ←
-    if ← isDefEq function' reflected then
+    if ← Elaboration.DefEq.agree function' reflected then
       mkExpectedTypeHint key
         (← mkAppM ``Filter.EventuallyEq #[neighbourhoods, ← mkAppM ``deriv #[function'], value])
     else

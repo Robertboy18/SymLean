@@ -14,14 +14,14 @@ public meta import Lean.Util.Recognizers
 
 `isAlgebraStatement` recognizes, by head symbols alone, the goals whose proofs the `command` route
 of bare `cas` builds with the algebra, matrix and number theory commands
-(`CAS.Command.AlgebraGoals`): equalities with a side headed by `gcd`, `lcm`, `Polynomial.coeff`,
+(`CAS.Command.AlgebraGoals`): equalities with a side headed by `gcd`, `lcm`,
 `Polynomial.natDegree`, `Inv.inv`, `Matrix.rank`, `Matrix.charpoly`, `Matrix.transpose`,
 `Matrix.trace`, `Matrix.mulVec`, `Real.Gamma`, `jacobiSym`, a finite sum or product, a modular
-power `a ^ b % m`, or a quotient or remainder `p / q`, `p % q` of polynomials, also under
-universal quantifiers. `ExactTactic` tries that route for these shapes in its `algebraStatement`
-stage, after the determinant stage and the routes of higher priority but before its arithmetic
-routes would expand, for example, a modular power with a huge exponent. A refutation by that
-route (`refutedTag`) ends the search.
+power `a ^ b % m`, a coefficient `p.coeff n`, or a quotient or remainder `p / q`, `p % q` of
+polynomials, also under universal quantifiers. `ExactTactic` tries that route for these shapes in
+its `algebraStatement` stage, after the determinant stage and the routes of higher priority but
+before its arithmetic routes would expand, for example, a modular power with a huge exponent. A
+refutation by that route (`refutedTag`) ends the search.
 -/
 
 public meta section
@@ -32,22 +32,29 @@ open Lean Meta
 
 /-- The heads of equality sides that the algebra route treats. -/
 def algebraHeads : List Name :=
-  [`GCDMonoid.gcd, `GCDMonoid.lcm, `Polynomial.coeff, `Polynomial.natDegree, `Inv.inv,
-   `Matrix.rank, `Matrix.charpoly, `Matrix.transpose, `Matrix.trace, `Matrix.mulVec,
-   `Finset.sum, `Finset.prod, `Real.Gamma, `jacobiSym]
+  [`GCDMonoid.gcd, `GCDMonoid.lcm, `Polynomial.natDegree, `Inv.inv, `Matrix.rank,
+   `Matrix.charpoly, `Matrix.transpose, `Matrix.trace, `Matrix.mulVec, `Finset.sum,
+   `Finset.prod, `Real.Gamma, `jacobiSym]
 
 /-- Whether `e` is `a ^ b % m`. -/
 def isModularPower (e : Expr) : Bool :=
   e.isAppOfArity `HMod.hMod 6 && (e.getArg! 4).consumeMData.isAppOfArity `HPow.hPow 6
 
-/-- Whether `e` is `p.coeff n`, which elaborates to a coercion of `Polynomial.coeff p`. -/
+/-- Whether `e` is `p.coeff n`, which elaborates to a coercion of `AddMonoidAlgebra.coeff p`:
+Mathlib's `Polynomial R` is `AddMonoidAlgebra R ℕ`. -/
 def isPolynomialCoeff (e : Expr) : Bool :=
-  e.isAppOfArity `DFunLike.coe 6 && (e.getArg! 4).consumeMData.isAppOf `Polynomial.coeff
+  e.isAppOfArity `DFunLike.coe 6 && (e.getArg! 4).consumeMData.isAppOf `AddMonoidAlgebra.coeff
+
+/-- Whether `type` is a polynomial ring, written `Polynomial R` or unfolded to
+`AddMonoidAlgebra R ℕ`. -/
+def isPolynomialRing (type : Expr) : Bool :=
+  type.isAppOf `Polynomial ||
+    (type.isAppOfArity `AddMonoidAlgebra 3 && (type.getArg! 1).consumeMData.isConstOf `Nat)
 
 /-- Whether `e` is `p / q` or `p % q` in a polynomial ring. -/
 def isPolynomialDivision (e : Expr) : Bool :=
   (e.isAppOfArity `HDiv.hDiv 6 || e.isAppOfArity `HMod.hMod 6) &&
-    (e.getArg! 0).consumeMData.isAppOf `Polynomial
+    isPolynomialRing (e.getArg! 0).consumeMData
 
 /-- Whether `e`, a side of an equality, is headed by one of `algebraHeads` (under binders of a
 universally quantified statement). -/

@@ -81,7 +81,7 @@ The packed definitions of `CAS.Numerics` follow rules measured with Lean 4.35:
 * *The Lean Language Reference*, section "Natural Numbers",
   <https://lean-lang.org/doc/reference/latest/Basic-Types/Natural-Numbers/>. The subsection
   "Run-Time Representation" on the kernel's arbitrary-precision natural-number literals.
-* Lean 4, release v4.35.0, <https://github.com/leanprover/lean4>. `type_checker::reduce_nat` in
+* Lean 4, release v4.36.0, <https://github.com/leanprover/lean4>. `type_checker::reduce_nat` in
   `src/kernel/type_checker.cpp` lists the operations the kernel evaluates on literals.
 -/
 

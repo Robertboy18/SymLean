@@ -64,25 +64,25 @@ private def orElseRestoring (primary fallback : TacticM Unit) : TacticM Unit := 
 
 private def closeDerivativeWithinAtPremise : TacticM Unit :=
   orElseRestoring
-    (do evalTactic <| ← `(tactic| assumption))
+    (do evalTactic <| ← `(tactic| cas_assumption))
     (do
       evalTactic <| ← `(tactic| intro x hx)
       orElseRestoring
         (evalTactic <| ← `(tactic| solve_by_elim))
         (do
-          evalTactic <| ← `(tactic| apply HasDerivAt.hasDerivWithinAt)
+          evalTactic <| ← `(tactic| cas_staged apply HasDerivAt.hasDerivWithinAt)
           discard <| Tactic.Integration.close none))
 
 private def closeIntervalIntegrablePremise : TacticM Unit :=
   orElseRestoring
-    (do evalTactic <| ← `(tactic| assumption))
+    (do evalTactic <| ← `(tactic| cas_assumption))
     (do
-      evalTactic <| ← `(tactic| apply Continuous.intervalIntegrable)
-      evalTactic <| ← `(tactic| fun_prop))
+      evalTactic <| ← `(tactic| cas_staged apply Continuous.intervalIntegrable)
+      evalTactic <| ← `(tactic| cas_staged fun_prop))
 
 private def closeIntegrationByParts : TacticM Unit := do
   evalTactic <| ←
-    `(tactic| apply intervalIntegral.integral_mul_deriv_eq_deriv_mul_of_hasDerivWithinAt)
+    `(tactic| cas_staged apply intervalIntegral.integral_mul_deriv_eq_deriv_mul_of_hasDerivWithinAt)
   closeDerivativeWithinAtPremise
   closeDerivativeWithinAtPremise
   closeIntervalIntegrablePremise

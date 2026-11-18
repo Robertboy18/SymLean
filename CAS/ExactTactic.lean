@@ -456,7 +456,7 @@ private def isEquationOver (side : TSyntax `term) (carrier : Lean.Expr) :
     let type ← whnf (← instantiateMVars (← inferType evidence))
     let result ←
       match type.consumeMData.eq? with
-      | some (hintCarrier, _, _) => isDefEq hintCarrier carrier
+      | some (hintCarrier, _, _) => Elaboration.DefEq.agree hintCarrier carrier
       | none => pure false
     saved.restore
     return result) fun error ↦ do

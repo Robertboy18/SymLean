@@ -421,7 +421,7 @@ private def closeReflectedTarget
       throwError
         "cas internal error: the selected certificate theorem has \
          an unexpected argument shape"
-    unless ← isDefEq conclusion target do
+    unless ← Elaboration.DefEq.agree conclusion target do
       throwError
         "cas found a checked antiderivative, but its analytic \
          theorem does not match the stated primitive and coordinate geometry"
@@ -432,7 +432,7 @@ private def closeReflectedTarget
     Term.synthesizeSyntheticMVarsNoPostponing
     let proof ← instantiateMVars (mkAppN base arguments)
     let proofType ← instantiateMVars (← inferType proof)
-    unless ← isDefEq proofType target do
+    unless ← Elaboration.DefEq.agree proofType target do
       throwError
         "cas constructed a proof of{indentExpr proofType}\n\
          but the goal is{indentExpr target}"

@@ -22,11 +22,12 @@ any commutative ring through `ringTerm`, which accepts polynomials only.
 Both directions run DSLean's translations, credited in `CASOracle.Oracle`, on the grammars of
 `CASOracle.Syntax`; Gappa's problems are written with DSLean's own grammar `Gappa_input`.
 
-A request is a checked expression written by DSLean (`toExternal'`) from the real term that
-`Wire.toTerm` gives it, in a local context that holds only the request's variables. An answer is
-read by DSLean (`fromExternal'`) as a real term in a local context that holds only the
-variables the task permits, and reflected into a checked expression by CAS's reifier
-(`CAS.Elaboration.RealExpression.reify`), which refuses anything outside the checked language.
+A request is a checked expression written by DSLean (`toExternal'`, run in the view of a module
+by `externalText`) from the real term that `Wire.toTerm` gives it, in a local context that holds
+only the request's variables. An answer is read by DSLean (`fromExternal'`) as a real term in a
+local context that holds only the variables the task permits, and reflected into a checked
+expression by CAS's reifier (`CAS.Elaboration.RealExpression.reify`), which refuses anything
+outside the checked language.
 Before parsing, the text is bounded in length, in digits and in bracket depth; before reflection,
 the size of the reflected expression is bounded, since the reifier lowers `tan`, `sinh`, `cosh` and
 `tanh` by repeating their argument.
@@ -79,6 +80,13 @@ def reason (error : Exception) : MetaM String := do
     return "it is nested or chained more than 1000 deep, DSLean's bound"
   return line
 
+/-- DSLean's `toExternal'` in the view of a module (`Elaboration.DefEq.withModuleView`). DSLean
+matches a term against every pattern of the language at the default transparency; in a file
+outside the module system a pattern that does not fit would unfold the real numbers down to
+Cauchy sequences. -/
+def externalText (language : Name) (value : Lean.Expr) : TermElabM String :=
+  Elaboration.DefEq.withModuleView <| toExternal' language value
+
 /-- Write `expression` in the language `language`, coordinate `i` as the variable `names i`. -/
 def write {n : Nat} (language : Name) (names : Fin n → String)
     (expression : Verified.Expr (Fin n)) : TermElabM String := do
@@ -88,7 +96,7 @@ def write {n : Nat} (language : Name) (names : Fin n → String)
     synthesizeSyntheticMVarsNoPostponing
     let value ← instantiateMVars value
     if value.hasMVar then throwError "the request does not elaborate completely"
-    try toExternal' language value
+    try externalText language value
     catch error => throwError "the request cannot be written for the oracle: {← reason error}"
 
 /-! ## Reading answers -/
@@ -583,7 +591,7 @@ def gappaProblem {n : Nat} (names : Fin n → String) (box : Fin n → ℚ × �
     let value ← elabTerm hypotheses (some (mkSort .zero))
     synthesizeSyntheticMVarsNoPostponing
     let value ← instantiateMVars value
-    try toExternal' `Gappa_input value
+    try externalText `Gappa_input value
     catch error => throwError "the request cannot be written for gappa: {← reason error}"
   return s!"\{ {hypothesis} -> {body} in ? }\n"
 

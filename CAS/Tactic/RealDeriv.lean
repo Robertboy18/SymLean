@@ -254,18 +254,19 @@ private def expandIteratedDerivWithin (evidence? : Option (TSyntax `term)) :
     let goals ← hypotheses.mapM fun hypothesis ↦ do
       mkFreshExprSyntheticOpaqueMVar (← inferType hypothesis)
     closeSideGoal goals[0]! (← `(tactic| first
-      | assumption | exact uniqueDiffOn_univ
-      | exact isOpen_Ioi.uniqueDiffOn | exact isOpen_Iio.uniqueDiffOn
-      | exact isOpen_Ioo.uniqueDiffOn | exact uniqueDiffOn_Ici _ | exact uniqueDiffOn_Iic _
-      | exact uniqueDiffOn_Icc (by first | norm_num | assumption | linarith)
-      | exact uniqueDiffOn_Ico (by first | norm_num | assumption | linarith)
-      | exact uniqueDiffOn_Ioc (by first | norm_num | assumption | linarith)))
+      | cas_assumption | cas_staged exact uniqueDiffOn_univ
+      | cas_staged exact isOpen_Ioi.uniqueDiffOn | cas_staged exact isOpen_Iio.uniqueDiffOn
+      | cas_staged exact isOpen_Ioo.uniqueDiffOn | cas_staged exact uniqueDiffOn_Ici _
+      | cas_staged exact uniqueDiffOn_Iic _
+      | cas_staged exact uniqueDiffOn_Icc (by first | norm_num | cas_assumption | linarith)
+      | cas_staged exact uniqueDiffOn_Ico (by first | norm_num | cas_assumption | linarith)
+      | cas_staged exact uniqueDiffOn_Ioc (by first | norm_num | cas_assumption | linarith)))
       "unique differentiability on the set"
     closeSideGoal goals[2]! (← `(tactic| first
-      | exact Set.mem_univ _ | assumption
+      | cas_staged exact Set.mem_univ _ | cas_assumption
       | (simp only [Set.mem_Ioi, Set.mem_Iio, Set.mem_Icc, Set.mem_Ico, Set.mem_Ioc,
             Set.mem_Ioo, Set.mem_Ici, Set.mem_Iic];
-          first | assumption | positivity | (constructor <;> linarith) | linarith)))
+          first | cas_assumption | positivity | (constructor <;> linarith) | linarith)))
       "that the point lies in the set"
     let remaining ← Tactic.run goals[1]!.mvarId! (Regularity.close evidence?)
     unless remaining.isEmpty do
@@ -465,7 +466,7 @@ private def finish
   let goal ← getMainGoal
   let target ← instantiateMVars (← goal.getType)
   let proofType ← instantiateMVars (← inferType proof)
-  unless ← isDefEq proofType target do
+  unless ← Elaboration.DefEq.agree proofType target do
     throwError
       "{operation} constructed a proof of{indentExpr proofType}\n\
        but the goal is{indentExpr target}"
@@ -481,9 +482,9 @@ private def closeDirectDeriv
   let absFunction ←
     Term.elabTermEnsuringType (← `(term| (abs : ℝ → ℝ))) (some expectedFunctionType)
   let directTotalProof? ←
-    if ← isDefEqGuarded function absFunction then
+    if ← Elaboration.DefEq.agreeGuarded function absFunction then
       some <$> mkAppM ``deriv_abs #[point]
-    else if ← isDefEqGuarded function (mkConst ``Real.log) then
+    else if ← Elaboration.DefEq.agreeGuarded function (mkConst ``Real.log) then
       some <$> mkAppM ``Real.deriv_log #[point]
     else
       pure none
@@ -504,11 +505,11 @@ private def closeDirectDeriv
     catch _ =>
       saved.restore
   let directProof? ←
-    if ← isDefEqGuarded function (mkConst ``Real.sinh) then
+    if ← Elaboration.DefEq.agreeGuarded function (mkConst ``Real.sinh) then
       some <$> mkAppM ``congrFun #[mkConst ``Real.deriv_sinh, point]
-    else if ← isDefEqGuarded function (mkConst ``Real.cosh) then
+    else if ← Elaboration.DefEq.agreeGuarded function (mkConst ``Real.cosh) then
       some <$> mkAppM ``congrFun #[mkConst ``Real.deriv_cosh, point]
-    else if ← isDefEqGuarded function (mkConst ``Real.tan) then
+    else if ← Elaboration.DefEq.agreeGuarded function (mkConst ``Real.tan) then
       some <$> mkAppM ``Real.deriv_tan #[point]
     else
       pure none
@@ -519,7 +520,7 @@ private def closeDirectDeriv
   let directProof ← instantiateMVars directProof
   let proof ← if reverse then mkEqSymm directProof else pure directProof
   let proof ←
-    if ← isDefEq (← inferType proof) target then
+    if ← Elaboration.DefEq.agree (← inferType proof) target then
       pure proof
     else
       -- The stated value differs from the lemma's (`1 + tan x ^ 2` for `1 / cos x ^ 2`): the
@@ -537,7 +538,7 @@ private def closeDirectDeriv
            {indentD error.toMessageData}"
       let identified ← mkEqTrans directProof (← instantiateMVars valueGoal)
       if reverse then mkEqSymm identified else pure identified
-  unless ← isDefEq (← inferType proof) target do
+  unless ← Elaboration.DefEq.agree (← inferType proof) target do
     throwError
       "{operation} internal error: the identified total derivative does not match the goal"
   goal.assign proof
@@ -615,7 +616,7 @@ private def closeFromHypothesis (shape : Shape)
           unless ← withTransparency .reducible <|
               ProofCarrier.isDefEqReadOnly sourceShape.function shape.function do
             continue
-        if ← isDefEqGuarded sourceType target then
+        if ← Elaboration.DefEq.agreeGuarded sourceType target then
           goal.assign source
           replaceMainGoal []
           return
@@ -630,7 +631,7 @@ private def closeFromHypothesis (shape : Shape)
                   #[none, none, none, none, none, none, none, none, some set, some source]
             | .differentiableAt _ _ =>
                 mkAppM ``HasDerivAt.differentiableAt #[source]
-          if ← isDefEqGuarded (← inferType proof) target then
+          if ← Elaboration.DefEq.agreeGuarded (← inferType proof) target then
             goal.assign proof
             replaceMainGoal []
             return
@@ -655,7 +656,8 @@ private def closeFromRules (shape : Shape)
         let equality ← mkFreshExprSyntheticOpaqueMVar (← mkEq value stated)
         let remaining ← KernelReadBack.withSuppressedMessagesMeta <|
           KernelReadBack.runTacticOnGoal equality.mvarId!
-            (← `(tactic| first | rfl | (simp; done) | ring | (field_simp; ring) | norm_num))
+            (← `(tactic|
+              first | cas_rfl | (simp; done) | ring | (field_simp; ring) | norm_num))
         unless remaining.isEmpty do
           throwError "the analytic derivative does not match the stated value"
         mkAppM ``HasDerivAt.congr_deriv #[derivative, ← instantiateMVars equality]

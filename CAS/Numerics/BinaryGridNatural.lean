@@ -33,7 +33,7 @@ kernel evaluates on literals, and FloatLib's enclosure theorems apply to the res
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>. The binary-grid
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The binary-grid
   interval operations that the natural-number definitions restate.
 -/
 
@@ -127,18 +127,18 @@ theorem roundDown_natCast (p a : ℕ) :
 /-- FloatLib's `BinaryGrid.roundUp p` of a natural number `a` is `ceilShift p a`. -/
 theorem roundUp_natCast (p a : ℕ) :
     BinaryGrid.roundUp p (a : ℤ) = ((ceilShift p a : ℕ) : ℤ) := by
-  unfold BinaryGrid.roundUp
-  rw [Int.shiftRight_eq_div_pow, ceilShift_eq, neg_natCast_ediv, neg_neg]
+  rw [BinaryGrid.roundUp_def, Int.shiftRight_eq_div_pow, ceilShift_eq, neg_natCast_ediv, neg_neg]
 
 /-- FloatLib's `BinaryGrid.add` of two natural intervals is `natAdd`. -/
 theorem add_natInterval (I J : ℕ × ℕ) :
     BinaryGrid.add (natInterval I) (natInterval J) = natInterval (natAdd I J) := by
-  simp [BinaryGrid.add, natInterval, natAdd]
+  simp [BinaryGrid.add_def, natInterval, natAdd]
 
 /-- FloatLib's `BinaryGrid.mul p` of two natural intervals is `natMul p`. -/
 theorem mul_natInterval (p : ℕ) (I J : ℕ × ℕ) :
     BinaryGrid.mul p (natInterval I) (natInterval J) = natInterval (natMul p I J) := by
-  unfold BinaryGrid.mul natMul
+  rw [BinaryGrid.mul_def]
+  unfold natMul
   simp only [natInterval, minOfFour, maxOfFour, ← Nat.cast_mul, ← Nat.cast_min, ← Nat.cast_max,
     roundDown_natCast, roundUp_natCast]
   rfl
@@ -146,14 +146,15 @@ theorem mul_natInterval (p : ℕ) (I J : ℕ × ℕ) :
 /-- FloatLib's `BinaryGrid.square p` of a natural interval is `natSquare p`. -/
 theorem square_natInterval (p : ℕ) (I : ℕ × ℕ) :
     BinaryGrid.square p (natInterval I) = natInterval (natSquare p I) := by
-  unfold BinaryGrid.square natSquare
+  rw [BinaryGrid.square_def]
+  unfold natSquare
   simp only [natInterval, Int.natCast_nonneg, ↓reduceIte, ← Nat.cast_mul, ← Nat.cast_max,
     roundDown_natCast, roundUp_natCast]
   rfl
 
 /-- FloatLib's `BinaryGrid.abs` leaves every natural interval unchanged. -/
 theorem abs_natInterval (I : ℕ × ℕ) : BinaryGrid.abs (natInterval I) = natInterval I := by
-  unfold BinaryGrid.abs
+  rw [BinaryGrid.abs_def]
   simp [natInterval]
 
 /-- FloatLib's `Enclosure.BinaryGrid.divideNat` of a natural interval by `n` is `natDivide I n`, for
@@ -180,7 +181,7 @@ theorem divBounds_eq_natInterval {a b : ℤ} (hb : 0 < b) {A B : ℕ} (hB : 0 < 
   have hcond : ((A / B : ℕ) : ℤ) * (n : ℤ) = a ↔ A / B * B = A := by
     rw [← @Int.cast_inj ℚ, ← @Nat.cast_inj ℚ, Int.cast_mul, Int.cast_natCast, Int.cast_natCast,
       Nat.cast_mul, ← eq_div_iff hn.ne', ← eq_div_iff hB'.ne', h']
-  unfold BinaryGrid.divBounds
+  rw [BinaryGrid.divBounds_def]
   simp only [hfloor, natInterval, ceilDiv_eq_ite hB, hcond]
   split_ifs <;> rfl
 
@@ -189,9 +190,9 @@ theorem enclose_natCast_div (p A B : ℕ) :
     BinaryGrid.enclose p ((A : ℚ) / B) =
       natInterval (Nat.shiftLeft A p / B, ceilDiv (Nat.shiftLeft A p) B) := by
   rcases Nat.eq_zero_or_pos B with rfl | hB
-  · simp only [BinaryGrid.enclose, BinaryGrid.divBounds, ceilDiv, natInterval]
+  · simp only [BinaryGrid.enclose_def, BinaryGrid.divBounds_def, ceilDiv, natInterval]
     simp [show ∀ n : ℕ, n.div 0 = 0 from Nat.div_zero]
-  unfold BinaryGrid.enclose
+  rw [BinaryGrid.enclose_def]
   apply divBounds_eq_natInterval (by exact_mod_cast ((A : ℚ) / B).den_pos) hB
   rw [Int.shiftLeft_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq, Int.cast_mul, Int.cast_pow,
     mul_div_right_comm, Int.cast_natCast, Rat.num_div_den, Nat.cast_mul, Nat.cast_pow]
@@ -207,14 +208,14 @@ theorem scaleRat_natInterval (I : ℕ × ℕ) {f : ℚ} {FN FD : ℕ}
   rcases Nat.eq_zero_or_pos FD with rfl | hFD
   · simp only [Nat.cast_zero, div_zero] at hf
     subst hf
-    simp [Enclosure.BinaryGrid.scaleRat, natInterval, BinaryGrid.divBounds, ceilDiv,
+    simp [Enclosure.BinaryGrid.scaleRat_def, natInterval, BinaryGrid.divBounds_def, ceilDiv,
       show ∀ n : ℕ, n.div 0 = 0 from Nat.div_zero]
   have hf0 : 0 ≤ f := by rw [hf]; positivity
   have hden : (0 : ℤ) < f.den := by exact_mod_cast f.den_pos
   have hval (x : ℕ) : ((x * f.num : ℤ) : ℚ) / (f.den : ℤ) = ((x * FN : ℕ) : ℚ) / FD := by
     rw [Int.cast_mul, Int.cast_natCast, Int.cast_natCast, mul_div_assoc, Rat.num_div_den, hf,
       Nat.cast_mul, mul_div_assoc]
-  unfold Enclosure.BinaryGrid.scaleRat
+  rw [Enclosure.BinaryGrid.scaleRat_def]
   simp only [natInterval, hf0, ↓reduceIte, divBounds_eq_natInterval hden hFD (hval _)]
 
 /-- The ninth power of FloatLib's repeated squaring: three squares and one product. -/
@@ -232,8 +233,8 @@ one product with `I`, for every integer interval `I`. -/
 theorem internalPow_nine (p : ℕ) (I : Interval ℤ) :
     BinaryGrid.Internal.pow p I 9 =
       BinaryGrid.mul p (BinaryGrid.square p (BinaryGrid.square p (BinaryGrid.square p I))) I := by
-  rw [BinaryGrid.Internal.pow, BinaryGrid.Internal.pow, BinaryGrid.Internal.pow,
-    BinaryGrid.Internal.pow]
+  rw [BinaryGrid.Internal.pow_def, BinaryGrid.Internal.pow_def, BinaryGrid.Internal.pow_def,
+    BinaryGrid.Internal.pow_def]
   simp
 
 /-- FloatLib's ninth power `BinaryGrid.pow p` of a natural interval is `natPowNine p`. -/
@@ -244,7 +245,8 @@ theorem pow_natInterval_nine (p : ℕ) (I : ℕ × ℕ) :
     rw [internalPow_nine, square_natInterval, square_natInterval, square_natInterval,
       mul_natInterval]
     rfl
-  unfold BinaryGrid.pow natPowNine
+  rw [BinaryGrid.pow_def]
+  unfold natPowNine
   rw [ite_eq_right (by decide), ite_eq_right (by decide), ite_eq_right (by decide)]
   cases hb : Nat.beq I.1 I.2
   · rw [ite_eq_right (by simpa [natInterval] using Nat.ne_of_beq_eq_false hb), Bool.cond_false]

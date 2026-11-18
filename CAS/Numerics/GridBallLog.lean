@@ -59,7 +59,7 @@ costs about 4.5 ms, and its rounded endpoints come out with radius zero, equal t
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>. The enclosed
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The enclosed
   intervals are those of `FloatLib.Numerics.Enclosure.log`, with its inversion below one, its
   reduction by a power of two and its series in `t = (x - 1) / (x + 1)`.
 * Joris van der Hoeven, "Ball arithmetic", *Logical approaches to Barriers in Computing and
@@ -88,9 +88,9 @@ theorem logOneSubTaylor_sub_neg (t : ℚ) (n : ℕ) :
     Enclosure.logOneSubTaylor t n - Enclosure.logOneSubTaylor (-t) n =
       2 * oddLogSum t ((n + 1) / 2) := by
   induction n with
-  | zero => simp [Enclosure.logOneSubTaylor, oddLogSum]
+  | zero => simp [Enclosure.logOneSubTaylor_def, oddLogSum]
   | succ n ih =>
-    unfold Enclosure.logOneSubTaylor at ih ⊢
+    simp only [Enclosure.logOneSubTaylor_def] at ih ⊢
     rw [Finset.sum_range_succ, Finset.sum_range_succ]
     rcases Nat.even_or_odd n with ⟨j, hj⟩ | ⟨j, hj⟩
     · have h1 : (n + 1 + 1) / 2 = (n + 1) / 2 + 1 := by omega
@@ -105,16 +105,17 @@ theorem logOneSubTaylor_sub_neg (t : ℚ) (n : ℕ) :
 /-- The logarithm remainder is even in its argument. -/
 theorem logOneSubRadius_neg (t : ℚ) (n : ℕ) :
     Enclosure.logOneSubRadius (-t) n = Enclosure.logOneSubRadius t n := by
-  simp [Enclosure.logOneSubRadius]
+  simp [Enclosure.logOneSubRadius_def]
 
 /-- The lower endpoint of `logSeries x n` through the odd series. -/
 theorem logSeries_lo (x : ℚ) (n : ℕ) :
     (Enclosure.logSeries x n).lo =
       2 * oddLogSum ((x - 1) / (x + 1)) ((n + 1) / 2) -
         2 * Enclosure.logOneSubRadius ((x - 1) / (x + 1)) n := by
-  simp only [Enclosure.logSeries, Enclosure.logOneSub, FloatLib.Numerics.RationalInterval.around,
-    FloatLib.Numerics.RationalInterval.sub, FloatLib.Numerics.RationalInterval.add,
-    FloatLib.Numerics.RationalInterval.neg, logOneSubRadius_neg]
+  simp only [Enclosure.logSeries_def, Enclosure.logOneSub,
+    FloatLib.Numerics.RationalInterval.around_def, FloatLib.Numerics.RationalInterval.sub,
+    FloatLib.Numerics.RationalInterval.add_def, FloatLib.Numerics.RationalInterval.neg,
+    logOneSubRadius_neg]
   linear_combination logOneSubTaylor_sub_neg ((x - 1) / (x + 1)) n
 
 /-- The upper endpoint of `logSeries x n` through the odd series. -/
@@ -122,9 +123,10 @@ theorem logSeries_hi (x : ℚ) (n : ℕ) :
     (Enclosure.logSeries x n).hi =
       2 * oddLogSum ((x - 1) / (x + 1)) ((n + 1) / 2) +
         2 * Enclosure.logOneSubRadius ((x - 1) / (x + 1)) n := by
-  simp only [Enclosure.logSeries, Enclosure.logOneSub, FloatLib.Numerics.RationalInterval.around,
-    FloatLib.Numerics.RationalInterval.sub, FloatLib.Numerics.RationalInterval.add,
-    FloatLib.Numerics.RationalInterval.neg, logOneSubRadius_neg]
+  simp only [Enclosure.logSeries_def, Enclosure.logOneSub,
+    FloatLib.Numerics.RationalInterval.around_def, FloatLib.Numerics.RationalInterval.sub,
+    FloatLib.Numerics.RationalInterval.add_def, FloatLib.Numerics.RationalInterval.neg,
+    logOneSubRadius_neg]
   linear_combination logOneSubTaylor_sub_neg ((x - 1) / (x + 1)) n
 
 /-- `m` steps of the odd series at `t = a / b`: the term `t ^ (2k + 1) 2 ^ P` is multiplied by
@@ -279,7 +281,7 @@ arguments. -/
 theorem logRadiusFrac_encloses (P n a b : ℕ) :
     (logRadiusFrac P n a b).Encloses P (Enclosure.logOneSubRadius ((a : ℚ) / b) n) := by
   have ht : (0 : ℚ) ≤ (a : ℚ) / b := by positivity
-  rw [Enclosure.logOneSubRadius, abs_of_nonneg ht]
+  rw [Enclosure.logOneSubRadius_def, abs_of_nonneg ht]
   unfold logRadiusFrac
   rcases Nat.mod_two_eq_zero_or_one n with hn | hn
   · rw [show Nat.beq (Nat.mod n 2) 0 = true by rw [GridBall.natMod_eq_mod, hn]; rfl]
@@ -340,7 +342,7 @@ theorem logLargeFrac_encloses (P n u v : ℕ) :
   obtain ⟨hv, hW⟩ := hok
   set s := Nat.log2 (Nat.div u v)
   have hscale : Enclosure.logScale ((u : ℚ) / v) = s := by
-    simp only [Enclosure.logScale, Nat.floor_div_eq_div, s, GridBall.natDiv_eq_div]
+    simp only [Enclosure.logScale_def, Nat.floor_div_eq_div, s, GridBall.natDiv_eq_div]
   have ht : ((u : ℚ) / v / 2 ^ s - 1) / ((u : ℚ) / v / 2 ^ s + 1) =
       ((Nat.sub u (Nat.shiftLeft v s) : ℕ) : ℚ) / ((Nat.add u (Nat.shiftLeft v s) : ℕ) : ℚ) := by
     have : (0 : ℚ) < v := by exact_mod_cast hv
@@ -350,8 +352,8 @@ theorem logLargeFrac_encloses (P n u v : ℕ) :
   have hL := logSeriesFrac_encloses (P := P) n ht
   have h2 := logSeriesFrac_encloses (P := P) n
     (by norm_num : ((2 : ℚ) - 1) / (2 + 1) = ((1 : ℕ) : ℚ) / ((3 : ℕ) : ℚ))
-  simp only [Enclosure.logLarge, hscale, FloatLib.Numerics.RationalInterval.add,
-    FloatLib.Numerics.RationalInterval.scaleNonnegative, mul_comm (s : ℚ)]
+  simp only [Enclosure.logLarge_def, hscale, FloatLib.Numerics.RationalInterval.add_def,
+    FloatLib.Numerics.RationalInterval.scaleNonnegative_def, mul_comm (s : ℚ)]
   exact ⟨GridBall.add_encloses hL.1 (GridBall.scaleNat_encloses h2.1),
     GridBall.add_encloses hL.2 (GridBall.scaleNat_encloses h2.2)⟩
 
@@ -377,7 +379,7 @@ theorem logFrac_encloses (P n u v : ℕ) :
       rw [div_lt_one (by exact_mod_cast (Nat.zero_le u).trans_lt huv)]
       exact_mod_cast huv
     have h := logLargeFrac_encloses P n v u
-    simp only [Enclosure.log, hlt, ↓reduceIte, inv_div, FloatLib.Numerics.RationalInterval.neg]
+    simp only [Enclosure.log_def, hlt, ↓reduceIte, inv_div, FloatLib.Numerics.RationalInterval.neg]
     exact ⟨GridBall.neg_encloses h.2, GridBall.neg_encloses h.1⟩
   · rw [Bool.eq_false_iff.mpr fun h ↦ huv (Nat.blt_eq.mp h)]
     rcases Nat.eq_zero_or_pos v with rfl | hv
@@ -386,7 +388,7 @@ theorem logFrac_encloses (P n u v : ℕ) :
     · have hge : ¬ (u : ℚ) / v < 1 := by
         rw [div_lt_one (by exact_mod_cast hv)]
         exact_mod_cast huv
-      simpa only [Enclosure.log, hge, ↓reduceIte] using logLargeFrac_encloses P n u v
+      simpa only [Enclosure.log_def, hge, ↓reduceIte] using logLargeFrac_encloses P n u v
 
 /-! ### Logarithms of balls -/
 
@@ -522,16 +524,17 @@ theorem logSeriesSignedBall_encloses {P : ℕ} {x : ℚ} (n : ℕ) {T : GridBall
     (GridBall.powNonneg_encloses hTa (abs_nonneg _) (n + 1))
     (GridBall.sub_encloses (GridBall.ofNat_encloses P 1) hTa))
   push_cast at hO hR
-  rw [logSeries_lo, logSeries_hi, Enclosure.logOneSubRadius, mul_comm 2, mul_comm 2]
+  rw [logSeries_lo, logSeries_hi, Enclosure.logOneSubRadius_def, mul_comm 2, mul_comm 2]
   exact ⟨GridBall.sub_encloses hO hR, GridBall.add_encloses hO hR⟩
 
 /-- `logSeries (y / 2 ^ s) + s · logSeries 2`: `Enclosure.logLarge y n` when `logScale y = s`. -/
 def logScaled (y : ℚ) (n s : ℕ) : FloatLib.Numerics.RationalInterval :=
   (Enclosure.logSeries (y / 2 ^ s) n).add ((Enclosure.logSeries 2 n).scaleNonnegative s)
 
-/-- FloatLib's `Enclosure.logLarge y n` is `logScaled y n (Enclosure.logScale y)`, by definition. -/
+/-- FloatLib's `Enclosure.logLarge y n` is `logScaled y n (Enclosure.logScale y)`: FloatLib's
+`Enclosure.logLarge_def`. -/
 theorem logLarge_eq_logScaled (y : ℚ) (n : ℕ) :
-    Enclosure.logLarge y n = logScaled y n (Enclosure.logScale y) := rfl
+    Enclosure.logLarge y n = logScaled y n (Enclosure.logScale y) := Enclosure.logLarge_def y n
 
 /-- Balls of `logScaled y n s` from a ball `Y` of `y ≥ 0`. -/
 def logScaledBall (P n s : ℕ) (Y : GridBall) : IntervalBalls :=
@@ -558,8 +561,8 @@ theorem logScaledBall_encloses {P n s : ℕ} {Y : GridBall} {y : ℚ} (hY : Y.En
     (GridBall.divPos_encloses (GridBall.sub_encloses hY' hone) (GridBall.add_encloses hY' hone))
   have h2 := logSeriesFrac_encloses (P := P) n
     (by norm_num : ((2 : ℚ) - 1) / (2 + 1) = ((1 : ℕ) : ℚ) / ((3 : ℕ) : ℚ))
-  simp only [logScaled, FloatLib.Numerics.RationalInterval.add,
-    FloatLib.Numerics.RationalInterval.scaleNonnegative, mul_comm (s : ℚ)]
+  simp only [logScaled, FloatLib.Numerics.RationalInterval.add_def,
+    FloatLib.Numerics.RationalInterval.scaleNonnegative_def, mul_comm (s : ℚ)]
   exact ⟨GridBall.add_encloses hL.1 (GridBall.scaleNat_encloses h2.1),
     GridBall.add_encloses hL.2 (GridBall.scaleNat_encloses h2.2)⟩
 
@@ -621,8 +624,12 @@ theorem logLargeBall_encloses {P n : ℕ} {Y : GridBall} {y : ℚ} (hY : Y.Enclo
   set s := Nat.log2 (floorLow P Y)
   have hmono : ∀ {a b : ℕ}, a ≤ b → Nat.log2 a ≤ Nat.log2 b := fun h ↦ by
     rw [Nat.log2_eq_log_two, Nat.log2_eq_log_two]; exact Nat.log_mono_right h
-  have hs1 : s ≤ Enclosure.logScale y := hmono hlow
-  have hs2 : Enclosure.logScale y ≤ Nat.log2 (floorHigh P Y) := hmono hhigh
+  have hs1 : s ≤ Enclosure.logScale y := by
+    rw [Enclosure.logScale_def]
+    exact hmono hlow
+  have hs2 : Enclosure.logScale y ≤ Nat.log2 (floorHigh P Y) := by
+    rw [Enclosure.logScale_def]
+    exact hmono hhigh
   rw [logLarge_eq_logScaled]
   cases h1 : Nat.beq (Nat.log2 (floorHigh P Y)) s
   · cases h2 : Nat.beq (Nat.log2 (floorHigh P Y)) (Nat.add s 1)
@@ -641,7 +648,7 @@ theorem logLargeBall_encloses {P n : ℕ} {Y : GridBall} {y : ℚ} (hY : Y.Enclo
 theorem log_eq_logSeries {q : ℚ} (h1 : 1 / 2 < q) (h2 : q < 2) (n : ℕ) :
     Enclosure.log q n = Enclosure.logSeries q n := by
   have hq0 : 0 < q := by linarith
-  unfold Enclosure.log
+  rw [Enclosure.log_def]
   split_ifs with hq
   · have hinv1 : 1 < q⁻¹ := (one_lt_inv₀ hq0).mpr hq
     have hinv2 : q⁻¹ < 2 := by
@@ -649,21 +656,21 @@ theorem log_eq_logSeries {q : ℚ} (h1 : 1 / 2 < q) (h2 : q < 2) (n : ℕ) :
     have hscale : Enclosure.logScale q⁻¹ = 0 := by
       have : ⌊q⁻¹⌋₊ = 1 := by
         rw [Nat.floor_eq_iff (by positivity)]; constructor <;> push_cast <;> linarith
-      simp [Enclosure.logScale, this]
+      simp [Enclosure.logScale_def, this]
     have ht : (q⁻¹ - 1) / (q⁻¹ + 1) = -((q - 1) / (q + 1)) := by
       field_simp; ring
-    simp only [Enclosure.logLarge, hscale, pow_zero, div_one, Enclosure.logSeries, ht, neg_neg,
-      FloatLib.Numerics.RationalInterval.add, FloatLib.Numerics.RationalInterval.sub,
-      FloatLib.Numerics.RationalInterval.neg, FloatLib.Numerics.RationalInterval.scaleNonnegative,
-      Nat.cast_zero, zero_mul, add_zero]
+    simp only [Enclosure.logLarge_def, hscale, pow_zero, div_one, Enclosure.logSeries_def, ht,
+      neg_neg, FloatLib.Numerics.RationalInterval.add_def, FloatLib.Numerics.RationalInterval.sub,
+      FloatLib.Numerics.RationalInterval.neg,
+      FloatLib.Numerics.RationalInterval.scaleNonnegative_def, Nat.cast_zero, zero_mul, add_zero]
     congr 1 <;> ring
   · have hscale : Enclosure.logScale q = 0 := by
       have : ⌊q⌋₊ = 1 := by
         rw [Nat.floor_eq_iff hq0.le]; constructor <;> push_cast <;> linarith
-      simp [Enclosure.logScale, this]
-    simp only [Enclosure.logLarge, hscale, pow_zero, div_one,
-      FloatLib.Numerics.RationalInterval.add, FloatLib.Numerics.RationalInterval.scaleNonnegative,
-      Nat.cast_zero, zero_mul, add_zero]
+      simp [Enclosure.logScale_def, this]
+    simp only [Enclosure.logLarge_def, hscale, pow_zero, div_one,
+      FloatLib.Numerics.RationalInterval.add_def,
+      FloatLib.Numerics.RationalInterval.scaleNonnegative_def, Nat.cast_zero, zero_mul, add_zero]
 
 /-- Every rational enclosed by `B` lies strictly between `1/2` and `2`. -/
 def nearOneCertain (P : ℕ) (B : GridBall) : Bool :=
@@ -715,7 +722,7 @@ theorem logBall_encloses {P n : ℕ} {B : GridBall} {q : ℚ} (hB : B.Encloses P
         rw [GridBall.cast_center] at hb
         have h2' : (2 : ℚ) ^ P + (B.n + B.e) ≤ B.p := by exact_mod_cast h2.2
         have hq : ¬ q < 1 := not_lt.mpr (le_of_mul_le_mul_right (by linarith) hP)
-        simpa only [Enclosure.log, hq, ↓reduceIte] using logLargeBall_encloses (n := n) hB
+        simpa only [Enclosure.log_def, hq, ↓reduceIte] using logLargeBall_encloses (n := n) hB
     · simp only [Bool.and_eq_true, Nat.blt_eq, Nat.add_eq, Nat.shiftLeft_eq', Nat.shiftLeft_eq,
         one_mul] at h1
       have hb := abs_le.mp (hB h1.1)
@@ -723,7 +730,7 @@ theorem logBall_encloses {P n : ℕ} {B : GridBall} {q : ℚ} (hB : B.Encloses P
       have h1' : (B.p : ℚ) + B.e < B.n + 2 ^ P := by exact_mod_cast h1.2
       have hq : q < 1 := lt_of_mul_lt_mul_right (by linarith) hP.le
       have h := logLargeBall_encloses (n := n) (GridBall.inv_encloses hB)
-      simp only [Enclosure.log, hq, ↓reduceIte, FloatLib.Numerics.RationalInterval.neg]
+      simp only [Enclosure.log_def, hq, ↓reduceIte, FloatLib.Numerics.RationalInterval.neg]
       exact ⟨GridBall.neg_encloses h.2, GridBall.neg_encloses h.1⟩
   · obtain ⟨hq1, hq2⟩ := mem_of_nearOneCertain hB h0
     rw [log_eq_logSeries hq1 hq2]

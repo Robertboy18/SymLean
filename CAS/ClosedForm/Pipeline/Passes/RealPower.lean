@@ -393,7 +393,7 @@ def literalExponentTop {ι : Type*} [DecidableEq ι] (base : Verified.Expr ι) (
 /-- A real raised to an integer-valued rational is its integer power. -/
 private theorem rpow_rat_of_den_eq_one (x : ℝ) {q : Rat} (hq : q.den = 1) :
     x ^ (q : ℝ) = x ^ q.num := by
-  have hnum : ((q.num : Rat) : ℝ) = (q : ℝ) := by rw [Rat.coe_int_num_of_den_eq_one hq]
+  have hnum : ((q.num : Rat) : ℝ) = (q : ℝ) := by rw [Rat.intCast_num_of_den_eq_one hq]
   rw [← hnum, Rat.cast_intCast, Real.rpow_intCast]
 
 /-- Splitting an exponent at an integer: `x ^ q = x ^ k * x ^ (q - k)` for positive `x`. -/
@@ -504,7 +504,7 @@ theorem cast_eq_of_naturalValue? {c : Rat} {k : Nat} (h : naturalValue? c = some
   · rename_i hc
     cases h
     have : ((c.num.toNat : ℤ) : ℚ) = c := by
-      rw [Int.toNat_of_nonneg hc.2, Rat.coe_int_num_of_den_eq_one hc.1]
+      rw [Int.toNat_of_nonneg hc.2, Rat.intCast_num_of_den_eq_one hc.1]
     exact_mod_cast this
   · simp at h
 

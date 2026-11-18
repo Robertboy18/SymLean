@@ -721,7 +721,7 @@ def proveCandidate (names : List Name) (lhs : Form) (candidate : Candidate) :
     mkIdent (Name.mkSimple s!"h{i}")
   let introduce ← `(tactic| intro $(binders ++ hypotheses)*)
   let closers : List (TSyntax `tactic) := (candidate.closer?.toList) ++
-    [← `(tactic| rfl), ← `(tactic| ring1), ← `(tactic| cas),
+    [← `(tactic| cas_rfl), ← `(tactic| ring1), ← `(tactic| cas),
       ← `(tactic| (field_simp; ring1))]
   -- A closed proposition without metavariables, so each attempt below can use it.
   let some proposition ← liftTermElabM do

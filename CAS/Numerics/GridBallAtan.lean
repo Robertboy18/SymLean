@@ -60,7 +60,7 @@ shared within a declaration.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>. The enclosed
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The enclosed
   intervals are those of `FloatLib.Numerics.Enclosure.atan`, with its reductions, its geometric
   remainder and Machin's identity for `π / 4`.
 * Joris van der Hoeven, "Ball arithmetic", *Logical approaches to Barriers in Computing and
@@ -140,7 +140,7 @@ theorem atanLoop_spec {P n : ℕ} {neg : Bool} {a b : ℕ} (h : oddLogOk a b = t
   refine ⟨?_, key.1⟩
   have hsum : (∑ i ∈ Finset.range n, (-1) ^ i * t ^ (2 * i + 1) * 2 ^ P /
       ((i + i + 1 : ℕ) : ℚ)) = Enclosure.atanTaylor t n * 2 ^ P := by
-    rw [Enclosure.atanTaylor, Finset.sum_mul]
+    rw [Enclosure.atanTaylor_def, Finset.sum_mul]
     exact Finset.sum_congr rfl fun i _ ↦ by push_cast; ring
   have hbound : (∑ i ∈ Finset.range n, ((2 : ℚ) / ((i + i + 1 : ℕ) : ℚ) + 1)) ≤ 3 * n := by
     refine (Finset.sum_le_card_nsmul _ _ 3 fun i _ ↦ ?_).trans_eq (by simp [mul_comm])
@@ -168,7 +168,7 @@ theorem abs_atanTaylor_sub_le {t s : ℚ} (ht : 2 * t ^ 2 ≤ 1) (hs : 2 * s ^ 2
           abs_pow_sub_pow_le (a := t) (b := s) (n := 2 * k + 1)
       _ = |t - s| * (M ^ 2) ^ k * ((2 * k + 1 : ℕ) : ℚ) := by
           rw [Nat.add_sub_cancel, ← pow_mul]; ring
-  rw [Enclosure.atanTaylor, Enclosure.atanTaylor, ← Finset.sum_sub_distrib]
+  rw [Enclosure.atanTaylor_def, Enclosure.atanTaylor_def, ← Finset.sum_sub_distrib]
   calc _ ≤ ∑ k ∈ Finset.range m, |t - s| * (M ^ 2) ^ k :=
         (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ ↦ hterm k)
     _ ≤ |t - s| * 2 := by
@@ -254,6 +254,7 @@ theorem atanRadiusOfBall_encloses {P n : ℕ} {Y : GridBall} {y : ℚ} (hY : Y.E
   have h := GridBall.divPos_encloses (GridBall.mulNonneg_encloses hA (abs_nonneg y)
     (GridBall.powNonneg_encloses hS (sq_nonneg _) n) (by positivity))
     (GridBall.sub_encloses hone hS)
+  rw [Enclosure.atanRadius_def]
   rwa [sq_abs] at h
 
 /-- Balls of the endpoints of `Enclosure.atanSmall y d` from a ball `Y` of `y`. -/
@@ -264,8 +265,9 @@ def atanSmallOfBall (P d : ℕ) (Y : GridBall) : IntervalBalls :=
 /-- `atanSmallOfBall P d Y` encloses both endpoints of `atanSmall y d` when `Y` encloses `y`. -/
 theorem atanSmallOfBall_encloses {P d : ℕ} {Y : GridBall} {y : ℚ} (hY : Y.Encloses P y) :
     (atanSmallOfBall P d Y).EnclosesEnds P (Enclosure.atanSmall y d).lo
-      (Enclosure.atanSmall y d).hi :=
-  ⟨GridBall.sub_encloses (atanTaylorOfBall_encloses hY) (atanRadiusOfBall_encloses hY),
+      (Enclosure.atanSmall y d).hi := by
+  rw [Enclosure.atanSmall, RationalInterval.around_def]
+  exact ⟨GridBall.sub_encloses (atanTaylorOfBall_encloses hY) (atanRadiusOfBall_encloses hY),
     GridBall.add_encloses (atanTaylorOfBall_encloses hY) (atanRadiusOfBall_encloses hY)⟩
 
 /-- Balls of the endpoints of Machin's `Enclosure.piQuarter d`. -/
@@ -281,8 +283,8 @@ theorem piQuarterBalls_encloses (P d : ℕ) :
   have h5 := atanSmallOfBall_encloses (d := d) (GridBall.ofFrac_encloses P 1 5).1
   have h239 := atanSmallOfBall_encloses (d := d) (GridBall.ofFrac_encloses P 1 239).1
   simp only [Nat.cast_one, Nat.cast_ofNat] at h5 h239
-  refine ⟨?_, ?_⟩ <;> simp only [piQuarterBalls, Enclosure.piQuarter, RationalInterval.sub,
-    RationalInterval.add, RationalInterval.neg, RationalInterval.scaleNonnegative]
+  refine ⟨?_, ?_⟩ <;> simp only [piQuarterBalls, Enclosure.piQuarter_def, RationalInterval.sub,
+    RationalInterval.add_def, RationalInterval.neg, RationalInterval.scaleNonnegative_def]
   · convert GridBall.sub_encloses (GridBall.scaleNat_encloses (c := 4) h5.1) h239.2 using 1
     ring
   · convert GridBall.sub_encloses (GridBall.scaleNat_encloses (c := 4) h5.2) h239.1 using 1
@@ -294,20 +296,20 @@ theorem piQuarterBalls_encloses (P d : ℕ) :
 theorem atan_eq_atanSmall {x : ℚ} (hx : |x| ≤ 1 / 2) (d : ℕ) :
     Enclosure.atan x d = Enclosure.atanSmall x d := by
   have hx' := abs_le.mp hx
-  unfold Enclosure.atan
+  rw [Enclosure.atan_def]
   split_ifs with hneg
-  · simp only [Enclosure.atanNonnegative, show -x ≤ 1 by linarith, ↓reduceIte,
-      Enclosure.atanUnit, show -x ≤ 1 / 2 by linarith]
+  · simp only [Enclosure.atanNonnegative_def, show -x ≤ 1 by linarith, ↓reduceIte,
+      Enclosure.atanUnit_def, show -x ≤ 1 / 2 by linarith]
     have hT : Enclosure.atanTaylor (-x) (d + 1) = -Enclosure.atanTaylor x (d + 1) := by
-      simp only [Enclosure.atanTaylor, ← Finset.sum_neg_distrib]
+      simp only [Enclosure.atanTaylor_def, ← Finset.sum_neg_distrib]
       refine Finset.sum_congr rfl fun i _ ↦ ?_
       rw [Odd.neg_pow ⟨i, rfl⟩]; ring
     have hR : Enclosure.atanRadius (-x) (d + 1) = Enclosure.atanRadius x (d + 1) := by
-      simp [Enclosure.atanRadius]
-    simp only [Enclosure.atanSmall, RationalInterval.around, RationalInterval.neg, hT, hR]
+      simp [Enclosure.atanRadius_def]
+    simp only [Enclosure.atanSmall, RationalInterval.around_def, RationalInterval.neg, hT, hR]
     congr 1 <;> ring
-  · simp only [Enclosure.atanNonnegative, show x ≤ 1 by linarith, ↓reduceIte, Enclosure.atanUnit,
-      show x ≤ 1 / 2 by linarith]
+  · simp only [Enclosure.atanNonnegative_def, show x ≤ 1 by linarith, ↓reduceIte,
+      Enclosure.atanUnit_def, show x ≤ 1 / 2 by linarith]
 
 /-- Balls of `Enclosure.atanUnit x d` from a ball `X` of `x`: the series when the ball decides
 `x ≤ 1/2`, the reduction by `π/4` when it decides `x > 1/2`, the join of both otherwise. -/
@@ -332,19 +334,22 @@ theorem atanUnitBall_encloses {P d : ℕ} {X : GridBall} {x : ℚ} (hX : X.Enclo
   have hred := atanSmallOfBall_encloses (d := d)
     (GridBall.divPos_encloses (GridBall.sub_encloses hX hone) (GridBall.add_encloses hX hone))
   have hpi := piQuarterBalls_encloses P d
-  have hlarge : (IntervalBalls.add (piQuarterBalls P d) _).EnclosesEnds P
+  have hlarge : (IntervalBalls.add (piQuarterBalls P d)
+      (atanSmallOfBall P d (GridBall.divPos P (GridBall.sub X (GridBall.ofNat P 1))
+        (GridBall.add X (GridBall.ofNat P 1))))).EnclosesEnds P
       ((Enclosure.piQuarter d).add (Enclosure.atanSmall ((x - 1) / (x + 1)) d)).lo
-      ((Enclosure.piQuarter d).add (Enclosure.atanSmall ((x - 1) / (x + 1)) d)).hi :=
-    ⟨GridBall.add_encloses hpi.1 hred.1, GridBall.add_encloses hpi.2 hred.2⟩
+      ((Enclosure.piQuarter d).add (Enclosure.atanSmall ((x - 1) / (x + 1)) d)).hi := by
+    rw [RationalInterval.add_def]
+    exact ⟨GridBall.add_encloses hpi.1 hred.1, GridBall.add_encloses hpi.2 hred.2⟩
   unfold atanUnitBall
   dsimp only
   cases h1 : GridBall.leCertain X (GridBall.ofFrac P false 1 2)
   · cases h2 : GridBall.ltCertain (GridBall.ofFrac P false 1 2) X
-    · simpa only [Enclosure.atanUnit] using
+    · simpa only [Enclosure.atanUnit_def] using
         IntervalBalls.join_enclosesEnds_ite hsmall hlarge (x ≤ 1 / 2)
-    · simpa only [Enclosure.atanUnit, (GridBall.lt_of_ltCertain hhalf hX h2).not_ge, ↓reduceIte]
+    · simpa only [Enclosure.atanUnit_def, (GridBall.lt_of_ltCertain hhalf hX h2).not_ge, ↓reduceIte]
         using hlarge
-  · simpa only [Enclosure.atanUnit, GridBall.le_of_leCertain hX hhalf h1, ↓reduceIte]
+  · simpa only [Enclosure.atanUnit_def, GridBall.le_of_leCertain hX hhalf h1, ↓reduceIte]
       using hsmall
 
 /-- Balls of `Enclosure.atanNonnegative x d` from a ball `X` of `x ≥ 0`: the unit reduction when
@@ -373,8 +378,8 @@ theorem atanNonnegBall_encloses {P d : ℕ} {X : GridBall} {x : ℚ} (hX : X.Enc
       (atanUnitBall P d (GridBall.inv P X))).EnclosesEnds P
       (((Enclosure.piQuarter d).scaleNonnegative 2).sub (Enclosure.atanUnit x⁻¹ d)).lo
       (((Enclosure.piQuarter d).scaleNonnegative 2).sub (Enclosure.atanUnit x⁻¹ d)).hi := by
-    refine ⟨?_, ?_⟩ <;> simp only [IntervalBalls.sub, RationalInterval.sub, RationalInterval.add,
-      RationalInterval.neg, RationalInterval.scaleNonnegative]
+    refine ⟨?_, ?_⟩ <;> simp only [IntervalBalls.sub, RationalInterval.sub,
+      RationalInterval.add_def, RationalInterval.neg, RationalInterval.scaleNonnegative_def]
     · convert GridBall.sub_encloses (GridBall.scaleNat_encloses (c := 2) hpi.1) hinvu.2 using 1
       push_cast
       ring
@@ -385,11 +390,11 @@ theorem atanNonnegBall_encloses {P d : ℕ} {X : GridBall} {x : ℚ} (hX : X.Enc
   dsimp only
   cases h1 : GridBall.leCertain X (GridBall.ofNat P 1)
   · cases h2 : GridBall.ltCertain (GridBall.ofNat P 1) X
-    · simpa only [Enclosure.atanNonnegative] using
+    · simpa only [Enclosure.atanNonnegative_def] using
         IntervalBalls.join_enclosesEnds_ite hunit hinv (x ≤ 1)
-    · simpa only [Enclosure.atanNonnegative, (GridBall.lt_of_ltCertain hone hX h2).not_ge,
+    · simpa only [Enclosure.atanNonnegative_def, (GridBall.lt_of_ltCertain hone hX h2).not_ge,
         ↓reduceIte] using hinv
-  · simpa only [Enclosure.atanNonnegative, GridBall.le_of_leCertain hX hone h1, ↓reduceIte]
+  · simpa only [Enclosure.atanNonnegative_def, GridBall.le_of_leCertain hX hone h1, ↓reduceIte]
       using hunit
 
 /-- Every rational enclosed by `X` lies in `[-1/2, 1/2]`. -/
@@ -427,9 +432,10 @@ theorem atanBall_encloses {P d : ℕ} {X : GridBall} {x : ℚ} (hX : X.Encloses 
     · cases h3 : GridBall.negCertain X
       · exact ⟨GridBall.invalid_encloses P _, GridBall.invalid_encloses P _⟩
       have h := atanNonnegBall_encloses (d := d) (GridBall.neg_encloses hX)
-      simp only [Enclosure.atan, GridBall.neg_of_negCertain hX h3, ↓reduceIte, RationalInterval.neg]
+      simp only [Enclosure.atan_def, GridBall.neg_of_negCertain hX h3, ↓reduceIte,
+        RationalInterval.neg]
       exact ⟨GridBall.neg_encloses h.2, GridBall.neg_encloses h.1⟩
-    · simpa only [Enclosure.atan, (GridBall.nonneg_of_nonnegCertain hX h2).not_gt, ↓reduceIte]
+    · simpa only [Enclosure.atan_def, (GridBall.nonneg_of_nonnegCertain hX h2).not_gt, ↓reduceIte]
         using atanNonnegBall_encloses (d := d) hX
   · rw [atan_eq_atanSmall (abs_le_half_of_halfCertain hX h1)]
     exact atanSmallOfBall_encloses hX

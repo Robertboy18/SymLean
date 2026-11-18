@@ -50,7 +50,7 @@ truncated value of the word.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>. The grid values
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The grid values
   `FloatLib.Numerics.Interval.BinaryGrid.toRat`.
 * IEEE Computer Society, *IEEE Standard for Floating-Point Arithmetic*, IEEE Std 754-2019, IEEE,
   Piscataway, NJ, 2019, <https://doi.org/10.1109/IEEESTD.2019.8766229>. The binary64
@@ -262,7 +262,7 @@ theorem binary64DyadicValue_eq_toRat {precision word : ℕ}
     (h : binary64GridExact precision word = true) :
     binary64DyadicValue word =
       FloatLib.Numerics.Interval.BinaryGrid.toRat precision (decodeWordToGrid precision word) := by
-  rw [FloatLib.Numerics.Interval.BinaryGrid.toRat, Rat.divInt_eq_div,
+  rw [FloatLib.Numerics.Interval.BinaryGrid.toRat_def, Rat.divInt_eq_div,
     FloatLib.Numerics.Interval.BinaryGrid.scale_eq_pow]
   push_cast
   rw [decodeWordToGrid_exact h]
@@ -334,7 +334,7 @@ open FloatLib.Numerics.Interval in
 /-- The grid value of a numerator is the numerator divided by `2 ^ precision`. -/
 theorem binaryGrid_toRat_eq_div (precision : ℕ) (z : ℤ) :
     BinaryGrid.toRat precision z = (z : ℚ) / 2 ^ precision := by
-  rw [BinaryGrid.toRat, Rat.divInt_eq_div, BinaryGrid.scale_eq_pow]
+  rw [BinaryGrid.toRat_def, Rat.divInt_eq_div, BinaryGrid.scale_eq_pow]
   push_cast
   rfl
 

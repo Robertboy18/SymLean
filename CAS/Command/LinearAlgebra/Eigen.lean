@@ -269,7 +269,7 @@ def memberTerms (real : Bool) (reals discs : Nat) (f : EigFactor) :
       (← `($αT - $w * Complex.I), ← complexTerm α c n false, tac, offsetText α false im)]
   | .enclosed R D =>
     let RT ← coeffsTerm R
-    let refl ← `(tactic| rfl)
+    let refl ← `(tactic| cas_rfl)
     let mut out : Array Member := #[]
     for ((lo, hi), i) in D.reals.zipIdx do
       let r ← `(CAS.AlgRoot.real $RT $(← boundQ lo) $(← boundQ hi))
@@ -743,7 +743,7 @@ def eigenbasisStatement (A : QMatrix) (b : Eigenbasis) :
       Matrix.tail_cons, Matrix.smul_cons, Matrix.smul_empty, Matrix.cons_add_cons,
       Matrix.empty_add_empty, Matrix.vecCons_inj, smul_eq_mul, add_zero]
     all_goals (and_intros <;> ring1)))
-  let deltaTac ← `(tactic| (intro i j; fin_cases i <;> fin_cases j <;> rfl))
+  let deltaTac ← `(tactic| (intro i j; fin_cases i <;> fin_cases j <;> cas_rfl))
   let pivotTac ← if m = 0 then `(tactic| (intro r; exact r.elim0)) else pure deltaTac
   let proof ← `(fun $α:ident $hα:ident ↦ CAS.Analysis.Matrix.eigenspace_basis
     (c := $(← RootSplit.polySyntax b.factor.toList α K)) (W := $(← ratFamily b.defect))

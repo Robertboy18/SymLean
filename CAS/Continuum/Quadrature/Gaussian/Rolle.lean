@@ -135,7 +135,7 @@ theorem exists_derivative_chain_zero_of_multiset {a b : ℝ} (n : ℕ)
     exact Finset.mem_filter.mpr
       ⟨Finset.mem_univ _, ((hmono hkj).trans heq.ge).antisymm (hmono hik)⟩
   have hc := Finset.card_le_card hsub
-  rw [Fin.card_Icc, Fin.card_filter_univ_eq_vector_get_eq_count] at hc
+  rw [Fin.card_Icc, ← List.Vector.count_toList] at hc
   have hcount : v.toList.count (v.get i) = s.count (v.get i) := by
     change (s.sort (· ≤ ·)).count _ = _
     rw [← Multiset.coe_count, Multiset.sort_eq]

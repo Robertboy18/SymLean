@@ -116,7 +116,7 @@ structure RootAtlas (ι : Type*) (polynomial : Sparse.Univariate) (domain : Set 
   /-- Root-count classification and local certificate assigned to each patch. -/
   region : ι → Region
   /-- Every point of the root-analysis domain belongs to a certified region. -/
-  covers : domain ⊆ fun x ↦ ∃ i, x ∈ (region i).domain
+  covers : domain ⊆ {x | ∃ i, x ∈ (region i).domain}
   /-- Every local region passes its exact checker. -/
   valid : ∀ i, (region i).valid polynomial = true
 

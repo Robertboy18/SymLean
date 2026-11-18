@@ -529,7 +529,7 @@ def letRoots (type : Lean.Expr) : MetaM Lean.Expr := do
   -- Innermost first: abstract the last root, then wrap outwards.
   let mut body := type
   for (n, ty, v) in names.reverse do
-    let abstracted ← kabstract body v
+    let abstracted ← Elaboration.DefEq.abstract body v
     body := .letE n ty v abstracted false
   return body
 

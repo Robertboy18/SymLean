@@ -263,7 +263,7 @@ def certifyRoot (x : TSyntax `ident) (lhs rhs : Verified.Expr (Fin 1)) (m : Int)
     else return none
   let f ← `(fun $x:ident : ℝ ↦ $lhsT - $rhsT)
   let continuityProofs : List Term :=
-    [← `((by fun_prop : Continuous $f).continuousOn), ← `((by fun_prop))]
+    [← `((by cas_staged fun_prop : Continuous $f).continuousOn), ← `((by cas_staged fun_prop))]
   let signClosers : List (TSyntax `tactic) := [← `(tactic| norm_num), ← `(tactic| cega)]
   let mut proofs : List Term := []
   for continuity in continuityProofs do
@@ -415,7 +415,8 @@ def elabNIntegrate : CommandElab := fun stx ↦ do
         | some (_, panels, certificate) =>
             let certificate ← Term.exprToSyntax certificate
             let attempt ← firstProved "nintegrate" statement
-              [← `(by exact $certificate), ← `(by simpa using $certificate),
+              [← `(by cas_staged exact $certificate),
+                ← `(by cas_staged simpa using $certificate),
                 ← `(by convert ($certificate) using 2 <;> norm_num)]
             pure (attempt.map fun (proposition, proof) ↦ (panels, proposition, proof))
       catch _ => pure none

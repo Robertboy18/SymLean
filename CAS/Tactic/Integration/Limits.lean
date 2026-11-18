@@ -92,7 +92,7 @@ def proveByTactic? (statement : Expr) (tactic : TSyntax `tactic) : MetaM (Option
 primitive from the local context and the numeral normalizers. -/
 def proveNumericFact? (statement : Expr) : MetaM (Option Expr) := do
   proveByTactic? statement
-    (← `(tactic| first | assumption | norm_num | positivity | linarith))
+    (← `(tactic| first | cas_assumption | norm_num | positivity | linarith))
 
 /-- Whether `expression` mentions the variable. -/
 def dependsOn (binder expression : Expr) : Bool :=
@@ -273,19 +273,20 @@ private def powerExponentialLimit? (binder a b : Expr) : TermElabM (Option Expr)
     if natural then
       `(tactic|
         first
-          | simpa using Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero $exponentTerm
-          | simpa [mul_comm] using Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero $exponentTerm
-          | simpa using tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero $exponentTerm $rateTerm
-              (by norm_num)
-          | simpa [mul_comm] using tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero $exponentTerm
-              $rateTerm (by norm_num))
+          | cas_staged simpa using Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero $exponentTerm
+          | cas_staged simpa [mul_comm] using
+              Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero $exponentTerm
+          | cas_staged simpa using
+              tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero $exponentTerm $rateTerm (by norm_num)
+          | cas_staged simpa [mul_comm] using
+              tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero $exponentTerm $rateTerm (by norm_num))
     else
       `(tactic|
         first
-          | simpa using tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero $exponentTerm $rateTerm
-              (by norm_num)
-          | simpa [mul_comm] using tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero $exponentTerm
-              $rateTerm (by norm_num))
+          | cas_staged simpa using
+              tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero $exponentTerm $rateTerm (by norm_num)
+          | cas_staged simpa [mul_comm] using
+              tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero $exponentTerm $rateTerm (by norm_num))
   proveByTactic? statement tactic
 
 /-- Prove that a real power `t ^ e` of the variable with a negative constant exponent tends to
@@ -301,14 +302,14 @@ private def negativePowerLimit? (binder exponent : Expr) : TermElabM (Option Exp
       proveByTactic? statement
         (← `(tactic|
           exact tendsto_rpow_neg_atTop (y := $positiveTerm)
-            (by first | norm_num | positivity | assumption | linarith)))
+            (by first | norm_num | positivity | cas_assumption | linarith)))
   | _ =>
       let exponentTerm ← Term.exprToSyntax exponent
       proveByTactic? statement
         (← `(tactic|
           (rw [show $exponentTerm = -(-$exponentTerm) from (neg_neg _).symm]
            exact tendsto_rpow_neg_atTop
-             (by first | norm_num | positivity | assumption | linarith))))
+             (by first | norm_num | positivity | cas_assumption | linarith))))
 
 /-- Prove that a limit value is nonzero, as `Filter.Tendsto.inv₀` and `Filter.Tendsto.div`
 require. -/

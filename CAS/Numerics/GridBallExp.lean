@@ -47,7 +47,7 @@ a ball 1.1 ms.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>. The enclosed
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The enclosed
   intervals are those of `FloatLib.Numerics.Enclosure.exp`, with its reduction by a power of
   two, its Taylor remainder and its repeated squaring.
 * Joris van der Hoeven, "Ball arithmetic", *Logical approaches to Barriers in Computing and
@@ -112,7 +112,7 @@ theorem expLoop_spec {P n : ℕ} {neg : Bool} {a b : ℕ} (h : unitFracOk a b = 
   refine ⟨?_, ?_⟩
   · have hsum : (∑ i ∈ Finset.range n, x ^ i / (i.factorial : ℚ) * 2 ^ P / ((1 : ℕ) : ℚ)) =
         Enclosure.expTaylor x n * 2 ^ P := by
-      rw [Enclosure.expTaylor, Finset.sum_mul]
+      rw [Enclosure.expTaylor_def, Finset.sum_mul]
       simp
     have hbound : (∑ i ∈ Finset.range n, ((if i = 0 then (0 : ℚ) else 2) / ((1 : ℕ) : ℚ) + 1)) ≤
         3 * n := (Finset.sum_le_card_nsmul _ _ 3 fun i _ ↦ by split_ifs <;> norm_num).trans_eq
@@ -150,6 +150,7 @@ theorem expRadiusBall_encloses (P n : ℕ) (neg : Bool) (a b : ℕ) :
     rw [GridBall.cast_center]
     simpa [SeriesState.term] using (expLoop_spec (P := P) (n := n) (neg := neg) h).2
   have h := GridBall.mulFrac_encloses (a := Nat.add n 1) (b := n) (GridBall.abs_encloses hz)
+  rw [Enclosure.expRadius_def]
   rwa [abs_div, abs_pow, Nat.abs_cast, div_mul_div_comm] at h
 
 /-- Balls of the endpoints of `Enclosure.expSmall (±a / b) d`. -/
@@ -161,8 +162,10 @@ def expSmallFrac (P d : ℕ) (neg : Bool) (a b : ℕ) : IntervalBalls :=
 at precision `P`, for all arguments. -/
 theorem expSmallFrac_encloses (P d : ℕ) (neg : Bool) (a b : ℕ) :
     (expSmallFrac P d neg a b).EnclosesEnds P (Enclosure.expSmall (signedFrac neg a b) d).lo
-      (Enclosure.expSmall (signedFrac neg a b) d).hi :=
-  ⟨GridBall.sub_encloses (expTaylorBall_encloses P _ neg a b) (expRadiusBall_encloses P _ neg a b),
+      (Enclosure.expSmall (signedFrac neg a b) d).hi := by
+  rw [Enclosure.expSmall, RationalInterval.around_def]
+  exact ⟨GridBall.sub_encloses (expTaylorBall_encloses P _ neg a b)
+      (expRadiusBall_encloses P _ neg a b),
     GridBall.add_encloses (expTaylorBall_encloses P _ neg a b)
       (expRadiusBall_encloses P _ neg a b)⟩
 
@@ -182,6 +185,7 @@ theorem squareRepeatBall_encloses {P : ℕ} {S : IntervalBalls} {J : RationalInt
   | succ s ih =>
     have h := GridBall.sqNonneg_encloses (GridBall.abs_encloses ih.2) (abs_nonneg _)
     rw [sq_abs] at h
+    rw [RationalInterval.squareRepeat, RationalInterval.squareNonnegative_def]
     exact ⟨GridBall.sqNonneg_encloses (GridBall.clamp_encloses_max ih.1) (le_max_left _ _), h⟩
 
 /-- `q.num.natAbs / q.den` is the floor of `|q|`. -/
@@ -215,7 +219,7 @@ theorem expFrac_encloses (P d : ℕ) (neg : Bool) (u v : ℕ) :
     rw [Nat.shiftLeft_eq', Nat.shiftLeft_eq]
     have hvq : (0 : ℚ) < v := by exact_mod_cast hv
     cases neg <;> simp [signedFrac] <;> field_simp
-  simp only [Enclosure.exp, hscale, hy]
+  simp only [Enclosure.exp_def, hscale, hy]
   exact squareRepeatBall_encloses (expSmallFrac_encloses P d neg u (Nat.shiftLeft v s)) s
 
 /-! ### Exponentials of balls -/
@@ -247,7 +251,7 @@ theorem abs_expTaylor_sub_le {y z : ℚ} (hy : |y| ≤ 1) (hz : |z| ≤ 1) (n : 
     calc |y ^ i - z ^ i| ≤ |y - z| * i := h4
       _ ≤ |y - z| * (4 * (1 / 2) ^ i * i.factorial) := by gcongr
       _ = |y - z| * (4 * (1 / 2) ^ i) * i.factorial := by ring
-  rw [Enclosure.expTaylor, Enclosure.expTaylor, ← Finset.sum_sub_distrib]
+  rw [Enclosure.expTaylor_def, Enclosure.expTaylor_def, ← Finset.sum_sub_distrib]
   calc _ ≤ ∑ i ∈ Finset.range n, |y - z| * (4 * (1 / 2) ^ i) :=
         (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun i _ ↦ hterm i)
     _ = |y - z| * 4 * ∑ i ∈ Finset.range n, (1 / 2 : ℚ) ^ i := by
@@ -318,7 +322,7 @@ theorem expRadiusOfBall_encloses {P n : ℕ} {Y : GridBall} {y : ℚ} (hY : Y.En
     (GridBall.powNonneg_encloses (GridBall.abs_encloses hY) (abs_nonneg y) n)
   have hval : |y| ^ n * (((Nat.add n 1 : ℕ) : ℚ) / ((Nat.mul n.factorial n : ℕ) : ℚ)) =
       Enclosure.expRadius y n := by
-    rw [Enclosure.expRadius, Nat.add_eq, Nat.mul_eq]; push_cast; ring
+    rw [Enclosure.expRadius_def, Nat.add_eq, Nat.mul_eq]; push_cast; ring
   rwa [hval] at h
 
 /-- Balls of the endpoints of `Enclosure.expSmall y d` from a ball `Y` of `y`. -/
@@ -330,8 +334,9 @@ def expSmallOfBall (P d : ℕ) (Y : GridBall) : IntervalBalls :=
 `Enclosure.expSmall y d`. -/
 theorem expSmallOfBall_encloses {P d : ℕ} {Y : GridBall} {y : ℚ} (hY : Y.Encloses P y) :
     (expSmallOfBall P d Y).EnclosesEnds P (Enclosure.expSmall y d).lo
-      (Enclosure.expSmall y d).hi :=
-  ⟨GridBall.sub_encloses (expTaylorOfBall_encloses hY) (expRadiusOfBall_encloses hY),
+      (Enclosure.expSmall y d).hi := by
+  rw [Enclosure.expSmall, RationalInterval.around_def]
+  exact ⟨GridBall.sub_encloses (expTaylorOfBall_encloses hY) (expRadiusOfBall_encloses hY),
     GridBall.add_encloses (expTaylorOfBall_encloses hY) (expRadiusOfBall_encloses hY)⟩
 
 /-- Balls of `Enclosure.exp q d` from a ball `B` of `q`, with the scale `s` given; valid when
@@ -382,7 +387,7 @@ theorem expBallCore_encloses {P d s : ℕ} {B : GridBall} {q : ℚ} (hB : B.Encl
   have hY := GridBall.mulFrac_encloses (a := 1) (b := Nat.shiftLeft 1 s) hB
   rw [show q * (((1 : ℕ) : ℚ) / ((Nat.shiftLeft 1 s : ℕ) : ℚ)) = q / 2 ^ s by
     simp [Nat.shiftLeft_eq, div_eq_mul_inv]] at hY
-  simp only [Enclosure.exp, hscale]
+  simp only [Enclosure.exp_def, hscale]
   exact squareRepeatBall_encloses (expSmallOfBall_encloses (d := d) hY) s
 
 /-- If `B` encloses `q` at precision `P`, then `expBall P d B` encloses the endpoints of
@@ -398,7 +403,7 @@ theorem expRangeWith_lo (I : Continuum.RationalInterval) (order : ℕ) :
     (Continuum.RationalInterval.expRangeWith I order).lo =
       max 0 (Enclosure.exp I.lo (max order 1)).lo := by
   simp only [Continuum.RationalInterval.expRangeWith,
-    Continuum.RationalInterval.ofFloatLib, Interval.expBounds, Interval.monotoneBounds]
+    Continuum.RationalInterval.ofFloatLib, Interval.expBounds_def, Interval.monotoneBounds]
   split_ifs <;> rfl
 
 /-- The upper endpoint of `expRangeWith I order`. -/
@@ -406,7 +411,7 @@ theorem expRangeWith_hi (I : Continuum.RationalInterval) (order : ℕ) :
     (Continuum.RationalInterval.expRangeWith I order).hi =
       (Enclosure.exp I.hi (max order 1)).hi := by
   simp only [Continuum.RationalInterval.expRangeWith,
-    Continuum.RationalInterval.ofFloatLib, Interval.expBounds, Interval.monotoneBounds]
+    Continuum.RationalInterval.ofFloatLib, Interval.expBounds_def, Interval.monotoneBounds]
   split_ifs with heq
   · change (Enclosure.exp I.lo _).hi = _
     rw [show I.lo = I.hi from heq]

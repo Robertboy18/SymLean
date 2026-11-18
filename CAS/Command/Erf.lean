@@ -19,7 +19,7 @@ public meta import CAS.Continuum.IntervalEval.Digits
 # The error function in `#cas`: digits, Gaussian integrals, derivatives
 
 `CAS.erf x = 2 / √π ∫₀ˣ e^(-t²) dt` (`CAS.Analysis.SpecialFunctions.Erf`, the definition of
-Mathlib PR #34053; Mathlib v4.35 has no error function). Three additions:
+Mathlib PR #34053; Mathlib v4.36 has no error function). Three additions:
 
 * `#cas [N d] (erf q)` (Mathematica `N[Erf[q], d]`), rational `q` with `|q| ≤ 10` and a
   denominator of at most `1000`, `1 ≤ d ≤ 30`: proves `lo ≤ CAS.erf q ∧ CAS.erf q ≤ hi ∧
@@ -279,7 +279,7 @@ def logGaussianIntegral (ref : Syntax) (x : Name) (input : TSyntax `term) :
       · have h := CAS.integral_gaussian_eq hα $βT $γT $cT $(⟨aI.raw⟩) $(⟨bI.raw⟩)
         rw [$hI:ident, $hI:ident] at h
         rw [← h]
-        congr 1
+        (cas_sealed congr 1)
         funext $xI:ident
         exact hf $xT)))
     let Fpp ← match pr.getAppFnArgs with

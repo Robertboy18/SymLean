@@ -18,7 +18,7 @@ tutorials = ["first-hour"]
 
 ## Details and Options
 
-- The theorem is `∀ k, P.coeff k = [c₀, …, c_d].getD k 0`, where `P` is ‹e› read as a polynomial as for [[coefficient]]: in `ℚ[X]`, or in `ℝ[X]` with the other variables as constants `C y`. By `Polynomial.ext_iff` and Mathlib’s `coeff_ofCoeffList` it is the identity `P = ofCoeffList [c₀, …, c_d]`, which is proved by evaluation.
+- The theorem is `∀ k, P.coeff k = [c₀, …, c_d].getD k 0`, where `P` is ‹e› read as a polynomial as for [[coefficient]]: in `ℚ[X]`, or in `ℝ[X]` with the other variables as constants `C y`. By `AddMonoidAlgebra.ext_iff` (in Mathlib v4.36.0 a polynomial is an `AddMonoidAlgebra` over `ℕ`, and two are equal when their coefficient functions are) and Mathlib’s `coeff_ofCoeffList` it is the identity `P = ofCoeffList [c₀, …, c_d]`, which is proved by evaluation.
 - The input is a polynomial with rational coefficients, as for [[collect]]. The other variables stay symbolic in the coefficients. The zero polynomial is refused.
 - The order is Mathematica’s. SymPy’s `Poly.all_coeffs` lists the highest degree first.
 - The tactic [[cas]] proves single coefficients, as in [[coefficient]]. A single entry also follows from the list statement by specializing $k$ (see Applications).

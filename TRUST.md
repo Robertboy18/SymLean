@@ -6,9 +6,9 @@ the built library.
 
 ## Always
 
-- Lean 4.35.0's kernel and the axioms `propext`, `Classical.choice` and `Quot.sound`: every proof rests
+- Lean 4.36.0's kernel and the axioms `propext`, `Classical.choice` and `Quot.sound`: every proof rests
   on them, and `scripts/audit.sh` reports any constant of the library that uses another axiom.
-- Mathlib v4.35.0 (`56a00585`): the statements use its definitions (`Real.arctan`, the interval and
+- Mathlib v4.36.0 (`fc4f59e5`): the statements use its definitions (`Real.arctan`, the interval and
   Bochner integrals, `IntegrableOn`, `HasSum`, `tsum`), so they mean what those definitions mean.
 - The SymLean definitions that appear in printed statements: `CAS.erf` (the definition of Mathlib
   pull request #34053), `CAS.Analysis.SpecialFunctions.legendre`, `CAS.AlgRoot.real` and
@@ -42,16 +42,21 @@ the built library.
   `translatedLogPanelInterval_eq_shared`, `factorRow_eq_factorRowFast` and `twoStageRow_eq_fast`,
   one per constant: kernel-proved equations that only compiled code uses, so they matter only in the
   fast profile and in `#eval`.
-- 158 opaque and 481 partial constants, from `partial def`s and their compiled
+- 89 constructor indices `T.ctorIdx`, each implemented by the unsafe definition `T.ctorIdx._impl`
+  that Lean 4.36 generates for an inductive type with several constructors and that reads the
+  constructor's tag: compiled code and `#eval` trust this tag read, which no theorem relates to
+  `T.ctorIdx`; the kernel uses the logical definition. `scripts/audit.sh` checks the name, the type
+  and the body of each pair.
+- 159 opaque and 480 partial constants, from `partial def`s and their compiled
   copies: the kernel never unfolds them, so no proof depends on their code; a statement that
   mentions one says nothing about its value.
 
 ## Searches, which are trusted for nothing
 
 - The optional oracles of `CASOracle` (SymPy, SageMath, FLINT, Maxima, PARI/GP, Gappa, through our
-  Lean 4.35 port of DSLean at `1b5f22ff`) and Hex's searches in the optional `CASHex`: they only
+  Lean 4.36 port of DSLean at `996f7439`) and Hex's searches in the optional `CASHex`: they only
   propose answers, which become theorems through kernel-checked proofs.
-- FloatLib 3.1.0 (`0fe4f04`): its executable floats run in compiled searches and `#eval`; its interval
+- FloatLib 4.0.0 (`ba998b6`): its executable floats run in compiled searches and `#eval`; its interval
   theorems are kernel-checked.
 
 ## Documentation

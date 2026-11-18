@@ -28,7 +28,7 @@ over the roots of factors without closed form, and proves
   ∫ t in Ioi 0, exp (-(s t)) f t = F s`
 
 with `F s` the input as written (elaborated over `ℝ` with `Real` open). So `f` is an inverse
-Laplace transform of `F`: its transform is `F` for `s > σ`. Mathlib v4.35 has no uniqueness
+Laplace transform of `F`: its transform is `F` for `s > σ`. Mathlib v4.36 has no uniqueness
 theorem for the Laplace transform (Lerch's theorem), so the theorem does not say that `f` is the
 only one (another `f` may differ on a null set, for instance).
 
@@ -693,7 +693,8 @@ def logInverseLaplace (ref : Syntax) (s t : TSyntax `ident) (input : TSyntax `te
         CAS.Calculus.Laplace.QuadTerm.transform, CAS.Calculus.Laplace.quadPQ, Bool.false_eq_true,
         ↓reduceIte]
       $unify:tactic
-      rw [show (open Real in ($input : ℝ)) = ($Fr : ℝ) by first | rfl | ring | norm_num]
+      rw [show (open Real in ($input : ℝ)) = ($Fr : ℝ) by
+        first | cas_rfl | ring | norm_num]
       $rewrites:tactic
       $generalizations:tactic
       field_simp
@@ -809,7 +810,8 @@ def logInverseLaplace (ref : Syntax) (s t : TSyntax `ident) (input : TSyntax `te
           Bool.false_eq_true, ↓reduceIte]
         rw [hRprod, hBpoly]
         $unify:tactic
-        rw [show (open Real in ($input : ℝ)) = ($Fr : ℝ) by first | rfl | ring | norm_num]
+        rw [show (open Real in ($input : ℝ)) = ($Fr : ℝ) by
+          first | cas_rfl | ring | norm_num]
         $rewrites:tactic
         $encGens:tactic
         $generalizations:tactic

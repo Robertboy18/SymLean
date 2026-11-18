@@ -57,6 +57,21 @@ namespace CAS.Tactic.RealNormalization
 open Lean Elab Tactic Meta
 open Mathlib.Tactic
 
+/-- Whether a normal form `normalized` is the term `source` it came from, up to definitional
+unfolding (`Elaboration.DefEq.agree` at the default transparency), in which case the term is
+kept as it is written. The comparison is a probe: it assigns no metavariable, and one that
+throws or exceeds the recursion depth of the elaborator counts as a change. It is the
+elaborator's comparison: in a file outside the module system the kernel computes with the Cauchy
+sequences behind `ℝ`, and would find `0 ^ 2` and `0` the same term. -/
+private def unchanged (source normalized : Expr) : MetaM Bool :=
+  withNewMCtxDepth do
+    tryCatchRuntimeEx
+      (withTransparency .default <| Elaboration.DefEq.agree source normalized)
+      fun error ↦ do
+        if error.isMaxHeartbeat then
+          throw error
+        return false
+
 private def proveCondition?
     (proposition : Expr) (side? : Option (TSyntax `term)) : MetaM (Option Expr) := do
   let saved ← saveState
@@ -115,7 +130,7 @@ private def normalizeAlgebra
   let nonzero ← mkAppM ``Verified.Expr.SideClaimRoute.nonzero #[route]
   let (normal, conditions) ← KernelReadBack.readBackPair index rhs nonzero
   let output ← DerivativeBridge.lowerEmbedded "cas_nf" atoms #[] normal
-  if Lean.Kernel.isDefEqGuarded (← getEnv) (← getLCtx) e output then
+  if ← unchanged e output then
     return { expr := e }
   let quoted ← KernelReadBack.quoteNatExpression index normal
   let side ← KernelReadBack.quoteNatList index conditions
@@ -151,7 +166,7 @@ private def normalizeReal
   let algebra ← normalizeAlgebra cleaned.expr side?
   let lowered ← cleanup algebra.expr side?
   let result ← cleaned.mkEqTrans (← algebra.mkEqTrans lowered)
-  if Lean.Kernel.isDefEqGuarded (← getEnv) (← getLCtx) e result.expr then
+  if ← unchanged e result.expr then
     return none
   return some result
 
@@ -204,7 +219,7 @@ private def normalizePolynomial (atoms : IO.Ref AtomM.State) (e : Expr) :
     MetaM Simp.Result := do
   let result? ← RingNF.evalExpr? e { red := .reducible } atoms
   let result ← RingNF.cleanup {} (result?.getD { expr := e })
-  if Lean.Kernel.isDefEqGuarded (← getEnv) (← getLCtx) e result.expr then
+  if ← unchanged e result.expr then
     return { expr := e }
   return result
 

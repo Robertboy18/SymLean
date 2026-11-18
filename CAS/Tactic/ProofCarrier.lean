@@ -12,6 +12,8 @@ public meta import Lean.Util.CollectFVars
 public meta import Lean.Elab.SyntheticMVars
 public import Lean.Meta.Basic
 meta import all Lean.Util.CollectAxioms
+public import CAS.Elaboration.DefEq
+public meta import CAS.Elaboration.DefEq
 
 /-!
 # Shared proof-carrier elaboration utilities
@@ -44,7 +46,8 @@ tactic state on failure and turns an exhausted recursion depth into an ordinary 
 word for it: we read the proof assigned to that goal and require that it has no metavariables or
 `sorry`, also among its dependencies, that it passes `Meta.check` at reducible or else at full
 transparency, and that its type equals the goal, syntactically after normalization or else by
-definitional equality. The kernel checks the final theorem when the declaration is added. A
+definitional equality (`Elaboration.DefEq.agree`, which the probes `isDefEqReadOnly` use as
+well). The kernel checks the final theorem when the declaration is added. A
 failure report that suggests a call, such as a larger `maxRecDepth` or a deeper `cega`
 subdivision, gives one that parses as written and keeps the user's configuration; none is
 promised to succeed.
@@ -234,7 +237,9 @@ def restoringStateOnNone {α : Type} (action : TacticM (Option α)) :
       saved.restore
       throw error
 
-/-- Test definitional equality without retaining generated metavariable assignments.
+/-- Test definitional equality (`Elaboration.DefEq.agree`: the syntax, then reducible
+definitions, then the caller's transparency in the view of a module) without retaining generated
+metavariable assignments.
 
 A probe that exhausts the recursion depth while unfolding a checked computation (a normalizer
 run compared with its expected value) answers `false`, so that the caller can fall back to the
@@ -243,7 +248,7 @@ def isDefEqReadOnly (lhs rhs : Expr) : TacticM Bool := do
   let saved ← saveState
   tryCatchRuntimeEx
     (do
-      let result ← isDefEq lhs rhs
+      let result ← Elaboration.DefEq.agree lhs rhs
       saved.restore
       return result)
     fun error ↦ do
@@ -489,7 +494,7 @@ def withRemainingKernelBudget {α : Type} (task : String) (action : Nat → Meta
 
 /-- Whether an error raised by `addDecl` reports a kernel deterministic timeout. `addDecl` turns
 the kernel's structured exception into an ordinary error, so its rendered text is the only
-evidence left; this reads its first words, as printed by Lean v4.35 (`Lean/Message.lean`). -/
+evidence left; this reads its first words, as printed by Lean v4.36 (`Lean/Message.lean`). -/
 def isKernelTimeout (error : Exception) : MetaM Bool :=
   return (← error.toMessageData.toString).startsWith "(kernel) deterministic timeout"
 
@@ -609,7 +614,7 @@ private def proofTypesAgree (lhs rhs : Expr) : MetaM Bool := do
   trace[cas.validation] "Normalized proof types require definitional equality \
     (remaining elaboration heartbeats: {(← getRemainingHeartbeats) / 1000})\n\
     Certificate syntax: {lhs.dbgToString}\nGoal syntax: {rhs.dbgToString}"
-  isDefEq lhs rhs
+  Elaboration.DefEq.agree lhs rhs
 
 /--
 Validate the completed proof assigned to a previously current goal.

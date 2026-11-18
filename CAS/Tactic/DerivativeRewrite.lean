@@ -172,7 +172,7 @@ def finishEquation (term equation : Expr) : TacticM Expr := do
   let (unfolded, valueEquality) ← unfoldValue value
   let proof ← mkEqTrans equation valueEquality
   let statement ← mkEq term unfolded
-  unless ← isDefEq (← inferType proof) statement do
+  unless ← Elaboration.DefEq.agree (← inferType proof) statement do
     throwError
       "{operation} internal error: the closed form of{indentExpr term}\n\
        does not restate the derivative subterm"

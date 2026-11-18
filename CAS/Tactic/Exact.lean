@@ -185,7 +185,7 @@ private def mkVectorRouteZeroProof
     | some hside =>
         let actual ← inferType hside
         let expected ← inferType params[0]!
-        unless ← isDefEq actual expected do
+        unless ← Elaboration.DefEq.agree actual expected do
           throwError
             "cas vector side evidence has type{indentExpr actual}\n\
              but the route requires{indentExpr expected}"
@@ -216,7 +216,7 @@ private def mkTensorRouteZeroProof
     | some hside =>
         let actual ← inferType hside
         let expected ← inferType params[0]!
-        unless ← isDefEq actual expected do
+        unless ← Elaboration.DefEq.agree actual expected do
           throwError
             "cas tensor side evidence has type{indentExpr actual}\n\
              but the route requires{indentExpr expected}"

@@ -40,7 +40,7 @@ package SymLean where
   buildDir := if certificatesMode == "fast" then ".lake/build-fast" else ".lake/build"
 
 -- FloatLib supplies executable floats and outward-rounded intervals.
-require floatlib from git "https://github.com/lean-dojo/FloatLib.git" @ "main"
+require floatlib from git "https://github.com/lean-dojo/FloatLib.git" @ "v4.0.0"
 
 -- Hex (the Lean FRO's verified computer algebra, v0.10.0) is an optional dependency for the
 -- routes of `CASHex/`, off by default. `lake -R -Khex=on update HexBerlekampZassenhausTheory
@@ -56,16 +56,16 @@ meta if get_config? hex = some "on" then do
     "https://github.com/leanprover/hex-primality-theory.git" @ "v0.10.0"
 
 -- The oracle library of `CASOracle/` is built on DSLean (taterowney/DSLean, CC-BY-4.0), which
--- translates between Lean and the oracles' languages and runs them. This is its Lean 4.35 port
--- with SymLean's fixes; it moves to upstream DSLean once those are merged there. Lake needs its
--- entry in lake-manifest.json: update with `lake -R -Koracle=on update DSLean`, since an update
--- without `-Koracle=on` drops the entry. Without `-Koracle=on` Lake neither fetches nor builds it.
+-- translates between Lean and the oracles' languages and runs them. This is its Lean 4.36 port
+-- with SymLean's fixes, the tag `v4.36.0` of our fork; it moves to upstream DSLean once those are
+-- merged there. Lake needs its entry in lake-manifest.json: update with
+-- `lake -R -Koracle=on update DSLean`, since an update without `-Koracle=on` drops the entry.
+-- Without `-Koracle=on` Lake neither fetches nor builds it.
 meta if get_config? oracle = some "on" then
-require DSLean from git "https://github.com/Robertboy18/DSLean.git" @
-  "1b5f22ff70cd0810f52e6f01f56cdfdde0d9651a"
+require DSLean from git "https://github.com/Robertboy18/DSLean.git" @ "v4.36.0"
 
 -- Mathlib stays last so its release pins govern the shared support packages.
-require mathlib from git "https://github.com/leanprover-community/mathlib4.git" @ "v4.35.0"
+require mathlib from git "https://github.com/leanprover-community/mathlib4.git" @ "v4.36.0"
 
 /-! ## Embedded inputs
 
@@ -377,7 +377,9 @@ partial def loaded (mod : Module) (reach : Reach) : StateT Tables FetchM Loaded 
 
 /-- The modules that Lake builds as part of `lib`: those of its globs and their local imports
 (`lib.modules`), and every module under the directory of one of its roots, which Lake treats as
-local to the library (`LeanLibConfig.isLocalModule`). -/
+local to the library (`LeanLibConfig.isLocalModule`). They come in the order of their names:
+Lake and `Lean.forEachModuleInDir` find them in the order in which the file system lists each
+directory, which differs between two copies of one tree. -/
 def localModules (lib : LeanLib) : FetchM (Array Module) := do
   let mut modules := (← (← lib.modules.fetch).await)
   let seen ← IO.mkRef (Std.HashSet.ofList (modules.map (·.name)).toList)
@@ -393,7 +395,7 @@ def localModules (lib : LeanLib) : FetchM (Array Module) := do
       Lean.forEachModuleInDir (m := IO) directory fun name ↦ add (root ++ name)
   for name in ← found.get do
     modules := modules.push { lib, name }
-  return modules
+  return modules.qsort (·.name.toString < ·.name.toString)
 
 end EmbeddedInputs
 
@@ -401,7 +403,12 @@ end EmbeddedInputs
 its module's directory, as one job whose trace mixes theirs. A library that lists this facet in
 its `needs` rebuilds its modules when one of the files changes, and stops at a module that breaks
 one of the rules of the doc block above. A missing file is traced as missing; Lean reports it when
-it elaborates the module. -/
+it elaborates the module.
+
+The files come in the order of their paths, and the modules are read in the order of their names.
+Lake mixes the traces of the files in the order of the jobs, so the trace of this job is the same
+in every copy of a tree, whatever order its file system lists a directory in; the first module
+that breaks a rule is the same too. -/
 library_facet SymLean.embeddedInputs (lib : LeanLib) : Array System.FilePath := do
   let check := EmbeddedInputs.checkModule
   let mut tables : EmbeddedInputs.Tables := {}
@@ -441,10 +448,10 @@ library_facet SymLean.embeddedInputs (lib : LeanLib) : Array System.FilePath := 
     if own.mentions then
       for path in EmbeddedInputs.paths (← IO.FS.readFile file) do
         let path := file.parent.getD "." / path
-        unless inputs.contains path do
-          inputs := inputs.push path
-          let isFile := (← path.pathExists) && !(← path.isDir)
-          jobs := jobs.push (← if isFile then inputBinFile path else pure (Job.pure path))
+        unless inputs.contains path do inputs := inputs.push path
+  for path in inputs.qsort (·.toString < ·.toString) do
+    let isFile := (← path.pathExists) && !(← path.isDir)
+    jobs := jobs.push (← if isFile then inputBinFile path else pure (Job.pure path))
   return Job.collectArray jobs s!"{lib.name}:SymLean.embeddedInputs"
 
 @[default_target]

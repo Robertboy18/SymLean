@@ -146,7 +146,7 @@ theorem besselTerm_ofReal (n : ℕ) (x : ℝ) (k : ℕ) :
     besselTerm n (x : ℂ) k = (besselTermReal n x k : ℂ) := by
   unfold besselTerm besselTermReal
   push_cast
-  try ring
+  ring
 
 /-- At a real point `J_n` is real, within twice the `N`-th term of its partial sum of `N` terms,
 once `2 (x / 2)² ≤ (N + 1) (n + N + 1)`. -/
@@ -196,7 +196,7 @@ theorem besselTermQ_cast (n : ℕ) (q : ℚ) (k : ℕ) :
     ((besselTermQ n q k : ℚ) : ℝ) = besselTermReal n q k := by
   unfold besselTermQ besselTermReal
   push_cast
-  try ring
+  ring
 
 /-- The real cast of the rational partial sum `besselPartialQ n q N` is the real partial sum
 `∑ k < N, besselTermReal n q k`. -/
@@ -253,14 +253,14 @@ theorem besselJ_int_enclosure (n : ℤ) (N : ℕ) (q lo hi : ℚ)
       rw [hneg hn]
       obtain ⟨r, hr, h1, h2⟩ := besselCheck_sound n.natAbs N q lo hi h
       have hev : Even ((n.natAbs : ℕ) : ℤ) := by
-        rw [Int.even_coe_nat]; exact Nat.even_iff.2 he
+        rw [Int.even_natCast]; exact Nat.even_iff.2 he
       refine ⟨r, ?_, h1, h2⟩
       rw [hr, hev.neg_one_zpow, one_mul]
   · have hn : n < 0 := by omega
     rw [hneg hn]
     obtain ⟨r, hr, h1, h2⟩ := besselCheck_sound n.natAbs N q (-hi) (-lo) h
     have hod : Odd ((n.natAbs : ℕ) : ℤ) := by
-      rw [Int.odd_coe_nat]; exact Nat.odd_iff.2 (by omega)
+      rw [Int.odd_natCast]; exact Nat.odd_iff.2 (by omega)
     refine ⟨-r, ?_, ?_, ?_⟩
     · rw [hr, hod.neg_one_zpow]; push_cast; ring
     · push_cast at h2; linarith

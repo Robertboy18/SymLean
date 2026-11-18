@@ -37,7 +37,7 @@ structure PatchCover (α ι : Type*) (domain : Set α) where
   /-- The local domains. -/
   patch : ι → Set α
   /-- Every point of the target domain belongs to some patch. -/
-  covers : domain ⊆ fun x ↦ ∃ i, x ∈ patch i
+  covers : domain ⊆ {x | ∃ i, x ∈ patch i}
 
 namespace PatchCover
 

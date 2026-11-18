@@ -207,7 +207,7 @@ def rewriteLogArithmetic : TacticM Unit :=
 
 /-- The equation `|u| = u` or `|u| = -u` for a real `u` whose sign the local context proves. -/
 private def absEqualityProof? (argument : Expr) : TacticM (Option Expr) := do
-  unless ← isDefEqGuarded (← inferType argument) (mkConst ``Real) do
+  unless ← Elaboration.DefEq.agreeGuarded (← inferType argument) (mkConst ``Real) do
     return none
   let zero ← realNumeral 0
   if let some proof ← proveProposition? (← mkLT zero argument) then
@@ -313,7 +313,7 @@ private def symbolicProductPower? (expression : Expr) : MetaM (Option (Expr × E
     return none
   let arguments := expression.getAppArgs
   let exponent := arguments[5]!
-  unless ← isDefEqGuarded (← inferType exponent) (mkConst ``Nat) do
+  unless ← Elaboration.DefEq.agreeGuarded (← inferType exponent) (mkConst ``Nat) do
     return none
   if (← getNatValue? exponent).isSome then
     return none

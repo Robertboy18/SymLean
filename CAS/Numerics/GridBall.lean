@@ -58,7 +58,7 @@ a `natAll` loop over 1000 balls of 160 bits: `add` about 5 us, `min` and `max` 1
   pp. 179-208, <https://www.texmacs.org/joris/ball/ball-abs.html>. Section 3.1, (7), for the
   product of balls; Section 3.2 for a rounded center whose error bound is added to the radius,
   and for a flag that marks a possibly invalid ball.
-* Lean 4, release v4.35.0, <https://github.com/leanprover/lean4>. `type_checker::reduce_nat` in
+* Lean 4, release v4.36.0, <https://github.com/leanprover/lean4>. `type_checker::reduce_nat` in
   `src/kernel/type_checker.cpp` lists the natural-number operations the kernel evaluates on
   literals.
 -/
@@ -312,12 +312,13 @@ def ceilGrid (P bits : ℕ) (a : GridBall) : GridBall :=
 /-! ### Natural-number operations -/
 
 /-- `Nat.div a b` is `a / b`. Kept because core has this rewrite for `Nat.add`, `Nat.sub` and
-`Nat.mul` (`Nat.add_eq`, `Nat.sub_eq`, `Nat.mul_eq`) but not for `Nat.div`, whose `Nat.div_eq` is
-the recursion equation; the definitions here call `Nat.div` directly. -/
+`Nat.mul` (`Nat.add_eq`, `Nat.sub_eq`, `Nat.mul_eq`) and none for `Nat.div`, whose equation in
+core, `Nat.div_eq_ite`, is the recursion equation; the definitions here call `Nat.div` directly. -/
 theorem natDiv_eq_div (a b : ℕ) : Nat.div a b = a / b := rfl
 
-/-- `Nat.mod a b` is `a % b`. Kept because core has no such rewrite for `Nat.mod`, whose
-`Nat.mod_eq` is the recursion equation; the definitions here call `Nat.mod` directly. -/
+/-- `Nat.mod a b` is `a % b`. Kept because core has no such rewrite for `Nat.mod`, whose equation
+in core, `Nat.mod_eq_ite`, is the recursion equation; the definitions here call `Nat.mod`
+directly. -/
 theorem natMod_eq_mod (a b : ℕ) : Nat.mod a b = a % b := rfl
 
 /-! ### Rounding -/

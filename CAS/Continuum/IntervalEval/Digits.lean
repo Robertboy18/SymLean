@@ -68,7 +68,7 @@ decides only whether a check succeeds, never whether it is sound.
   SIAM, Philadelphia, 2009, <https://doi.org/10.1137/1.9780898717716>. Chapter 3 for outwardly
   rounded interval arithmetic.
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 3.1.0 (commit 0fe4f04), <https://github.com/lean-dojo/FloatLib>. We use its
+  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. We use its
   enclosures `Interval.sinBounds`, `Interval.cosBounds`, `Interval.atanBounds` and
   `Interval.sqrtBounds?` and its point enclosures `Enclosure.BinaryGrid.exp` and
   `Enclosure.BinaryGrid.log`.

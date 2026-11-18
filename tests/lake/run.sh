@@ -2,7 +2,8 @@
 # Copyright (c) 2026 SymLean Team. All rights reserved.
 # Released under Apache 2.0 license as described in the file LICENSE.
 # Tests of SymLean's Lake configuration: the certificate profiles, the tracking of the files that
-# modules embed with `include_str`, in modules that no glob lists as well, the uses of
+# modules embed with `include_str`, in modules that no glob lists as well and in a copy of the
+# tree whose file system lists its directories in another order, the uses of
 # `include_str` that the check of `CAS/IncludeStr.lean` or the facet refuses, in a module or
 # through the macros and elaborators of another, the time that the search takes, and a consumer's
 # own module setup facet and library facet. Each run copies the configuration (`lakefile.lean`,
@@ -191,6 +192,40 @@ then
 else
   cat "$query" >> "$log"
   fail "each spelling of a path is tracked"
+fi
+
+# The trace of the facet does not depend on the order in which the file system lists a directory:
+# the files come in the order of their paths, and a copy of the built packages whose directories
+# list their entries in the opposite order is up to date.
+if grep '\.txt$' "$query" | LC_ALL=C sort -c 2> "$log"; then
+  ok "the embedded files come in the order of their paths"
+else
+  cat "$query" >> "$log"
+  fail "the embedded files come in the order of their paths"
+fi
+copy="$scratch/copy"
+python3 - "$scratch" "$copy" <<'EOF'
+import os, shutil, sys
+def copy(source, target):
+    """Copy a directory, creating its entries in the reverse of their sorted order."""
+    os.mkdir(target)
+    for name in sorted(os.listdir(source), reverse=True):
+        s, t = os.path.join(source, name), os.path.join(target, name)
+        if os.path.islink(s):
+            os.symlink(os.readlink(s), t)
+        elif os.path.isdir(s):
+            copy(s, t)
+        else:
+            shutil.copy2(s, t)
+    shutil.copystat(source, target)
+os.mkdir(sys.argv[2])
+for package in ("symlean", "consumer"):
+    copy(os.path.join(sys.argv[1], package), os.path.join(sys.argv[2], package))
+EOF
+if lake_in "$copy/consumer" build --no-build Spellings; then
+  ok "a copy that lists its directories in another order is up to date"
+else
+  fail "a copy that lists its directories in another order is up to date"
 fi
 
 # Every other use of `include_str` stops the build: the check refuses it at the use, with a message

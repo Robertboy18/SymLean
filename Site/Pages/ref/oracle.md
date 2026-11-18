@@ -65,7 +65,7 @@ Module | What it adds
 
 ### Built on DSLean
 
-We built `CASOracle` on [DSLean](https://github.com/taterowney/DSLean), by taterowney and the DSLean contributors, released under CC BY 4.0. Its grammars write each request in the tool’s own language and read the answer back into Lean. That translation is the fiddly part of talking to another system, and I’m grateful we didn’t have to write it ourselves. SymLean requires the port in [Robertboy18/DSLean](https://github.com/Robertboy18/DSLean), branch `leancas`, which updates DSLean to Lean 4.35.0 with the five changes that `NOTICE` lists. No DSLean file is copied into SymLean.
+We built `CASOracle` on [DSLean](https://github.com/taterowney/DSLean), by taterowney and the DSLean contributors, released under CC BY 4.0. Its grammars write each request in the tool’s own language and read the answer back into Lean. That translation is the fiddly part of talking to another system, and I’m grateful we didn’t have to write it ourselves. SymLean requires the port in [Robertboy18/DSLean](https://github.com/Robertboy18/DSLean), tag `v4.36.0` on the branch `leancas`, which updates DSLean to Lean 4.36.0 with the five changes that `NOTICE` lists. No DSLean file is copied into SymLean.
 
 ## Examples
 
