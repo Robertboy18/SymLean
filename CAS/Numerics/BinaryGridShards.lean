@@ -7,6 +7,7 @@ Authors: SymLean Team
 module
 
 public meta import CAS.Numerics.PackedJson
+public meta import FloatLib.Util.Declaration
 import CAS.Numerics.Tactic
 public import CAS.Numerics.Json
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
@@ -49,6 +50,7 @@ public meta section
 namespace CAS.Numerics
 
 open Lean Elab Lean.Elab.Command Term Meta Tactic
+open FloatLib.Floats.ExecFloat (generatedDoc)
 
 /-- A grid snapshot with a checked shape. -/
 structure BinaryGridSnapshot where
@@ -82,9 +84,6 @@ private def loadSnapshot (text : Term) : CommandElabM BinaryGridSnapshot := do
   | .ok snapshot => return snapshot
   | .error error => throwErrorAt text "invalid grid snapshot: {error}"
 
-private def docComment (text : String) : TSyntax ``Parser.Command.docComment :=
-  ⟨mkNode ``Parser.Command.docComment #[mkAtom "/--", mkAtom (" " ++ text ++ " -/")]⟩
-
 private def suffixed (base : Ident) (suffix : String) : Ident :=
   mkIdent (base.getId.appendAfter suffix)
 
@@ -107,23 +106,23 @@ private def gridShardCommands (numerator leaf row check : Ident) (source text : 
   let precision := quote snapshot.precision
   let width := quote snapshot.slotWidth
   let mut data : Array Syntax := #[]
-  let doc := docComment s!"Source rows {offset} through {offset + snapshot.rows - 1} as packed \
-    rows of biased {snapshot.slotWidth}-bit slots."
+  let doc := generatedDoc s!" Source rows {offset} through {offset + snapshot.rows - 1} as packed \
+    rows of biased {snapshot.slotWidth}-bit slots. "
   data := data.push (← `($doc:docComment
     def $leaf : CAS.Numerics.Binary64WordTree $rowCount :=
       packed_int_rows% $width $columnCount $text "numerators"))
-  let doc := docComment s!"Column `l` of source row `{offset} + m`, decoded from its slot."
+  let doc := generatedDoc s!" Column `l` of source row `{offset} + m`, decoded from its slot. "
   data := data.push (← `($doc:docComment
     def $row (m : Fin $rowCount) (l : Fin $columnCount) : Int :=
       CAS.Numerics.signedSlot $width l.val
         (CAS.Numerics.Binary64WordTree.get $leaf m)))
-  let doc := docComment s!"The integer numerators of source rows {offset} through \
-    {offset + snapshot.rows - 1}."
+  let doc := generatedDoc s!" The integer numerators of source rows {offset} through \
+    {offset + snapshot.rows - 1}. "
   data := data.push (← `($doc:docComment
     def $numerator (m : Fin $rowCount) (l : Fin $columnCount) : Int := $row m l))
   let index ← `(⟨$(quote offset) + m.val, by have := m.isLt; omega⟩)
   let entry ← applySource source #[index, mkIdent `l]
-  let doc := docComment "Every block numerator represents its source entry exactly."
+  let doc := generatedDoc " Every block numerator represents its source entry exactly. "
   let proof ← `($doc:docComment
     theorem $check (m : Fin $rowCount) (l : Fin $columnCount) :
         $entry = FloatLib.Numerics.Interval.BinaryGrid.toRat $precision ($numerator m l) := by

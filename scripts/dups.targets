@@ -2,7 +2,10 @@
 # fluid-blowup or simple_cfem-lean) imports: their declarations count as used. From the import
 # graph of the four repositories at SymLean b5d9941 (scratch/review-fixes-20261109/ext168.txt),
 # without the four modules deleted since (Quadrature.GaussLegendrePlanning, Quadrature.SimpsonPlanning,
-# Quadrature.AdaptiveSimpson, Quadrature.AdaptiveGaussLegendre).
+# Quadrature.AdaptiveSimpson, Quadrature.AdaptiveGaussLegendre). Since then the examples
+# CAS/Examples/Numerics/BinaryGridShards.lean and CAS/Examples/Numerics/Importers.lean import
+# some of them to run their importers; those modules stay here, since the downstream projects
+# use what the examples do not.
 CAS.Analysis.Approximation.Splines.Hermite
 CAS.Analysis.Approximation.Splines.HermiteRational
 CAS.Analysis.Approximation.Splines.PiecewisePolynomial
