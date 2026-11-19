@@ -271,13 +271,6 @@ declare_syntax_cat cegaIntervalBinding
 /-- A coordinate name and its closed rational interval. -/
 syntax ident " in " "[" term ", " term "]" : cegaIntervalBinding
 
-/-- Render a rational without a denominator when it is an integer. -/
-def renderRational (value : ℚ) : String :=
-  if value.den = 1 then
-    toString value.num
-  else
-    s!"{value.num}/{value.den}"
-
 /--
 Parse one exact coordinate binding.
 
@@ -297,7 +290,7 @@ def parseBinding {m : Type → Type} [Monad m] [MonadError m]
         }
       else
         throwErrorAt stx
-          "interval endpoints are reversed: {renderRational a} > {renderRational b}"
+          "interval endpoints are reversed: {toString a} > {toString b}"
   | _ =>
       throwErrorAt stx "malformed numerical coordinate binding"
 
@@ -1460,11 +1453,11 @@ deriving Repr
 
 /-- The stated bound as a short relation, for traces: `∈ [lo, hi]`, `≤ c`, `> c`, `|·| ≤ c`, …. -/
 def StatedBound.render : StatedBound → String
-  | .enclosure lo hi => s!"∈ [{renderRational lo}, {renderRational hi}]"
-  | .upper c strict => s!"{if strict then "<" else "≤"} {renderRational c}"
-  | .lower c strict => s!"{if strict then ">" else "≥"} {renderRational c}"
-  | .absolute c strict => s!"|·| {if strict then "<" else "≤"} {renderRational c}"
-  | .approx center radius => s!"= {renderRational center} ± {renderRational radius}"
+  | .enclosure lo hi => s!"∈ [{lo}, {hi}]"
+  | .upper c strict => s!"{if strict then "<" else "≤"} {c}"
+  | .lower c strict => s!"{if strict then ">" else "≥"} {c}"
+  | .absolute c strict => s!"|·| {if strict then "<" else "≤"} {c}"
+  | .approx center radius => s!"= {center} ± {radius}"
 
 /-- The mode whose projection states the bound: the enclosure for an enclosure or a lower bound,
 the upper bound, the absolute bound, or the midpoint approximation. -/

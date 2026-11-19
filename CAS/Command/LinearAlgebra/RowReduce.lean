@@ -49,7 +49,7 @@ namespace CAS.Command.LinearAlgebra
 
 open Lean Elab Command Meta Term
 open CAS.Command.InfoView
-open CAS.Command.Algebra (natTerm ratText proveStatement)
+open CAS.Command.Algebra (natTerm proveStatement)
 
 /-- `(k : Fin n)` as a term. -/
 def finTerm (k n : Nat) : TermElabM (TSyntax `term) := `(($(natTerm k) : Fin $(natTerm n)))

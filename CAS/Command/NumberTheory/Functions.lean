@@ -73,7 +73,7 @@ namespace CAS.Command.NumberTheory
 
 open Lean Elab Command Meta Term
 open CAS.Command.InfoView
-open CAS.Command.Algebra (natTerm ratText proveStatement checkedEvidence)
+open CAS.Command.Algebra (natTerm proveStatement checkedEvidence)
 
 /-- The divisors of `n` are certified for `n` below this bound, `10^12`. -/
 def divisorBound : Nat := 10 ^ 12
@@ -367,9 +367,9 @@ def logContinuedFraction (ref : Syntax) (forward : Bool) (input : Syntax) : Comm
     else s!"[{terms.head!}; " ++ ", ".intercalate ((terms.drop 1).map toString) ++ "]"
   logReport ref {
     domain := "ℚ"
-    input := if forward then ratText q else s!"{terms}"
+    input := if forward then toString q else s!"{terms}"
     inputType := if forward then "rational number" else "continued fraction"
-    output := if forward then shown else ratText q
+    output := if forward then shown else toString q
     outputType := if forward then "continued fraction" else "rational number"
   } #[← liftTermElabM <| checkedEvidence operation "Value of the continued fraction" proposition
       proof]

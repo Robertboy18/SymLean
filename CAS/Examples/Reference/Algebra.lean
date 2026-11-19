@@ -481,7 +481,7 @@ Classical.choice, Quot.sound]
 /--
 apart: the denominator x^2 - 1 is a single factor as written and the fraction is proper, and
 without Hex `apart` does not factor it: write it as a product of its factors, or use CASHex
-(`lake -R -Khex=on build CASHex`, `import CASHex.Factor`), which factors it completely over ℚ
+(Lean 4.35 edition, `import CASHex.Factor`), which factors it completely over ℚ
 -/
 #guard_msgs (whitespace := lax, substring := true) in
 #cas [apart] (1/(x^2-1))

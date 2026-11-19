@@ -284,7 +284,7 @@ def logInterpolating (ref : Syntax) (x : Name) (points : List (ℚ × ℚ)) : Co
     checkedEvidence "interpolatingPolynomial" "Values and degree in ℚ[X]" proposition proof
   logReport ref {
     domain := s!"{xText} ↦ X in ℚ[X]"
-    input := ", ".intercalate (points.map fun (a, b) ↦ s!"({ratText a}, {ratText b})")
+    input := ", ".intercalate (points.map fun (a, b) ↦ s!"({a}, {b})")
     inputType := "points"
     output := denseText xText p
     outputType := s!"polynomial of degree at most {points.length - 1}"

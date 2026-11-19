@@ -77,16 +77,15 @@ Output (the only real solution, by 20 decimals, truncated): 1.167303978261418684
 
 /--
 error: `cas` did not prove the value -2 of the integral: it could not prove that the conditions of
-the primitive -(1/x) hold on the interval (x ≠ 0). Where they fail, the difference of the
-primitive's values at the endpoints need not be the integral. For a numerical value use `#cas
-[nintegrate x in [-1, 1]] (1 / x ^ 2)`.
+the primitive -(1/x) hold on the interval (x ≠ 0). The endpoint calculation
+needs a primitive valid throughout the interval.
 -/
 #guard_msgs (whitespace := lax) in
 #cas [integrate x in [-1, 1]] (1 / x ^ 2)
 
 /--
-error: the checked integrator found no supported antiderivative in coordinate 'x', so the
-integral has no exact value here. For a numerical value use `#cas [nintegrate x in [0, 1]] (sqrt
+error: the checked integrator found no supported antiderivative in coordinate 'x'. For a possible
+numerical enclosure, try `#cas [nintegrate x in [0, 1]] (sqrt
 (2 - x) * sqrt (1 / (2 - x)))`.
 -/
 #guard_msgs (whitespace := lax) in

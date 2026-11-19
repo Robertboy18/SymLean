@@ -7,6 +7,7 @@ Authors: SymLean Team
 module
 
 public import CAS.Calculus.SymbolicOperators
+public import CAS.ClosedForm.Scalar.Conditions
 public import CAS.Notation
 
 /-!
@@ -48,5 +49,15 @@ run_elab do
     ← `(EuclideanSpace ℝ (Fin 2))].mapM fun term ↦ do
       return m!"{← elabTerm term none}"
   logInfo (MessageData.joinSep terms "\n")
+
+/-- The curl of `(0, x, 0)` is `(0, 0, 1)`. -/
+theorem curl3SimpleShear :
+    Expr.closedCurl3List (fun i ↦ if i = 1 then .var 0 else .nat 0) =
+      [.nat 0, .nat 0, .nat 1] := by decide
+
+/-- The candidate `u(x) = x + 1` satisfies `u(2) = 3`. -/
+theorem affineInitialValue :
+    ({ point := fun _ ↦ .nat 2, lhs := Scalar.u, rhs := 3 } : Scalar.PointCondition 1).residual
+      (.add (.var 0) (.nat 1)) = .nat 0 := by decide
 
 end CAS.Examples.ClosedFormNotation

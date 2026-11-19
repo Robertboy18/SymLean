@@ -19,7 +19,7 @@ tutorials = ["first-hour", "proving"]
 
 - ‹A› is a square matrix literal `!![a, b; c, d]` or a list of rows `[[a, b], [c, d]]`. The entries are closed rational expressions such as `-3/2`, `0.25` or `1/10^15`.
 - The theorem is `A.det = d` for ‹A› as a matrix over $\mathbb{Q}$. Mathlib’s `norm_det` simproc computes the determinant of the literal together with a proof, and Lean’s kernel checks that proof.
-- With Hex, the value comes from Hex’s fraction-free (Bareiss) elimination, and the kernel checks its certificate by evaluation instead of replaying the elimination. The theorem is the same, and the output line says “determinant (Hex’s Bareiss certificate)”. To turn it on, build with `lake -R -Khex=on build CASHex` and add `import CASHex.LinearAlgebra`. The [Hex guide](guide:hex) has the details.
+- In the Lean 4.35 edition, `CASHex.LinearAlgebra` computes the same determinant by fraction-free Bareiss elimination. The kernel evaluates the resulting certificate. See the [Hex guide](guide:hex).
 - The tactic [[cas]] proves goals `Matrix.det A = d` for matrix literals, also over $\mathbb{Z}$ and $\mathbb{R}$, and proves a determinant with variables as a polynomial identity. A wrong value is refused, and the message shows the value it found.
 
 ## Examples

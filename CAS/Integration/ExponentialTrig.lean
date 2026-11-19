@@ -72,7 +72,7 @@ residual to literal zero.
 namespace CAS.IntegrationPlanner.ExponentialTrig
 
 open CAS.Polynomial
-open CAS.Verified.Expr.Alg (MvPoly MvMonomial mvOne mvVar mvAdd mvSub mvScaleMonomial
+open CAS.Verified.Expr.Alg (MvPoly MvMonomial mvPolyOne mvVar mvAdd mvSub mvScaleMonomial
   mvMulPoly mvPowPoly mvConstant? mvPolyOf? mvNormalize mvPolyExpr)
 
 /-- Whether a trigonometric factor is a sine or a cosine. -/
@@ -246,16 +246,13 @@ structure Images (n : Nat) where
   /-- The common denominator. -/
   denominator : MvPoly n
 
-/-- The constant polynomial `1`. -/
-def unitPoly (n : Nat) : MvPoly n := [(1, mvOne n)]
-
 /-- The values of `α` and `γ` for the slopes `a` and `c`: `(a, c)` over `a² + c²`, or `(1, 0)`
 over `a` when `c` is zero, or `(0, 1)` over `c` when `a` is zero. The result is `none` when both
 slopes are zero. -/
 def images? {n : Nat} (a c : MvPoly n) : Option (Images n) :=
   if a.isEmpty && c.isEmpty then none
-  else if c.isEmpty then some ⟨unitPoly n, [], a⟩
-  else if a.isEmpty then some ⟨[], unitPoly n, c⟩
+  else if c.isEmpty then some ⟨mvPolyOne n, [], a⟩
+  else if a.isEmpty then some ⟨[], mvPolyOne n, c⟩
   else some ⟨a, c, mvAdd (mvMulPoly a a) (mvMulPoly c c)⟩
 
 /-- The total power of `α` and `γ` in a monomial. -/

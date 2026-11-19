@@ -70,13 +70,6 @@ def pOne : Dense := #[1]
 /-- `k`. -/
 def pVar : Dense := #[0, 1]
 
-/-- `p (k + h)`. -/
-def pShift (p : Dense) (h : ℚ) : Dense :=
-  p.foldr (fun c acc ↦ Dense.add (Dense.mul acc #[h, 1]) #[c]) #[]
-
-/-- The degree of `p`, and `0` for the zero polynomial. -/
-def pDeg (p : Dense) : Nat := (Dense.trim p).size - 1
-
 /-- A rational function `N / D`, reduced and with monic `D`. -/
 def reduce (N D : Dense) : Dense × Dense :=
   let g := Dense.gcd N D
@@ -139,7 +132,7 @@ partial def toHyper : Verified.Expr (Fin 1) → Option Hyper
   | .rpow a (.var _) => do
       match ← toHyper a with
       | [(1, N, D)] =>
-          if pDeg N = 0 && pDeg D = 0 && Dense.lead D ≠ 0 then
+          if Dense.degree N = 0 && Dense.degree D = 0 && Dense.lead D ≠ 0 then
             let r := Dense.lead N / Dense.lead D
             if r > 0 then return [(r, pOne, pOne)] else none
           else none
@@ -186,11 +179,13 @@ partial def resultant (f g : Dense) : ℚ :=
   let f := Dense.trim f
   let g := Dense.trim g
   if f.isEmpty || g.isEmpty then 0
-  else if pDeg g = 0 then Dense.lead g ^ pDeg f
+  else if Dense.degree g = 0 then Dense.lead g ^ Dense.degree f
   else
     let r := (Dense.divMod f g).2
     if Dense.isZero r then 0
-    else (-1) ^ (pDeg f * pDeg g) * Dense.lead g ^ (pDeg f - pDeg r) * resultant g r
+    else
+      (-1) ^ (Dense.degree f * Dense.degree g) *
+        Dense.lead g ^ (Dense.degree f - Dense.degree r) * resultant g r
 
 /-- The polynomial of degree below `values.size` through the points `(i, values[i])`, by
 Lagrange's formula. The heartbeat limit is checked at each point. -/
@@ -295,9 +290,9 @@ interpolated from its values at `h = 0, …, deg a · deg b`, when that degree i
 `maxDegree`. The second component says whether the root search decided every root, and the error
 says which search the command does not do. -/
 def dispersion (a b : Dense) : ExceptT String CoreM (List Nat × Bool) := do
-  if pDeg a == 0 || pDeg b == 0 then return ([], true)
+  if Dense.degree a == 0 || Dense.degree b == 0 then return ([], true)
   let bound := rootBound a + rootBound b
-  let work := (bound + 1) * (pDeg a + pDeg b + 1) ^ 2
+  let work := (bound + 1) * (Dense.degree a + Dense.degree b + 1) ^ 2
   if bound ≤ maxShifts ∧ work ≤ maxShiftWork then
     let a' := RootIsolation.primitive a
     let b' := RootIsolation.primitive b
@@ -309,9 +304,9 @@ def dispersion (a b : Dense) : ExceptT String CoreM (List Nat × Bool) := do
       let candidate := match filter with
         | some (m, am, bm) => gcdDegreeMod m am (shiftMod m bm h) ≥ 1
         | none => true
-      if candidate && pDeg (Dense.gcd a (pShift b h)) ≥ 1 then shifts := shifts ++ [h]
+      if candidate && Dense.degree (Dense.gcd a (Dense.shift b h)) ≥ 1 then shifts := shifts ++ [h]
     return (shifts, true)
-  let degree := pDeg a * pDeg b
+  let degree := Dense.degree a * Dense.degree b
   if degree > maxDegree then
     throwThe String s!"Gosper's algorithm needs the integer shifts between the factors of this \
       summand's ratio, which may be up to {bound} apart; the command tests them one by one for \
@@ -320,14 +315,14 @@ def dispersion (a b : Dense) : ExceptT String CoreM (List Nat × Bool) := do
   let mut values := #[]
   for h in [0:degree + 1] do
     checkSystem "sum"
-    values := values.push (resultant a (pShift b h))
+    values := values.push (resultant a (Dense.shift b h))
   let (roots, _, complete) := RootIsolation.rationalRoots (← interpolate values).toList
   let shifts := roots.filterMap fun (r, _) ↦
     if r.den = 1 && 0 ≤ r.num then some r.num.toNat else none
   return (shifts.mergeSort (· ≤ ·), complete)
 
 /-- The degree of `p`, and `-1` for the zero polynomial. -/
-def degree (p : Dense) : Int := if Dense.isZero p then -1 else pDeg p
+def degree (p : Dense) : Int := if Dense.isZero p then -1 else Dense.degree p
 
 /-- Gosper's algorithm for `cᵏ N(k) / D(k)`: `some S` for the rational function `S` with
 `z k = S(k) t k` and `z (k + 1) - z k = t k`, or `none` when there is no such `S`, which proves
@@ -339,7 +334,8 @@ The least of them at which the equation has a solution is the degree of its solu
 degree. The error is a search that this command does not finish, and says which. -/
 def gosper (c : ℚ) (N D : Dense) : ExceptT String CoreM (Option (Dense × Dense)) := do
   -- `t (k + 1) / t k = c N(k + 1) D(k) / (N(k) D(k + 1))`.
-  let (A, B) := reduce (Dense.scale c (Dense.mul (pShift N 1) D)) (Dense.mul N (pShift D 1))
+  let (A, B) :=
+    reduce (Dense.scale c (Dense.mul (Dense.shift N 1) D)) (Dense.mul N (Dense.shift D 1))
   let (shifts, complete) ← dispersion A B
   unless complete do
     throwThe String "Gosper's algorithm did not finish for this summand: the root search left \
@@ -351,26 +347,27 @@ def gosper (c : ℚ) (N D : Dense) : ExceptT String CoreM (Option (Dense × Dens
     let mut again := true
     while again do
       checkSystem "sum"
-      let g := Dense.gcd a (pShift b h)
-      if pDeg g ≥ 1 then
-        if pDeg p + pDeg g * h > maxDegree then
+      let g := Dense.gcd a (Dense.shift b h)
+      if Dense.degree g ≥ 1 then
+        let newDegree := Dense.degree p + Dense.degree g * h
+        if newDegree > maxDegree then
           throwThe String s!"Gosper's algorithm needs a polynomial of degree at least \
-            {pDeg p + pDeg g * h} for this summand, whose ratio has factors {h} apart, and the \
+            {newDegree} for this summand, whose ratio has factors {h} apart, and the \
             command searches up to degree {maxDegree}"
         a := (Dense.divMod a g).1
-        b := (Dense.divMod b (pShift g (-(h : ℚ)))).1
+        b := (Dense.divMod b (Dense.shift g (-(h : ℚ)))).1
         for i in [1:h + 1] do
-          p := Dense.mul p (pShift g (-(i : ℚ)))
+          p := Dense.mul p (Dense.shift g (-(i : ℚ)))
       else again := false
   -- `a(k) x(k + 1) - b(k - 1) x(k) = p(k)`.
-  let bm := pShift b (-1)
+  let bm := Dense.shift b (-1)
   let plus := Dense.add a bm
   let minus := Dense.sub a bm
   -- The degrees that `x` can have.
   let degrees : List Int :=
     if degree minus ≥ degree plus then [degree p - degree minus]
     else
-      let s := pDeg plus
+      let s := Dense.degree plus
       let L := -2 * (Dense.trim minus).getD (s - 1) 0 / Dense.lead plus
       [degree p - s + 1] ++ if L.den = 1 then [L.num] else []
   let degrees := (degrees.filter (0 ≤ ·)).eraseDups.mergeSort (· ≤ ·)
@@ -379,7 +376,7 @@ def gosper (c : ℚ) (N D : Dense) : ExceptT String CoreM (Option (Dense × Dens
     -- Unknown coefficients `x₀, …, x_d`.
     let columns := (Array.range (d + 1)).map fun i ↦
       let mono : Dense := (Array.replicate i 0).push 1
-      Dense.sub (Dense.mul a (pShift mono 1)) (Dense.mul bm mono)
+      Dense.sub (Dense.mul a (Dense.shift mono 1)) (Dense.mul bm mono)
     let size := max (columns.foldl (fun m (col : Dense) ↦ max m col.size) 0) p.size
     let M := (Array.range size).map fun r ↦ columns.map fun col ↦ col.getD r 0
     let rhs := (Array.range size).map fun r ↦ p.getD r 0
@@ -447,8 +444,8 @@ def logGosper (ref : Syntax) (k : TSyntax `ident) (aStx : Syntax) (n : TSyntax `
     let za := c ^ aNat * Dense.eval WN aNat / Dense.eval WD aNat
     constant := constant + za
     -- `z (n + 1) = c ^ (n + 1) W (n + 1)`.
-    let WN' := pShift WN 1
-    let WD' := pShift WD 1
+    let WN' := Dense.shift WN 1
+    let WD' := Dense.shift WD 1
     if c = 1 then
       let (RN, RD) := rational
       rational := reduce (Dense.add (Dense.mul RN WD') (Dense.mul WN' RD)) (Dense.mul RD WD')

@@ -104,7 +104,7 @@ product: the upper bound must be a variable
 /--
 product: the factor is not, as written, a constant times powers of linear factors k + s with
 integer s, and without Hex `product` does not factor it: write it as such a product, or use
-CASHex (`lake -R -Khex=on build CASHex`, `import CASHex.Factor`), which factors it completely
+CASHex (Lean 4.35 edition, `import CASHex.Factor`), which factors it completely
 over ℚ
 -/
 #guard_msgs (whitespace := lax, substring := true) in

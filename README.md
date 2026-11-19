@@ -12,9 +12,9 @@ box. You get the answer and a theorem about Mathlib's functions, including the h
 such as a nonzero denominator. Lean's kernel checks the proof, and if SymLean can't prove an answer, it
 refuses and tells you what was missing.
 
-You never have to trust SymLean's code. The search only proposes an answer, and what you get back is a
-theorem the kernel accepted. To trust an answer, you read the statement it proves and run the checks
-[below](#building-and-checking).
+The search proposes an answer. The proof is about the statement Lean elaborated, including its
+conditions. Read that statement and run the checks [below](#building-and-checking) to see what
+the result relies on.
 
 The same calculations work inside a proof: `cas` handles identities, derivatives, integrals and limits,
 and `cega` handles numerical bounds.
@@ -64,7 +64,7 @@ but the proof then needs x ≠ 0 on all of [−1, 1], so `#cas [integrate x in [
 refuses:
 
 ```text
-error: `cas` did not prove the value -2 of the integral: it could not prove that the conditions of the primitive -(1/x) hold on the interval (x ≠ 0). Where they fail, the difference of the primitive's values at the endpoints need not be the integral. For a numerical value use `#cas [nintegrate x in [-1, 1]] (1 / x ^ 2)`.
+error: `cas` did not prove the value -2 of the integral: it could not prove that the conditions of the primitive -(1/x) hold on the interval (x ≠ 0). The endpoint calculation needs a primitive valid throughout the interval.
 ```
 
 On SymPy's integrand our search finds no antiderivative and says so. For the matrix from Sage's report,
@@ -77,9 +77,8 @@ form, which determines R. The site page "Why SymLean" (`Site/Pages/guide/why.md`
 - the Mathlib definitions it mentions, such as `Real.arctan` or the interval integral;
 - Lean's kernel, with the three standard axioms `propext`, `Classical.choice` and `Quot.sound`.
 
-You never trust a search: not ours, not Hex's in the optional `CASHex`, and not SymPy, SageMath, FLINT,
-Maxima, PARI/GP or Gappa, which the optional `CASOracle` calls through DSLean. Any of them can be wrong,
-and what they return becomes an answer only through a proof the kernel accepts.
+In the kernel profile, proposals from SymLean or from the systems that `CASOracle` calls through
+DSLean need a proof that Lean's kernel accepts.
 
 A few answers mention SymLean's own definitions, and then you read those too. They are short:
 
@@ -149,10 +148,9 @@ lean_lib MyLib where
   needs := #[`@/MyLib:SymLean.embeddedInputs]
 ```
 
-`lake -R -Khex=on build CASHex`, after the setup in `Site/Pages/guide/hex.md`, adds factorization,
-irreducibility, Bareiss determinants and primality certificates from
-[Hex](https://github.com/leanprover/hex), the Lean FRO's verified computer algebra. It is off by
-default, and no module of `CAS` imports it.
+The optional Hex integration provides rational factorization, irreducibility, Bareiss determinants
+and primality certificates in SymLean's Lean 4.35 edition. This release uses Lean 4.36, while Hex
+v0.10.0 targets Lean 4.35. The [Hex guide](Site/Pages/guide/hex.md) has the setup for that edition.
 
 ## Using SymPy, SageMath and other systems
 
@@ -213,17 +211,18 @@ printf 'import CAS\ntheorem t : ∫ x in (0 : ℝ)..1, x * Real.exp x = 1 := by 
 't' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
-You should also make sure that nothing in the library goes around the kernel: no extra axiom, and no compiled code
-that replaces a definition. A plain grep doesn't work well here, because a tactic library talks about
-`sorry` and axioms in its messages, so this script asks Lean instead, constant by constant (about ten
-seconds and 4.9 GB):
+Run the axiom audit on the kernel build. It asks Lean for the transitive axiom dependencies of each
+declaration and lists compiler hooks and unsafe definitions.
 
 ```sh
 bash scripts/audit.sh
 ```
 
-It finds no `extern`, no axiom of SymLean's own and no theorem that uses anything beyond the three
-standard axioms. It lists 22 constants, and none of them can reach a theorem:
+The audit exits with an error for any unexpected axiom dependency. Its sole exception is `lcProof`
+in the unsafe elaborator implementation `CAS.Numerics.natCompactImpl` itself. Use `--inventory`
+for reporting only. Pass `CASOracle` after building that optional library to audit it separately.
+
+The core build reports the following compiler hooks and unsafe definitions.
 
 - 8 unsafe definitions and 8 `implemented_by` attributes evaluate a term while Lean elaborates, or keep
   very large number literals out of the C code that Lean generates. One of them,
@@ -356,9 +355,6 @@ Certified numerics:
   ([girving/interval](https://github.com/girving/interval)), and
   [LeanCert](https://github.com/alerad/leancert) proves bounds and roots by verified interval
   arithmetic.
-
-SymLean follows the same idea. What's new, I think, is how much of a computer algebra system you can
-reach this way from one Lean front end, with everything checked in the kernel by default.
 
 ## Credits
 

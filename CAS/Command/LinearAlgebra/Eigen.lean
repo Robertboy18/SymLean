@@ -92,7 +92,7 @@ namespace CAS.Command.LinearAlgebra
 
 open Lean Elab Command Meta Term
 open CAS.Command.InfoView
-open CAS.Command.Algebra (natTerm ratText proveStatement qPolyTerm denseText Dense
+open CAS.Command.Algebra (natTerm proveStatement qPolyTerm denseText Dense
   polynomialIdentityTactic)
 open CAS.Command.RootSplit (enclosureParts ratQ natLit rootSyntax listSyntax boundQ decimal
   letRoots certified)
@@ -172,7 +172,7 @@ def factoredTerm (roots : List (ℚ × Nat)) (factors : List (Dense × Nat)) :
 
 /-- Text of the rational eigenvalues with multiplicities. -/
 def eigenvaluesText (roots : List (ℚ × Nat)) : String :=
-  "[" ++ ", ".intercalate (roots.flatMap fun (r, m) ↦ List.replicate m (ratText r)) ++ "]"
+  "[" ++ ", ".intercalate (roots.flatMap fun (r, m) ↦ List.replicate m (toString r)) ++ "]"
 
 /-- `|c| √m` as text: `√5/2`, `3√2`, `2/3`. -/
 def surdText (c : ℚ) (m : Nat) : String :=
@@ -191,7 +191,7 @@ def imaginaryText (c : ℚ) (m : Nat) : String :=
 /-- `α + t` (`plus`) or `α - t` as text, `t` or `-t` when `α = 0`. -/
 def offsetText (α : ℚ) (plus : Bool) (t : String) : String :=
   if α = 0 then (if plus then t else "-" ++ t)
-  else s!"{ratText α} {if plus then "+" else "-"} {t}"
+  else s!"{α} {if plus then "+" else "-"} {t}"
 
 /-- The term `(q : ℝ)`. -/
 def realTerm (q : ℚ) : TermElabM (TSyntax `term) := do `(($(← ratSyntax q) : ℝ))
@@ -249,8 +249,8 @@ def memberTerms (real : Bool) (reals discs : Nat) (f : EigFactor) :
   match f with
   | .char (.real r) =>
     let raw ← `(($(← ratQ r) : ℝ))
-    if real then return #[(raw, ← realTerm r, tac, ratText r)]
-    return #[(← toC raw, ← `(($(← ratSyntax r) : ℂ)), tac, ratText r)]
+    if real then return #[(raw, ← realTerm r, tac, toString r)]
+    return #[(← toC raw, ← `(($(← ratSyntax r) : ℂ)), tac, toString r)]
   | .char (.realPair α c m) =>
     let n := m.num.toNat
     let αT ← `(($(← ratQ α) : ℝ))
@@ -847,7 +847,7 @@ def logEigen (ref : Syntax) (vectors : Bool) (input : Syntax)
   let names : List String := if bases.length = 1 then ["α"]
     else (List.range bases.length).map fun j ↦ s!"α{Nat.toSubscriptString (j + 1)}"
   let entries := spaces.map (fun (r, V) ↦
-      s!"{ratText r} ↦ [" ++ ", ".intercalate (V.toList.map vectorText) ++ "]") ++
+      s!"{r} ↦ [" ++ ", ".intercalate (V.toList.map vectorText) ++ "]") ++
     (bases.zip names).map fun (b, a) ↦
       s!"{a} ↦ [" ++ ", ".intercalate (b.basis.toList.map (polyVectorText a)) ++ "]"
   let domains := (bases.zip names).map fun (b, a) ↦

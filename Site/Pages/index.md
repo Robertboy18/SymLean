@@ -94,7 +94,7 @@ Caption: Mathlib supplies the definitions used in the statements. Hex and the ex
 
 **Mathlib.** The theorems are stated with Mathlib’s `Real.arctan`, `HasDerivAt`, interval integrals, `Real.Gamma` and `Matrix.det`, so you can use them in any Mathlib proof as they are. It works the other way too: Mathlib’s tactics `ring`, `field_simp`, `norm_num`, `positivity` and `linarith` are routes inside `cas`.
 
-**Hex.** [Hex](https://github.com/leanprover/hex) is the Lean FRO’s verified computer algebra, and it is strong exactly where the core of SymLean is weak, in exact algebra over the integers and finite fields. With the optional library `CASHex`, `factor` proves the irreducibility of the factors over $\mathbb{Q}$ whenever Hex certifies every one of them, and you get primality certificates and fast determinants, each checked in the kernel. The [Hex guide](guide:hex) has the details.
+**Hex.** In SymLean’s Lean 4.35 edition, `CASHex` uses Hex for factorization over $\mathbb{Q}$, irreducibility, primality certificates and Bareiss determinants. The [Hex guide](guide:hex) gives the setup for that edition.
 
 **SymPy, SageMath, Maxima, PARI/GP and FLINT.** These are mature systems and very good at search, and I don’t need to trust them to use them. Through [DSLean](https://github.com/taterowney/DSLean), the optional library `CASOracle` asks them for a proposal, and SymLean proves it in Lean or refuses it. This line is from the library’s oracle tests:
 
@@ -106,4 +106,4 @@ The report is careful about what it claims: the identity is checked, and the irr
 
 ## Credits {#credits}
 
-SymLean is built by a team at Caltech: Robert Joseph George and Anima Anandkumar, in collaboration with Thomas Y. Hou, Changhe Yang and Peicong Song. It is built on [Mathlib](https://github.com/leanprover-community/mathlib4), its certified numerics use [FloatLib](https://github.com/lean-dojo/FloatLib), and the optional routes use [Hex](https://github.com/leanprover/hex) and [DSLean](https://github.com/taterowney/DSLean). Thank you to the Lean and Mathlib communities for the mathematics, the tools and the conversations. LeanPDE, for partial differential equations, is a separate project built on SymLean.
+SymLean is built by a team at Caltech: Robert Joseph George and Anima Anandkumar, in collaboration with Thomas Y. Hou, Changhe Yang and Peicong Song. It is built on [Mathlib](https://github.com/leanprover-community/mathlib4), its certified numerics use [FloatLib](https://github.com/lean-dojo/FloatLib), and its optional oracle routes use [DSLean](https://github.com/taterowney/DSLean). Thank you to the Lean and Mathlib communities for the mathematics, the tools and the conversations. [PDEAtlas](https://github.com/Robertboy18/PDEAtlas) uses SymLean in its partial differential equation proofs.

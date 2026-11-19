@@ -122,14 +122,14 @@ Output (closed form): 3*3^n
 
 set_option linter.style.longLine false in
 /--
-error: product: the factor is not, as written, a constant times powers of linear factors k + s with integer s, and without Hex `product` does not factor it: write it as such a product, or use CASHex (`lake -R -Khex=on build CASHex`, `import CASHex.Factor`), which factors it completely over ℚ
+error: product: the factor is not, as written, a constant times powers of linear factors k + s with integer s, and without Hex `product` does not factor it: write it as such a product, or use CASHex (Lean 4.35 edition, `import CASHex.Factor`), which factors it completely over ℚ
 -/
 #guard_msgs (error, drop info) in
 #cas [product k 1 n] (k^2 + 1)
 
 set_option linter.style.longLine false in
 /--
-error: product: the factor is not, as written, a constant times powers of linear factors k + s with integer s, and without Hex `product` does not factor it: write it as such a product, or use CASHex (`lake -R -Khex=on build CASHex`, `import CASHex.Factor`), which factors it completely over ℚ
+error: product: the factor is not, as written, a constant times powers of linear factors k + s with integer s, and without Hex `product` does not factor it: write it as such a product, or use CASHex (Lean 4.35 edition, `import CASHex.Factor`), which factors it completely over ℚ
 -/
 #guard_msgs (error, drop info) in
 #cas [product k 2 n] (1 - 1/k^2)

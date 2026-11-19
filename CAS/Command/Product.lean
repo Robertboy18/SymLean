@@ -33,7 +33,7 @@ Gamma functions.
 `CASHex`. Without Hex the linear factors must be written in the input: the factors are the
 coprime basis of the factors written in `f`, its numerator and its denominator, refined by gcds
 (`factorsOver`), so `(k - 1) * (k + 1) / k ^ 2` has a closed form and `1 - 1 / k ^ 2` is refused.
-With `import CASHex.Factor` (built with `lake -R -Khex=on build CASHex`) the numerator and the
+With `import CASHex.Factor` (in the Lean 4.35 edition) the numerator and the
 denominator are factored completely over `ℚ` by Hex's Berlekamp-Zassenhaus factorizer.
 -/
 
@@ -204,7 +204,7 @@ def logProduct (ref : Syntax) (k : TSyntax `ident) (aStx bStx : Syntax) (input :
         else
           throwErrorAt input "product: the factor is not, as written, a constant times powers of \
             linear factors k + s with integer s, and without Hex `product` does not factor it: \
-            write it as such a product, or use CASHex (`lake -R -Khex=on build CASHex`, \
+            write it as such a product, or use CASHex (Lean 4.35 edition, \
             `import CASHex.Factor`), which factors it completely over ℚ"
     let shifts := denShifts.foldl (fun acc (s, e) ↦ bump acc s (-e)) numShifts
     let form ← match productForm aNat (Dense.lead num / Dense.lead den) shifts with
@@ -325,7 +325,7 @@ Use a variable upper bound and evaluate the closed form: `#cas [product k 1 n] (
 ```output
 product: the factor is not, as written, a constant times powers of linear factors k + s with
 integer s, and without Hex `product` does not factor it: write it as such a product, or use
-CASHex (`lake -R -Khex=on build CASHex`, `import CASHex.Factor`), which factors it completely
+CASHex (Lean 4.35 edition, `import CASHex.Factor`), which factors it completely
 over ℚ
 ```
 Write the factor as `(k - 1) * (k + 1) / k ^ 2`, or import `CASHex.Factor`.

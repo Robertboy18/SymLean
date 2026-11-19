@@ -735,14 +735,6 @@ def spanEqualityOfRows (ctx : Ctx) (inputs : Array Input) (gs : Array Groebner.P
   let proof ← mkAppM ``le_antisymm #[← spanLe fInG, ← spanLe gInF]
   mkExpectedTypeHint proof statement
 
-/-- The term of a rational number in `ℚ`. -/
-def rationalLiteral (q : ℚ) : MetaM Lean.Expr := do
-  let ratType := Lean.mkConst ``Rat
-  let numerator ← mkNumeral ratType q.num.natAbs
-  let numerator ← if q.num < 0 then mkAppM ``Neg.neg #[numerator] else pure numerator
-  if q.den = 1 then return numerator
-  mkAppM ``HDiv.hDiv #[numerator, ← mkNumeral ratType q.den]
-
 /-- The terms of a polynomial in `n` variables as a list of pairs of a coefficient and the list of
 the `n` exponents, the argument of `CAS.Polynomial.Sparse.ofTerms`. -/
 def rawTerms (n : Nat) (p : Groebner.Poly) : MetaM Lean.Expr := do
@@ -753,7 +745,7 @@ def rawTerms (n : Nat) (p : Groebner.Poly) : MetaM Lean.Expr := do
   let terms ← p.mapM fun (m, c) ↦ do
     let exponents := (List.range n).map fun i ↦ mkNatLit (m.getD i 0)
     return mkApp4 (Lean.mkConst ``Prod.mk [Level.zero, Level.zero]) ratType listNat
-      (← rationalLiteral c) (← mkListLit natType exponents)
+      (toExpr c) (← mkListLit natType exponents)
   mkListLit termType terms
 
 /-- The type `MvPoly n` of sparse polynomials in `n` variables. -/
@@ -980,16 +972,12 @@ def monoText (names : Array String) (m : Groebner.Mono) : String :=
     let e := m.getD i 0
     if e == 0 then none else if e == 1 then some names[i]! else some s!"{names[i]!}^{e}"
 
-/-- A nonnegative rational number as text, such as `3/4`. -/
-def ratText (q : ℚ) : String :=
-  if q.den == 1 then toString q.num else s!"{q.num}/{q.den}"
-
 /-- A term with a nonnegative coefficient as text, such as `3/4*x*y^2`. -/
 def termText (names : Array String) (m : Groebner.Mono) (c : ℚ) : String :=
   let mono := monoText names m
-  if mono.isEmpty then ratText c
+  if mono.isEmpty then toString c
   else if c == 1 then mono
-  else s!"{ratText c}*{mono}"
+  else s!"{c}*{mono}"
 
 /-- A polynomial as text, in decreasing lexicographic order, such as `x^2 - 1/2*y + 3`. -/
 def renderPoly (names : Array String) (p : Groebner.Poly) : String := Id.run do

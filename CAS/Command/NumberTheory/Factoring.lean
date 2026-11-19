@@ -103,11 +103,10 @@ Mathematica `FactorInteger`, SymPy `factorint`, Hex `Hex.Nat.Construction.factor
 #cas [factorInteger] 360
 ```
 ```output
-factorInteger needs Hex (`-Khex=on`): primality certificates and integer factorization come from
-Hex; build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
+factorInteger needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition
 ```
-Without Hex the mode refuses. Build Hex with `lake -R -Khex=on build CASHex` and add
-`import CASHex.NumberTheory`; `#cas [divisors] n` lists the divisors of `n < 10^12` without Hex.
+`CASHex.NumberTheory` is available in the Lean 4.35 edition. The core command
+`#cas [divisors] n` lists the divisors of `n < 10^12`.
 ```lean
 #cas [factorInteger] 1
 ```
@@ -122,9 +121,8 @@ syntax (name := casFactorIntegerCommand) "#cas" "[" &"factorInteger" "]" term : 
 `operation`, or refuse at `input` when none is registered, since `operation` needs Hex. -/
 def NumberTheory.runHexBackend (operation : Name) (input : Syntax) : CommandElabM Unit := do
   unless ← Tactic.RouteRegistry.runCommandBackends operation input do
-    throwErrorAt input "{operation} needs Hex (`-Khex=on`): primality certificates and integer \
-      factorization come from Hex; build with `lake -R -Khex=on build CASHex` and \
-      `import CASHex.NumberTheory`"
+    throwErrorAt input
+      "{operation} needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition"
 
 elab_rules : command
   | `(#cas [factorInteger] $n:term) => NumberTheory.runHexBackend `factorInteger n

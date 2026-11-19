@@ -187,7 +187,7 @@ Conditions: (x^2 + 1)*(x - 1)^3 ≠ 0
 set_option linter.style.longLine false in
 -- A denominator written as one nonlinear factor: without Hex there is nothing to split.
 /--
-error: apart: the denominator x^2 - 1 is a single factor as written and the fraction is proper, and without Hex `apart` does not factor it: write it as a product of its factors, or use CASHex (`lake -R -Khex=on build CASHex`, `import CASHex.Factor`), which factors it completely over ℚ
+error: apart: the denominator x^2 - 1 is a single factor as written and the fraction is proper, and without Hex `apart` does not factor it: write it as a product of its factors, or use CASHex (Lean 4.35 edition, `import CASHex.Factor`), which factors it completely over ℚ
 -/
 #guard_msgs (error, drop info) in
 #cas [apart] (1/(x^2-1))

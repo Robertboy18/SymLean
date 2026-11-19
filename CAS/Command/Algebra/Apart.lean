@@ -24,9 +24,8 @@ of degree two or more remains the report says "partial fractions over the writte
 refined by gcds". When the denominator is one nonlinear factor with exponent `1` as written,
 only the polynomial part is split off (`x ^ 3 / (x ^ 2 + 1) = x - x / (x ^ 2 + 1)`), and a proper
 fraction, with nothing to split, is refused (a power of one factor, such as `(x ^ 2 + 1) ^ 2`, is
-expanded in that factor). With `import CASHex.Factor` (built with
-`lake -R -Khex=on build CASHex`) the denominator is factored completely over `ℚ`, so its factors
-are irreducible.
+expanded in that factor). In the Lean 4.35 edition, `CASHex.Factor` factors the denominator
+completely over `ℚ`.
 
 The theorem is `∀ x, d₁ ≠ 0 → … → dₖ ≠ 0 → e = q + ∑ c / p ^ k` over the divisors `dᵢ` of `e` as
 written. It holds whichever factors are used: that they are irreducible is not part of the
@@ -156,7 +155,7 @@ def logApartIn (ref input : Syntax) (reified : ReifiedExpr) (x : Name)
             throwErrorAt input "apart: the denominator {denText} is a single factor as written \
               and the fraction is proper, and without Hex `apart` \
               does not factor it: write it as a product of its factors, or use CASHex \
-              (`lake -R -Khex=on build CASHex`, `import CASHex.Factor`), which factors it \
+              (Lean 4.35 edition, `import CASHex.Factor`), which factors it \
               completely over ℚ"
         pure factors
   unless Dense.isFactorization den factors do
@@ -195,7 +194,7 @@ def logApartIn (ref input : Syntax) (reified : ReifiedExpr) (x : Name)
     outputType := if factorize?.isNone && factors.any (·.1.size > 2)
       then "partial fractions over the written factors, refined by gcds"
       else "partial fractions"
-    conditions? := conditionsText (variableNames reified) rational.divisors
+    conditions? := conditionsText (reified.coordinateName) rational.divisors
   } #[evidence]
 
 /-- Run `#cas [apart x] e`, with the factorization `factorize?` of the denominator when it is
@@ -234,8 +233,8 @@ factors are those written in the input, refined by gcds: `1 / ((x - 1) * (x + 1)
 factor written as `x ^ 2 - 1` stays whole. When a factor of degree two or more remains, the label
 reads "partial fractions over the written factors, refined by gcds". When the denominator is one
 nonlinear factor with exponent `1`, only the polynomial part is split off, and a proper fraction
-with such a denominator is refused. With `CASHex.Factor` imported (built by
-`lake -R -Khex=on build CASHex`), Hex factors the denominator completely over `ℚ`.
+with such a denominator is refused. In the Lean 4.35 edition, `CASHex.Factor` factors the
+denominator completely over `ℚ`.
 
 ## Options
 An optional variable after the mode name, as in `#cas [apart x] e`, names the variable.
@@ -282,7 +281,7 @@ modes `together`, `factor` and `integrate`.
 ```output
 apart: the denominator x^2 - 1 is a single factor as written and the fraction is proper, and
 without Hex `apart` does not factor it: write it as a product of its factors, or use CASHex
-(`lake -R -Khex=on build CASHex`, `import CASHex.Factor`), which factors it completely over ℚ
+(Lean 4.35 edition, `import CASHex.Factor`), which factors it completely over ℚ
 ```
 Write the denominator as `(x - 1)*(x + 1)`, or import `CASHex.Factor`.
 ```lean

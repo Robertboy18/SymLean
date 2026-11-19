@@ -955,7 +955,7 @@ For the variables `x₁, …, xₙ` of `p` and the printed product `q`, the repo
 The input is a polynomial with rational coefficients. Without Hex, the factors come from the
 rational roots with their multiplicities, from perfect powers, and from homogeneous polynomials in
 two variables; a remaining factor of degree two or more is printed whole and is not claimed to be
-irreducible. With `CASHex.Factor` imported (built by `lake -R -Khex=on build CASHex`), the
+irreducible. With `CASHex.Factor` imported (in the Lean 4.35 edition), the
 factors are irreducible over `ℚ` whenever Hex certifies every one of them.
 
 ## Options

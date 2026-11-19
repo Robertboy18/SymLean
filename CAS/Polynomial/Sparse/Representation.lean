@@ -79,6 +79,9 @@ abbrev MvPoly (n : Nat) := List (Rat × MvMonomial n)
 def mvOne (n : Nat) : MvMonomial n :=
   fun _ ↦ 0
 
+/-- The constant-one polynomial. -/
+def mvPolyOne (n : Nat) : MvPoly n := [(1, mvOne n)]
+
 /-- The monomial for the `i`-th ordered variable. -/
 def mvVar {n : Nat} (i : Fin n) : MvMonomial n :=
   fun j ↦ if j = i then 1 else 0

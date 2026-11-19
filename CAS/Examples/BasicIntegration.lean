@@ -130,7 +130,7 @@ Factoring any other factor of degree three or more is Hex's (`CASHex.Factor`), s
 
 set_option linter.hashCommand false in
 set_option linter.style.longLine false in
-/-- The denominator has a factor of degree three or more, which is not factored without Hex: `import CASHex.Factor` (built with `lake -R -Khex=on build CASHex`) factors it -/
+/-- The denominator has a factor of degree three or more, which is not factored without Hex: `import CASHex.Factor` (in the Lean 4.35 edition) factors it -/
 #guard_msgs (error, drop info, substring := true) in
 #cas [integrate x] (1/(x^3 - 1))
 

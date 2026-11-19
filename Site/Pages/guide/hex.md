@@ -7,19 +7,19 @@ related_guides = ["polynomials", "number-theory", "linear-algebra", "oracles"]
 tutorials = ["trust"]
 +++
 
-[Hex](https://github.com/leanprover/hex) is the Lean FRO’s verified computer algebra: dense polynomials over `ℤ`, `ℚ` and `ZMod p`, factoring with irreducibility certificates, determinants, primality and real roots. It works the way SymLean does, running its searches in compiled code and having the kernel check a certificate. And it is strong exactly where the core of SymLean is weak, in exact algebra over the integers and finite fields, so I’d much rather use Hex there than write a second version of the same algorithms.
+[Hex](https://github.com/leanprover/hex) supplies verified exact algebra over the integers, rationals and finite fields. SymLean’s optional `CASHex` library uses it for factorization, irreducibility, determinants and primality certificates.
 
-We’re in touch with the Hex team about how the two projects fit together.
-
-SymLean uses Hex through the optional library `CASHex`, and if you don’t ask for it, nothing changes: Lake neither fetches nor builds Hex, and no module of `CAS` imports it. To turn it on with Hex v0.10.0, run these from the root of SymLean:
+Hex v0.10.0 targets Lean 4.35. The current SymLean release uses Lean 4.36. To reproduce the Hex examples, build the Lean 4.35 edition in a separate worktree. Run the first command from your SymLean checkout.
 
 ```
+git worktree add --detach ../SymLean-lean435 51d3837e2b4652b7a1cfbb9f8b8faf5d4d6dea30
+cd ../SymLean-lean435
 lake -R -Khex=on update HexBerlekampZassenhausTheory HexBareissTheory HexPrimalityTheory
 git -C .lake/packages/HexLLL apply ../../../CASHex/patches/hex-lll-gnu-source.patch
 lake -R -Khex=on build CASHex
 ```
 
-The first command fetches the Berlekamp-Zassenhaus factorizer, the Bareiss determinants and the primality certificates with their dependencies, 34 Hex packages in all, and writes them into `lake-manifest.json`. The second is for glibc systems that declare `RTLD_DEFAULT` only under `_GNU_SOURCE`. To switch back, run `lake -R build`, and `git checkout lake-manifest.json` restores the manifest.
+The Lake update adds Hex’s dependencies to the manifest of that worktree. Apply the patch on glibc systems that require `_GNU_SOURCE` for `RTLD_DEFAULT`.
 
 ::: table
 Module | What it adds

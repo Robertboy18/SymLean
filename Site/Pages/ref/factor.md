@@ -23,7 +23,7 @@ How far it factors depends on what you import. SymLean on its own finds rational
 - The theorem is $\forall x_1, \dots, x_n,\; p = q$ about Mathlib’s real numbers, where $q$ is the printed product, proved by `ring`.
 - The input is a polynomial with rational coefficients in one or more variables.
 - Without Hex, the factors come from the rational roots with their multiplicities, from perfect powers, and from homogeneous polynomials in two variables. A remaining factor of degree two or more is printed whole, and it is not claimed to be irreducible.
-- With `CASHex.Factor` imported (built by `lake -R -Khex=on build CASHex`), the factors are irreducible over $\mathbb{Q}$ whenever Hex certifies every one of them, and the output says “factors irreducible over ℚ”. The [Hex guide](guide:hex) has the details.
+- In the Lean 4.35 edition, `CASHex.Factor` reports “factors irreducible over ℚ” when Hex certifies each factor. See the [Hex guide](guide:hex).
 - With `CASOracle.Factor` imported, `#cas [factor, oracle := sympy] ‹p›` asks an external system for the factors. `sage`, `flint` and `maxima` work the same way, and `pari` in one variable. The identity is checked in Lean, and irreducibility is not. See [[oracle]].
 - The tactic [[cas]] proves the same identities.
 

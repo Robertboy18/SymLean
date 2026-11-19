@@ -483,17 +483,13 @@ structure Fraction (k : Nat) (ι : Type*) where
   /-- Obligations sufficient for the denominator to be nonzero. -/
   divisors : List (Verified.Expr ι)
 
-/-- The constant polynomial `1`. -/
-def one (k : Nat) : MvPoly k :=
-  [(1, mvOne k)]
-
 /-- Compile the rational skeleton of an expression over the atom table, which must contain its
 atoms. -/
 def compile {ι : Type*} [DecidableEq ι] (table : List (Verified.Expr ι)) :
     Verified.Expr ι → Fraction table.length ι
-  | .nat n => ⟨[((n : Rat), mvOne _)], one _, [], []⟩
-  | .int z => ⟨[((z : Rat), mvOne _)], one _, [], []⟩
-  | .rat num den => ⟨[(Rat.divInt num den, mvOne _)], one _, [], []⟩
+  | .nat n => ⟨[((n : Rat), mvOne _)], mvPolyOne _, [], []⟩
+  | .int z => ⟨[((z : Rat), mvOne _)], mvPolyOne _, [], []⟩
+  | .rat num den => ⟨[(Rat.divInt num den, mvOne _)], mvPolyOne _, [], []⟩
   | .add a b =>
       let fa := compile table a
       let fb := compile table b
@@ -520,17 +516,17 @@ def compile {ι : Type*} [DecidableEq ι] (table : List (Verified.Expr ι)) :
   | .pow a k =>
       let fa := compile table a
       ⟨mvPowPoly fa.num k, mvPowPoly fa.den k, fa.nonzero, fa.divisors⟩
-  | atom => ⟨[(1, indicator table atom)], one _, [], []⟩
+  | atom => ⟨[(1, indicator table atom)], mvPolyOne _, [], []⟩
 
 /-- The constant `1` evaluates to `1`. -/
-theorem mvPolyVal_one {k : Nat} (x : ℝ^k) : mvPolyVal x (one k) = 1 := by
-  simp [one, mvPolyVal, mvTermVal, mvMonomialVal, mvOne]
+theorem mvPolyVal_one {k : Nat} (x : ℝ^k) : mvPolyVal x (mvPolyOne k) = 1 := by
+  simp [mvPolyOne, mvPolyVal, mvTermVal, mvMonomialVal, mvOne]
 
 /-- A compiled atom is that atom over `1`. -/
 theorem eval_compile_atom {ι : Type*} [DecidableEq ι] (table : List (Verified.Expr ι))
     (ρ : ι → ℝ) (hnodup : table.Nodup) {atom : Verified.Expr ι} (hmem : atom ∈ table) :
     mvPolyVal (atomPoint table ρ) [(1, indicator table atom)] /
-      mvPolyVal (atomPoint table ρ) (one _) = atom.eval ρ := by
+      mvPolyVal (atomPoint table ρ) (mvPolyOne _) = atom.eval ρ := by
   rw [mvPolyVal_one, div_one]
   simp [mvPolyVal, mvTermVal, mvMonomialVal_indicator table ρ hnodup hmem]
 

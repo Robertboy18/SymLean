@@ -41,7 +41,7 @@ namespace CAS.Command.LinearAlgebra
 
 open Lean Elab Command Meta Term
 open CAS.Command.InfoView
-open CAS.Command.Algebra (natTerm ratText proveStatement)
+open CAS.Command.Algebra (natTerm proveStatement)
 
 /-- Run `#cas [det] A`. -/
 def logDet (ref : Syntax) (input : Syntax) : CommandElabM Unit := do
@@ -57,7 +57,7 @@ def logDet (ref : Syntax) (input : Syntax) : CommandElabM Unit := do
     domain := matrixDomain A
     input := A.text
     inputType := "matrix"
-    output := ratText d
+    output := toString d
     outputType := "determinant"
   } #[← evidence "det" "Determinant" proposition proof]
 
@@ -121,7 +121,7 @@ def logArithmetic (ref : Syntax) (operation : Arithmetic) (input : Syntax) :
     | .trace =>
         let t := A.trace
         let (a, b) ← proveStatement name (← `(Matrix.trace $At = $(← ratTerm t))) (← kernelDecide)
-        pure (a, b, ratText t)
+        pure (a, b, toString t)
     | .power k =>
         let B := (List.range k).foldl (fun P _ ↦ P.mul A) (QMatrix.identity A.rows)
         let (a, b) ← proveStatement name

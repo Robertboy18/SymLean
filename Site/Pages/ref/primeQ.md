@@ -17,7 +17,7 @@ imports = ["Mathlib.Tactic.NormNum.Prime"]
 
 `primeQ` tells you whether ‹n› is prime and proves the answer either way. The certificates are the work of Hex, the Lean FRO’s verified computer algebra. Hex finds a certificate that ‹n› is prime, or a factor of ‹n›, and the kernel checks it. A factor you could check yourself by multiplying. A proof of primality is much harder to come by, and that is where Hex does the real work.
 
-Hex is optional, and the build of this site leaves it out. The outputs on this page that need Hex are quoted from `CASHex/Examples.lean`, which the Hex build compiles. To turn Hex on, fetch it with the commands in the [Hex guide](guide:hex), build it with `lake -R -Khex=on build CASHex`, and start your file with `import CASHex.NumberTheory`.
+The examples that use Hex come from the Lean 4.35 edition’s `CASHex/Examples.lean`. The [Hex guide](guide:hex) shows how to build that edition and import `CASHex.NumberTheory`.
 
 ## Details and Options
 

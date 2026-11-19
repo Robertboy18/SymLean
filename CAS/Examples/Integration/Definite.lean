@@ -93,8 +93,8 @@ Theorem: MeasureTheory.Integrable (fun x ↦ 1 / (1 + x ^ 2)) MeasureTheory.volu
 #cas [integrate x in [-∞, ∞]] (1 / (1 + x ^ 2))
 
 /--
-error: the checked integrator found no supported antiderivative in coordinate 'x', so the
-integral has no exact value here. For a numerical value use
+error: the checked integrator found no supported antiderivative in coordinate 'x'. For a possible
+numerical enclosure, try
 `#cas [nintegrate x in [0, 1]] (exp (x ^ 2))`.
 -/
 #guard_msgs in
@@ -104,9 +104,8 @@ integral has no exact value here. For a numerical value use
 error: `cas` did not prove the value 4*atan(2*sin(4)/(1 + cos(4))/sqrt(12))/sqrt(12) of the
 integral: it could not prove that the conditions of the primitive 4*atan(2*sin(x)/(1 +
 cos(x))/sqrt(12))/sqrt(12) hold on the interval (cos(x) + 1 ≠ 0; sin(x)^4 - 5*sin(x)^2*cos(x) -
-11*sin(x)^2 + 12*cos(x) + 12 ≠ 0; cos(x) + 2 ≠ 0). Where they fail, the difference of the
-primitive's values at the endpoints need not be the integral. For a numerical value use `#cas
-[nintegrate x in [0, 4]] (1 / (2 + cos x))`.
+11*sin(x)^2 + 12*cos(x) + 12 ≠ 0; cos(x) + 2 ≠ 0). The endpoint calculation
+needs a primitive valid throughout the interval.
 -/
 #guard_msgs in
 #cas [integrate x in [0, 4]] (1 / (2 + cos x))
@@ -118,7 +117,7 @@ primitive's values at the endpoints need not be the integral. For a numerical va
 error: `cas` did not prove the value 4*atan(2*sin(1)/(1 + cos(1))/sqrt(12))/sqrt(12) of the
 integral: its proof ran out of heartbeats, `maxHeartbeats` (200000 thousand) for the elaboration of
 an attempt and a quarter of it for each kernel check; `set_option maxHeartbeats` raises both. For a
-numerical value use `#cas [nintegrate x in [0, 1]] (1 / (2 + cos x))`.
+possible numerical enclosure, try `#cas [nintegrate x in [0, 1]] (1 / (2 + cos x))`.
 -/
 #guard_msgs in
 #cas [integrate x in [0, 1]] (1 / (2 + cos x))
@@ -127,8 +126,8 @@ numerical value use `#cas [nintegrate x in [0, 1]] (1 / (2 + cos x))`.
 error: `cas` did not prove the value (4*atan(2*sin(1)/(1 + cos(1))/sqrt(12)) - 4*atan(2*sin(-1)/(1 +
 cos(-1))/sqrt(12)))/sqrt(12) of the integral: its proof ran out of heartbeats, `maxHeartbeats`
 (200000 thousand) for the elaboration of an attempt and a quarter of it for each kernel check;
-`set_option maxHeartbeats` raises both. For a numerical value use `#cas [nintegrate x in [-1, 1]] (1
-/ (2 + cos x))`.
+`set_option maxHeartbeats` raises both. For a possible numerical enclosure, try
+`#cas [nintegrate x in [-1, 1]] (1 / (2 + cos x))`.
 -/
 #guard_msgs in
 #cas [integrate x in [-1, 1]] (1 / (2 + cos x))
@@ -166,9 +165,8 @@ error: `cas` did not prove the value (2*atan((2*sin(4)/(1 + cos(4)) + 1)/sqrt(3)
 2*atan((2*sin(x)/(1 + cos(x)) + 1)/sqrt(3))/sqrt(3) hold on the interval (cos(x) + 1 ≠ 0;
 sin(x)^2*cos(x) + 3*sin(x)^2 - 4*cos(x) - 4 ≠ 0; sin(x)^5 + 2*sin(x)^4 - 4*sin(x)^3*cos(x) -
 8*sin(x)^3 - 8*sin(x)^2*cos(x) - 16*sin(x)^2 + 8*sin(x)*cos(x) + 8*sin(x) + 16*cos(x) + 16 ≠ 0;
-sin(x) + 2 ≠ 0) (the check ran out of heartbeats). Where they fail, the difference of the
-primitive's values at the endpoints need not be the integral. For a numerical value use `#cas
-[nintegrate x in [0, 4]] (1 / (2 + sin x))`.
+sin(x) + 2 ≠ 0) (the check ran out of heartbeats). The endpoint calculation
+needs a primitive valid throughout the interval.
 -/
 #guard_msgs in
 #cas [integrate x in [0, 4]] (1 / (2 + sin x))

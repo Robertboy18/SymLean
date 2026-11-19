@@ -70,7 +70,7 @@ namespace CAS.Command.RSolve
 
 open Lean Elab Command Meta Term
 open CAS.Command.InfoView
-open CAS.Command.Algebra (ratText checkedEvidence Dense)
+open CAS.Command.Algebra (checkedEvidence Dense)
 open CAS.Command.LinearAlgebra (QMatrix)
 open CAS.Command.RootSplit
 open CAS.LinearODE (CharRoot Enclosures)
@@ -1006,7 +1006,7 @@ def logRSolve (ref : Syntax) (seqId indexId : TSyntax `ident) (initialStx : Arra
   logReport ref {
     domain := s!"{seq} : ℕ → ℝ"
     input := surfaceText equation ++ String.join
-      (sorted.toList.map fun ((j, v), _) ↦ s!", {seq} {j} = {ratText v}")
+      (sorted.toList.map fun ((j, v), _) ↦ s!", {seq} {j} = {v}")
     inputType := if initial.isEmpty then "recurrence" else "recurrence with initial values"
     output := answer
     outputType := if initial.isEmpty then "general solution"

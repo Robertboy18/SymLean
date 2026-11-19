@@ -128,7 +128,7 @@ def logTogether (ref : Syntax) (output : TogetherOutput) (input : Syntax) :
   let rational ← match rationalOfExpr reified.expr with
     | .ok r => pure r
     | .error message => throwErrorAt input "{operation}: {message}"
-  let names := variableNames reified
+  let names := reified.coordinateName
   let form ← match togetherForm rational.value (rational.divisors.toList.map (·.2)) with
     | .ok f => pure f
     | .error message => throwErrorAt input "{operation}: {message}"
@@ -163,7 +163,7 @@ partial def summands {ι : Type} : Verified.Expr ι → List (Bool × Verified.E
 def logCancel (ref : Syntax) (input : Syntax) : CommandElabM Unit := do
   let reified ← parseInferred input
   let n := reified.names.length
-  let names := variableNames reified
+  let names := reified.coordinateName
   let rational ← match rationalOfExpr reified.expr with
     | .ok r => pure r
     | .error message => throwErrorAt input "cancel: {message}"

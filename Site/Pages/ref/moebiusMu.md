@@ -17,7 +17,7 @@ imports = ["Mathlib.NumberTheory.ArithmeticFunction.Moebius"]
 
 `moebiusMu` evaluates the Möbius function and proves the value of Mathlib’s `ArithmeticFunction.moebius`. Everything about $\mu(n)$ is in the prime factors of ‹n›: it is $0$ when a prime repeats, and $(-1)^k$ when ‹n› is a product of $k$ distinct primes. So the real work is the factorization, and for that we use Hex, the Lean FRO’s verified computer algebra.
 
-Hex is optional, and the build of this site leaves it out. The outputs on this page that need Hex are quoted from `CASHex/Examples.lean`, which the Hex build compiles. To turn Hex on, fetch it with the commands in the [Hex guide](guide:hex), build it with `lake -R -Khex=on build CASHex`, and start your file with `import CASHex.NumberTheory`.
+The examples that use Hex come from the Lean 4.35 edition’s `CASHex/Examples.lean`. The [Hex guide](guide:hex) shows how to build that edition and import `CASHex.NumberTheory`.
 
 ## Details and Options
 

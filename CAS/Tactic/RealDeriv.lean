@@ -227,12 +227,17 @@ private def rewriteMainGoal (equality : Expr) : TacticM Unit := do
   let rewritten ← goal.replaceTargetEq result.eNew result.eqProof
   replaceMainGoal (rewritten :: result.mvarIds)
 
-/-- Close `goal` by `tactic`, failing with `description` otherwise. -/
-private def closeSideGoal (goal : Expr) (tactic : TSyntax `tactic) (description : String) :
+/-- Prove `goal` in isolation, with error recovery disabled for the side condition. -/
+private def closeSideGoal (goal : Expr) (action : TacticM Unit) (description : String) :
     TacticM Unit := do
-  let remaining ← Tactic.run goal.mvarId! (Tactic.evalTactic tactic)
-  unless remaining.isEmpty do
-    throwError "{operation} could not prove {description}{indentExpr (← inferType goal)}"
+  try
+    let remaining ← Term.withoutErrToSorry <| Tactic.run goal.mvarId! (withoutRecover action)
+    if remaining.isEmpty && (← goal.mvarId!.isAssigned) then
+      discard <| ProofCarrier.checkCompletedProof description goal
+      return
+  catch error =>
+    if error.isRuntime then throw error
+  throwError "{operation} could not prove {description}{indentExpr (← inferType goal)}"
 
 /-- Rewrite every `iteratedDerivWithin n f s x` with a literal order `n` in the main goal to
 `iteratedDeriv n f x` by `iteratedDerivWithin_eq_iteratedDeriv`. Its conditions `UniqueDiffOn ℝ s`
@@ -253,24 +258,22 @@ private def expandIteratedDerivWithin (evidence? : Option (TSyntax `term)) :
     let (hypotheses, _, _) ← forallMetaTelescopeReducing (← inferType transport) (some 3)
     let goals ← hypotheses.mapM fun hypothesis ↦ do
       mkFreshExprSyntheticOpaqueMVar (← inferType hypothesis)
-    closeSideGoal goals[0]! (← `(tactic| first
+    closeSideGoal goals[0]! (evalTactic (← `(tactic| first
       | cas_assumption | cas_staged exact uniqueDiffOn_univ
       | cas_staged exact isOpen_Ioi.uniqueDiffOn | cas_staged exact isOpen_Iio.uniqueDiffOn
       | cas_staged exact isOpen_Ioo.uniqueDiffOn | cas_staged exact uniqueDiffOn_Ici _
       | cas_staged exact uniqueDiffOn_Iic _
       | cas_staged exact uniqueDiffOn_Icc (by first | norm_num | cas_assumption | linarith)
-      | cas_staged exact uniqueDiffOn_Ico (by first | norm_num | cas_assumption | linarith)
-      | cas_staged exact uniqueDiffOn_Ioc (by first | norm_num | cas_assumption | linarith)))
+      | cas_staged exact uniqueDiffOn_Ico _ _
+      | cas_staged exact uniqueDiffOn_Ioc _ _)))
       "unique differentiability on the set"
-    closeSideGoal goals[2]! (← `(tactic| first
+    closeSideGoal goals[2]! (evalTactic (← `(tactic| first
       | cas_staged exact Set.mem_univ _ | cas_assumption
       | (simp only [Set.mem_Ioi, Set.mem_Iio, Set.mem_Icc, Set.mem_Ico, Set.mem_Ioc,
             Set.mem_Ioo, Set.mem_Ici, Set.mem_Iic];
-          first | cas_assumption | positivity | (constructor <;> linarith) | linarith)))
+          first | cas_assumption | positivity | (constructor <;> linarith) | linarith))))
       "that the point lies in the set"
-    let remaining ← Tactic.run goals[1]!.mvarId! (Regularity.close evidence?)
-    unless remaining.isEmpty do
-      throwError "{operation} could not prove the smoothness{indentExpr (← inferType goals[1]!)}"
+    closeSideGoal goals[1]! (Regularity.close evidence?) "smoothness at the point"
     rewriteMainGoal (← instantiateMVars (mkAppN transport goals))
 
 /-- `iteratedDeriv n f = deriv (… (deriv f))` with `n` derivatives, from `iteratedDeriv_zero`

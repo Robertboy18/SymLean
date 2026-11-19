@@ -136,7 +136,7 @@ private def plannerMetadata
       detail := if count = 1 then "" else s!"used by {count} local enclosure routes" }
 
 private def renderInterval (binding : BoxBinding) : String :=
-  s!"[{renderRational binding.interval.lo}, {renderRational binding.interval.hi}]"
+  s!"[{binding.interval.lo}, {binding.interval.hi}]"
 
 private def renderBinding (binding : BoxBinding) : String :=
   s!"{renderName binding.coordinate} ∈ {renderInterval binding}"
@@ -164,23 +164,23 @@ private def renderScaledDecimal (places : Nat) (scaled : Int) : String :=
   s!"{sign}{whole}.{padding}{fractional}"
 
 private def exactEndpointIsCompact (value : ℚ) : Bool :=
-  (renderRational value).length ≤ 24
+  (toString value).length ≤ 24
 
 private def renderLowerPreview (places : Nat) (value : ℚ) : String :=
   if exactEndpointIsCompact value then
-    renderRational value
+    toString value
   else
     renderScaledDecimal places <| Rat.floor (value * ((10 ^ places : ℕ) : ℚ))
 
 private def renderUpperPreview (places : Nat) (value : ℚ) : String :=
   if exactEndpointIsCompact value then
-    renderRational value
+    toString value
   else
     renderScaledDecimal places <| Rat.ceil (value * ((10 ^ places : ℕ) : ℚ))
 
 private def renderCenterPreview (places : Nat) (value : ℚ) : String :=
   if exactEndpointIsCompact value then
-    renderRational value
+    toString value
   else
     "≈" ++ renderScaledDecimal places (Rat.floor (value * ((10 ^ places : ℕ) : ℚ)))
 
@@ -206,18 +206,18 @@ is rounded, the radius is printed to the same decimal places and rounded up, as 
 private def renderView (places : Nat) : BoxQueryDisplay ℚ → String × String × String
   | .enclosure lo hi =>
       ("Output", s!"[{renderLowerPreview places lo}, {renderUpperPreview places hi}]",
-        s!"[{renderRational lo}, {renderRational hi}]")
+        s!"[{lo}, {hi}]")
   | .upperBound upper =>
-      ("Upper bound", renderUpperPreview places upper, renderRational upper)
+      ("Upper bound", renderUpperPreview places upper, toString upper)
   | .absoluteBound upper =>
-      ("Absolute bound", renderUpperPreview places upper, renderRational upper)
+      ("Absolute bound", renderUpperPreview places upper, toString upper)
   | .midpointApprox center radius =>
       let widened := widenedRadius places center radius
       let shownRadius :=
         if exactEndpointIsCompact center then renderUpperPreview places widened
         else renderScaledDecimal places <| Rat.ceil (widened * ((10 ^ places : ℕ) : ℚ))
       ("Center and radius", s!"{renderCenterPreview places center} ± {shownRadius}",
-        s!"{renderRational center} ± {renderRational radius}")
+        s!"{center} ± {radius}")
 
 /-! ## Headline theorems -/
 

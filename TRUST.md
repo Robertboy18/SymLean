@@ -1,13 +1,14 @@
 # What a SymLean proof trusts
 
-Every theorem of SymLean is checked by Lean's kernel. This file lists everything else a reader relies
-on, each with the reason it is there. `bash scripts/audit.sh` lists the trusted constants below from
-the built library.
+The default SymLean build checks its theorems in Lean's kernel. Run `bash scripts/audit.sh` to check
+axiom dependencies and list compiler hooks in the built library. Use `--inventory` for reporting
+only, or pass `CASOracle` to audit that optional library after building it.
 
 ## Always
 
-- Lean 4.36.0's kernel and the axioms `propext`, `Classical.choice` and `Quot.sound`: every proof rests
-  on them, and `scripts/audit.sh` reports any constant of the library that uses another axiom.
+- Lean 4.36.0's kernel and the axioms `propext`, `Classical.choice` and `Quot.sound`. The audit fails
+  on any other axiom dependency, with a single exception for `lcProof` in the unsafe implementation
+  `CAS.Numerics.natCompactImpl` itself.
 - Mathlib v4.36.0 (`fc4f59e5`): the statements use its definitions (`Real.arctan`, the interval and
   Bochner integrals, `IntegrableOn`, `HasSum`, `tsum`), so they mean what those definitions mean.
 - The SymLean definitions that appear in printed statements: `CAS.erf` (the definition of Mathlib
@@ -53,9 +54,9 @@ the built library.
 
 ## Searches, which are trusted for nothing
 
-- The optional oracles of `CASOracle` (SymPy, SageMath, FLINT, Maxima, PARI/GP, Gappa, through our
-  Lean 4.36 port of DSLean at `996f7439`) and Hex's searches in the optional `CASHex`: they only
-  propose answers, which become theorems through kernel-checked proofs.
+- The optional `CASOracle` searches (SymPy, SageMath, FLINT, Maxima, PARI/GP and Gappa, through the
+  Lean 4.36 port of DSLean at `996f7439`) propose answers, which become theorems through
+  kernel-checked proofs. The same applies to Hex searches in the Lean 4.35 edition.
 - FloatLib 4.0.0 (`ba998b6`): its executable floats run in compiled searches and `#eval`; its interval
   theorems are kernel-checked.
 

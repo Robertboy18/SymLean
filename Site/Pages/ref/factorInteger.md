@@ -15,7 +15,7 @@ tutorials = ["proving"]
 
 `factorInteger` finds the prime factors of an integer and proves the result about Mathlib’s `Nat.primeFactorsList`. We didn’t write the hard part ourselves. Integer factorization and primality certificates are the work of Hex, the Lean FRO’s verified computer algebra. Hex finds the factors and a certificate that each one is prime, and the kernel checks the product and replays the certificates.
 
-Hex is optional, and the build of this site leaves it out. So the outputs on this page that need Hex are quoted from `CASHex/Examples.lean`, which the Hex build compiles. To turn Hex on, fetch it with the commands in the [Hex guide](guide:hex), build it with `lake -R -Khex=on build CASHex`, and start your file with `import CASHex.NumberTheory`.
+The examples that use Hex come from the Lean 4.35 edition’s `CASHex/Examples.lean`. The [Hex guide](guide:hex) shows how to build that edition and import `CASHex.NumberTheory`.
 
 ## Details and Options
 

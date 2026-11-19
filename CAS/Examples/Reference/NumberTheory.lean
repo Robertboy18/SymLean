@@ -47,8 +47,7 @@ Classical.choice, Quot.sound]
 #print axioms largest_prime_factor
 
 /--
-factorInteger needs Hex (`-Khex=on`): primality certificates and integer factorization come from
-Hex; build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
+factorInteger needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition
 -/
 #guard_msgs (whitespace := lax, substring := true) in
 #cas [factorInteger] 360
@@ -56,8 +55,7 @@ Hex; build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
 /-! ## primeQ -/
 
 /--
-primeQ needs Hex (`-Khex=on`): primality certificates and integer factorization come from Hex;
-build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
+primeQ needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition
 -/
 #guard_msgs (whitespace := lax, substring := true) in
 #cas (primeQ 97)
@@ -188,8 +186,7 @@ Classical.choice, Quot.sound]
 #print axioms squarefree_thirty
 
 /--
-moebiusMu needs Hex (`-Khex=on`): primality certificates and integer factorization come from Hex;
-build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
+moebiusMu needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition
 -/
 #guard_msgs (whitespace := lax, substring := true) in
 #cas (moebiusMu 1001)

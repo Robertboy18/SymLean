@@ -757,9 +757,9 @@ private def proveCoordinateMembership
   let castUpper ← mkAppOptM ``Rat.cast #[some (mkConst ``Real), none, some (toExpr interval.hi)]
   unless interval.lo ≤ bounds.lower.value ∧ bounds.upper.value ≤ interval.hi do
     refuse operation m!"the hypotheses bound `{bounds.atom}` to \
-      [{renderRational bounds.lower.value}, {renderRational bounds.upper.value}], which does \
-      not lie inside the coordinate interval [{renderRational interval.lo}, \
-      {renderRational interval.hi}] of the query box"
+      [{toString bounds.lower.value}, {toString bounds.upper.value}], which does \
+      not lie inside the coordinate interval [{toString interval.lo}, \
+      {toString interval.hi}] of the query box"
   let lowerStep ← proveArithmeticComparison operation "lower endpoint of the box"
     (← mkAppM ``LE.le #[castLower, bounds.lower.term])
   let upperStep ← proveArithmeticComparison operation "upper endpoint of the box"
@@ -1221,7 +1221,7 @@ private def queryBox (operation : String) (bounds : Array VariableBounds) :
       return RationalInterval.ofBounds found.lower.value found.upper.value h
     else
       refuse operation m!"the hypotheses on `{found.atom}` give the empty interval \
-        [{renderRational found.lower.value}, {renderRational found.upper.value}]"
+        [{toString found.lower.value}, {toString found.upper.value}]"
 
 /-- Whether `closeMainGoal` follows a query that falls short with the subdivided query: on a box
 with coordinates, within the admission budgets. -/
@@ -1310,11 +1310,11 @@ private def closeStatedMainGoal
 
 /-- The values a query certifies, as a phrase for messages. -/
 private def describeDisplay : BoxQueryDisplay ℚ → String
-  | .enclosure lower upper => s!"range [{renderRational lower}, {renderRational upper}]"
-  | .upperBound upper => s!"upper bound {renderRational upper}"
-  | .absoluteBound upper => s!"absolute bound {renderRational upper}"
+  | .enclosure lower upper => s!"range [{lower}, {upper}]"
+  | .upperBound upper => s!"upper bound {upper}"
+  | .absoluteBound upper => s!"absolute bound {upper}"
   | .midpointApprox center radius =>
-      s!"approximation {renderRational center} ± {renderRational radius}"
+      s!"approximation {center} ± {radius}"
 
 /-- The comparison between the value `display` certifies and the bound of `target` that the
 transport of the search states for the shape of `recognized`, the first one that exact arithmetic

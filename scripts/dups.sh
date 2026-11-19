@@ -8,6 +8,14 @@
 # after `lake build`. `--update` writes the current lists to the baseline instead.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-(git ls-files 'CAS/*.lean' | sed 's|/|.|g; s|\.lean$||; s|^|import |'; cat scripts/Dups.lean) |
+{
+  git ls-files 'CAS/*.lean' | while IFS= read -r file; do
+    if [[ -f "$file" ]]; then
+      module=${file%.lean}
+      printf 'import %s\n' "${module//\//.}"
+    fi
+  done
+  cat scripts/Dups.lean
+} |
   lake env lean --stdin > .lake/dups.out
 python3 -I scripts/dups_check.py .lake/dups.out scripts/dups.baseline "$@"

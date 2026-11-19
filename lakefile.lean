@@ -42,12 +42,17 @@ package SymLean where
 -- FloatLib supplies executable floats and outward-rounded intervals.
 require floatlib from git "https://github.com/lean-dojo/FloatLib.git" @ "v4.0.0"
 
--- Hex (the Lean FRO's verified computer algebra, v0.10.0) is an optional dependency for the
--- routes of `CASHex/`, off by default. `lake -R -Khex=on update HexBerlekampZassenhausTheory
--- HexBareissTheory HexPrimalityTheory` fetches it, `lake -R -Khex=on build CASHex` builds the
--- routes, and `lake -R build` switches back; without `-Khex=on` Lake neither fetches nor builds
--- Hex.
-meta if get_config? hex = some "on" then do
+private def hexRequested : Bool := get_config? hex == some "on"
+
+/-- The Hex v0.10.0 dependencies use the Lean 4.35 release line. -/
+private def hexEnabled : Bool := hexRequested && Lean.version.major == 4 && Lean.version.minor == 35
+
+run_cmd do
+  if hexRequested && !hexEnabled then
+    throwError "CASHex is unavailable for this toolchain. The Hex v0.10.0 setup is in \
+      SymLean's Lean 4.35 edition (51d3837); see Site/Pages/guide/hex.md."
+
+meta if hexEnabled then do
   require HexBerlekampZassenhausTheory from git
     "https://github.com/leanprover/hex-berlekamp-zassenhaus-theory.git" @ "v0.10.0"
   require HexBareissTheory from git
@@ -462,9 +467,8 @@ lean_lib CAS where
     #[if certificatesMode == "fast" then "-Dweak.cega.nativeCertificates=true"
       else "-Dweak.cega.nativeCertificates=false"]
 
--- The optional routes through Hex (`CASHex/`), built only with `lake -R -Khex=on build CASHex`.
--- `CAS` never imports them.
-meta if get_config? hex = some "on" then
+-- `CAS` never imports the optional routes through Hex.
+meta if hexEnabled then
 lean_lib CASHex where
   globs := #[.submodules `CASHex]
   needs := #[`@/CASHex:SymLean.embeddedInputs]

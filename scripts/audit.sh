@@ -1,7 +1,7 @@
 #!/bin/bash
-# Lists every constant of SymLean's library (the modules under CAS/) that uses an axiom beyond
-# propext, Classical.choice and Quot.sound, or that is extern, implemented_by, csimp or unsafe,
-# and counts the opaque and partial constants. Run it from the repository root after `lake build`.
+# Check the axioms of CAS after `lake build`. Pass CASOracle or CASHex to include a separately
+# built optional library. The report lists compiler hooks and unsafe definitions as well.
+# Use --inventory to print the same report without enforcing the axiom check.
 #
 # Lean itself replaces the constructor index `T.ctorIdx` of every inductive type `T` with several
 # constructors by a generated unsafe definition `T.ctorIdx._impl` that reads the constructor tag
@@ -9,8 +9,28 @@
 # body; a replacement of a constructor index that fails the check is listed like any other.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-(echo 'import Lean.Meta.Constructions.CtorIdx'
-find CAS -name '*.lean' | sed 's|/|.|g; s|\.lean$||; s|^|import |'; cat <<'EOF'
+libraries=()
+check=true
+for arg in "$@"; do
+  case "$arg" in
+    --inventory) check=false ;;
+    CAS|CASOracle|CASHex) libraries+=("$arg") ;;
+    *) printf 'Usage: %s [--inventory] [CAS|CASOracle|CASHex ...]\n' "$0" >&2; exit 2 ;;
+  esac
+done
+if (( ${#libraries[@]} == 0 )); then libraries=(CAS); fi
+
+roots=()
+for library in "${libraries[@]}"; do roots+=("\`$library"); done
+(
+  printf 'import Lean.Meta.Constructions.CtorIdx\n'
+  for library in "${libraries[@]}"; do
+    if [[ -f "$library.lean" ]]; then printf 'import %s\n' "$library"; fi
+    find "$library" -name '*.lean' | LC_ALL=C sort | sed 's|/|.|g; s|\.lean$||; s|^|import |'
+  done
+  printf 'def auditRoots : List Lean.Name := [%s]\n' "$(IFS=,; printf '%s' "${roots[*]}")"
+  printf 'def checkAudit : Bool := %s\n' "$check"
+  cat <<'EOF'
 open Lean Compiler
 
 /-- Whether `value` is `fun x₁ … xₙ ↦ getObjTagNat _ xₙ`, the tag read of its last argument. -/
@@ -33,11 +53,12 @@ def isGeneratedCtorIdx (env : Environment) (index impl : Name) : Bool :=
 #eval show CoreM Unit from do
   let env ← getEnv
   let mut found := #[]
+  let mut unexpected : Array String := #[]
   let mut indices := 0
   let mut opaques := 0
   let mut partials := 0
   for (n, c) in env.constants.map₁.toList do
-    unless (env.getModuleIdxFor? n).any (env.header.moduleNames[·.toNat]!.getRoot == `CAS) do
+    unless (env.getModuleIdxFor? n).any (auditRoots.contains env.header.moduleNames[·.toNat]!.getRoot) do
       continue
     if c matches .opaqueInfo _ then opaques := opaques + 1
     if c.isPartial then partials := partials + 1
@@ -47,6 +68,11 @@ def isGeneratedCtorIdx (env : Environment) (index impl : Name) : Bool :=
     if isGeneratedCtorIdx env n.getPrefix n then continue
     let extra := (← collectAxioms n).filter
       fun a => !#[``propext, ``Classical.choice, ``Quot.sound].contains a
+    for ax in extra do
+      -- The compact-literal elaborator calls unsafeBaseIO. Its own implementation may use
+      -- lcProof, but a proof or another declaration that reaches it still fails this check.
+      unless n == `CAS.Numerics.natCompactImpl && c.isUnsafe && ax == ``lcProof do
+        unexpected := unexpected.push s!"{privateToUserName n} uses {ax}"
     let tags := extra.toList.map (s!"uses {·}")
       ++ (if isExtern env n then ["extern"] else [])
       ++ (getImplementedBy? env n).toList.map (s!"implemented_by {privateToUserName ·}")
@@ -56,5 +82,7 @@ def isGeneratedCtorIdx (env : Environment) (index impl : Name) : Bool :=
   for line in found.qsort (· < ·) do IO.println line
   IO.println s!"{indices} constructor indices implemented by the tag read that Lean generates"
   IO.println s!"{opaques} opaque constants, {partials} partial ones"
+  if checkAudit && !unexpected.isEmpty then
+    throwError "unexpected axiom dependencies:\n{String.intercalate "\n" (unexpected.qsort (· < ·)).toList}"
 EOF
 ) | lake env lean --stdin

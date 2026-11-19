@@ -285,7 +285,7 @@ private def factorProviderHint {n : Nat} (hasProvider : Bool) (coordinate : Fin 
     (expr : Verified.Expr (Fin n)) : String :=
   if !hasProvider && CAS.IntegrationPlanner.Rational.needsFactorProvider coordinate expr then
     ". The denominator has a factor of degree three or more, which is not factored \
-      without Hex: `import CASHex.Factor` (built with `lake -R -Khex=on build CASHex`) \
+      without Hex: `import CASHex.Factor` (in the Lean 4.35 edition) \
       factors it"
   else ""
 
@@ -410,7 +410,7 @@ value of a definite integral.
 ```
 ```output
 The denominator has a factor of degree three or more, which is not factored without Hex:
-`import CASHex.Factor` (built with `lake -R -Khex=on build CASHex`) factors it
+`import CASHex.Factor` (in the Lean 4.35 edition) factors it
 ```
 With Hex the same command prints
 `-1/6*log(x^2 + x + 1) - atan((2*x + 1)/sqrt(3))/sqrt(3) + 1/3*log(x - 1)`.
@@ -752,15 +752,15 @@ def logDefiniteIntegral (ref : Syntax) (x : TSyntax `ident)
         (IntegrationPlanner.Bioche.rationalValue? (Verified.Expr.Alg.normalize value)).isSome
     | _ => false
   let numeric :=
-    if rational a && rational b then
-      s!" For a numerical value use `#cas [nintegrate {renderName x.getId} in \
+    if parameters.isEmpty && rational a && rational b then
+      s!" For a possible numerical enclosure, try `#cas [nintegrate {renderName x.getId} in \
         [{surfaceText lower}, {surfaceText upper}]] {surfaceText input}`."
     else ""
   let provider? ← integrationFactorProvider?
   let some certificate := integrate? coordinate reified.expr provider?
     | let hint := factorProviderHint provider?.isSome coordinate reified.expr
       throwErrorAt ref "the checked integrator found no supported antiderivative in \
-        coordinate '{renderName x.getId}', so the integral has no exact value here{hint}.\
+        coordinate '{renderName x.getId}'{hint}.\
         {numeric}"
   let primitive := certificate.candidate
   let raw := Verified.Expr.Alg.normalize
@@ -839,9 +839,8 @@ def logDefiniteIntegral (ref : Syntax) (x : TSyntax `ident)
         let timedOut := if timedOut then " (the check ran out of heartbeats)" else ""
         throwErrorAt ref "`cas` did not prove the value {renderExpr reified simplified} of the \
           integral: it could not prove that the conditions of the primitive \
-          {renderExpr reified primitive} hold on the interval ({shown}){timedOut}. Where they \
-          fail, the difference of the primitive's values at the endpoints need not be the \
-          integral.{numeric}"
+          {renderExpr reified primitive} hold on the interval ({shown}){timedOut}. The endpoint \
+          calculation needs a primitive valid throughout the interval."
       | _ => pure ()
   let mut attempts : Array (Verified.Expr (Fin reified.names.length) × Term × TSyntax `tactic) :=
     #[]

@@ -29,21 +29,21 @@ set_option linter.privateModule false
 -- PrimeQ, FactorInteger and MoebiusMu need Hex (CASHex.NumberTheory)
 set_option linter.style.longLine false in
 /--
-error: primeQ needs Hex (`-Khex=on`): primality certificates and integer factorization come from Hex; build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
+error: primeQ needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition
 -/
 #guard_msgs (error, drop info) in
 #cas (primeQ 2305843009213693951)
 
 set_option linter.style.longLine false in
 /--
-error: factorInteger needs Hex (`-Khex=on`): primality certificates and integer factorization come from Hex; build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
+error: factorInteger needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition
 -/
 #guard_msgs (error, drop info) in
 #cas [factorInteger] 360
 
 set_option linter.style.longLine false in
 /--
-error: moebiusMu needs Hex (`-Khex=on`): primality certificates and integer factorization come from Hex; build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
+error: moebiusMu needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition
 -/
 #guard_msgs (error, drop info) in
 #cas (moebiusMu 30)

@@ -92,7 +92,7 @@ def logCollect (ref : Syntax) (x : Name) (input : Syntax) : CommandElabM Unit :=
   let i ← match leadingIndex reified with
     | .ok i => pure i
     | .error message => throwErrorAt input "collect: {message}"
-  let names := variableNames reified
+  let names := reified.coordinateName
   let coefficients := coefficientsAlong i p
   let (proposition, proof) ← liftTermElabM do
     let vars := variableTerms reified
@@ -138,7 +138,7 @@ def logCoefficient (ref : Syntax) (x : Name) (query : CoefficientQuery) (input :
   let i ← match leadingIndex reified with
     | .ok i => pure i
     | .error message => throwErrorAt input "{operation}: {message}"
-  let names := variableNames reified
+  let names := reified.coordinateName
   let parameters : Bool := decide (reified.names.length > 1)
   let coefficients := coefficientsAlong i p
   let degree := (List.range coefficients.size).foldl

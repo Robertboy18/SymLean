@@ -36,7 +36,7 @@ divides by that gcd. `Dense` (`CAS/Command/Algebra/Dense.lean`) holds the coeffi
 polynomial in one variable from the constant term up, with ring arithmetic, division with
 remainder, gcd and extended gcd, derivative and shift. We do not factor over `ℚ`: `apart` and
 `product` use the factors written in the input (`factorsOver`), and the routes of
-`CASHex/Factor.lean`, in the optional `CASHex` (`lake -R -Khex=on build CASHex`), give them Hex's
+`CASHex/Factor.lean`, in the optional `CASHex` from the Lean 4.35 edition, give them Hex's
 complete factorization instead.
 
 `coprimeBasis` is factor refinement by gcds: while a polynomial `q` has a nonconstant gcd `g`
@@ -333,14 +333,10 @@ def factorsOver (written : List (MvPoly 1)) (p : Dense) : List (Dense × Nat) :=
 
 /-! ## Rendering -/
 
-/-- A rational coefficient as text. -/
-def ratText (q : ℚ) : String :=
-  if q.den = 1 then s!"{q.num}" else s!"{q.num}/{q.den}"
-
 /-- A rational as the base of a power: parenthesized unless it is a natural number, so that
 `(-2)^n` and `(2/3)^n` do not read as `-(2^n)` and `2/(3^n)`. -/
 def powerBaseText (q : ℚ) : String :=
-  if q.den = 1 && 0 ≤ q then s!"{q.num}" else s!"({ratText q})"
+  if q.den = 1 && 0 ≤ q then s!"{q.num}" else s!"({q})"
 
 /-- A rational number as an expression to print: a natural or integer literal, or `p/q`. -/
 def ratDisplayExpr {n : Nat} (q : ℚ) : Verified.Expr (Fin n) :=
@@ -692,10 +688,6 @@ def rationalIdentityScript {n : Nat} (vars : Fin n → TSyntax `term)
 /-- The variables of a reified expression as term syntax. -/
 def variableTerms (reified : ReifiedExpr) : Fin reified.names.length → TSyntax `term :=
   fun i ↦ ⟨(mkIdent (reified.names.get i)).raw⟩
-
-/-- The variable names of a reified expression as text. -/
-def variableNames (reified : ReifiedExpr) : Fin reified.names.length → String :=
-  fun i ↦ renderName (reified.names.get i)
 
 /-- The conditions line of a report: the divisors of the input. -/
 def conditionsText {n : Nat} (names : Fin n → String)

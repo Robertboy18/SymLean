@@ -62,7 +62,7 @@ public meta section
 namespace CAS.Command.LinearAlgebra
 
 open Lean Elab Command Meta Term
-open CAS.Command.Algebra (natTerm ratText proveStatement checkedEvidence)
+open CAS.Command.Algebra (natTerm proveStatement checkedEvidence)
 
 /-- A rational matrix stored by rows. -/
 abbrev QMatrix := Array (Array ℚ)
@@ -250,7 +250,7 @@ def ldl (A : QMatrix) (strict : Bool) : Except (Array ℚ) (QMatrix × Array ℚ
 
 /-- The matrix as text `!![a, b; c, d]`. -/
 def text (A : QMatrix) : String :=
-  "!![" ++ "; ".intercalate (A.toList.map fun row ↦ ", ".intercalate (row.toList.map ratText))
+  "!![" ++ "; ".intercalate (A.toList.map fun row ↦ ", ".intercalate (row.toList.map toString))
     ++ "]"
 
 end QMatrix
@@ -259,7 +259,7 @@ end QMatrix
 def matrixDomain (A : QMatrix) : String := s!"ℚ^({A.rows}×{A.cols})"
 
 /-- A vector as text `![a, b]`. -/
-def vectorText (v : Array ℚ) : String := "![" ++ ", ".intercalate (v.toList.map ratText) ++ "]"
+def vectorText (v : Array ℚ) : String := "![" ++ ", ".intercalate (v.toList.map toString) ++ "]"
 
 /-- A rational as a term of `ℚ`. -/
 def ratTerm (q : ℚ) : TermElabM (TSyntax `term) := do `(($(← ratSyntax q) : ℚ))

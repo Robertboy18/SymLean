@@ -74,7 +74,7 @@ def logDet (ref input : Syntax) : CommandElabM Unit := do
     domain := matrixDomain A
     input := A.text
     inputType := "matrix"
-    output := CAS.Command.Algebra.ratText d
+    output := toString d
     outputType := "determinant (Hex's Bareiss certificate)"
   } #[← evidence "det" "Determinant" proposition proof]
 

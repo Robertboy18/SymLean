@@ -1,11 +1,11 @@
 # Modules of CAS/ that no module of SymLean imports and that a downstream project (LeanPDE,
 # fluid-blowup or simple_cfem-lean) imports: their declarations count as used. From the import
 # graph of the four repositories at SymLean b5d9941 (scratch/review-fixes-20261109/ext168.txt),
-# without the four modules deleted since (Quadrature.GaussLegendrePlanning, Quadrature.SimpsonPlanning,
-# Quadrature.AdaptiveSimpson, Quadrature.AdaptiveGaussLegendre). Since then the examples
-# CAS/Examples/Numerics/BinaryGridShards.lean and CAS/Examples/Numerics/Importers.lean import
-# some of them to run their importers; those modules stay here, since the downstream projects
-# use what the examples do not.
+# without the modules deleted since (Quadrature.GaussLegendrePlanning, Quadrature.SimpsonPlanning,
+# Quadrature.AdaptiveSimpson, Quadrature.AdaptiveGaussLegendre, ClosedForm.Tactic.Reduction).
+# CAS/Examples/Numerics/BinaryGridShards.lean and CAS/Examples/Numerics/Importers.lean now import
+# some of these modules to exercise their importers. These entries also cover declarations that
+# the downstream projects call without an example in SymLean.
 CAS.Analysis.Approximation.Splines.Hermite
 CAS.Analysis.Approximation.Splines.HermiteRational
 CAS.Analysis.Approximation.Splines.PiecewisePolynomial
@@ -20,7 +20,6 @@ CAS.Calculus.TensorOperators
 CAS.ClosedForm.Expression.Radial
 CAS.ClosedForm.Expression.Rotation
 CAS.ClosedForm.Scalar.Models
-CAS.ClosedForm.Tactic.Reduction
 CAS.Continuum.CompiledDerivative
 CAS.Continuum.ExprAdaptiveTaylor
 CAS.Continuum.FinCases
@@ -170,6 +169,9 @@ CAS.Polynomial.RealRoot.SturmSubdivision
 CAS.Polynomial.RealRoot.SturmTheorem
 CAS.Polynomial.RealRoot.SturmTheorem.Recurrence
 CAS.Polynomial.RealRoot.SturmTheorem.Variation
+# PDEAtlas proves the analytic semantics of these executable vector calculus operations.
+CAS.Verified.Expr.closedCurl2
+CAS.Verified.Expr.closedDivergence
 # Declarations that LeanPDE's Blueprint cites (`lean :=`) and nothing in SymLean uses. Its panel
 # rule card cites `PanelRule.search` already; its fourth-order tolerance card cites
 # `PanelRule.compositeToTolerance_sound_le` once its pin moves past tier 3b.

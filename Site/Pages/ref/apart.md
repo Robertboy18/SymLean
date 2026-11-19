@@ -27,7 +27,7 @@ The thing to watch is the poles themselves. The theorem holds where the divisors
 - The input is a rational function of one variable with rational coefficients. `#cas [apart x] ‹e›` names the variable.
 - Without Hex the factors are those written in the input, refined by gcds: `1/((x - 1)*(x + 1))` splits, and a factor written as `x^2 - 1` stays whole. When a factor of degree two or more remains, the label reads “partial fractions over the written factors, refined by gcds”.
 - When the denominator is one nonlinear factor with exponent $1$, only the polynomial part is split off, and a proper fraction with such a denominator is refused.
-- With `CASHex.Factor` imported (built by `lake -R -Khex=on build CASHex`), Hex factors the denominator completely over $\mathbb{Q}$. The [Hex guide](guide:hex) has the details.
+- In the Lean 4.35 edition, `CASHex.Factor` factors the denominator completely over $\mathbb{Q}$. See the [Hex guide](guide:hex).
 - The tactic [[cas]] proves these identities, with the conditions as hypotheses.
 
 ## Examples

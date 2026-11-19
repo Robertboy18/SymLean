@@ -212,8 +212,8 @@ def boundTerm (b : ℚ × ℚ) : TermElabM (TSyntax `term) := do
 
 /-- `a + √c` as text, with a radicand that is not an integer in parentheses: `√(1/2)`. -/
 def boundText (b : ℚ × ℚ) : String :=
-  let root := if b.2.den = 1 then s!"√{ratText b.2}" else s!"√({ratText b.2})"
-  if b.2 = 0 then ratText b.1 else if b.1 = 0 then root else s!"{ratText b.1} + {root}"
+  let root := if b.2.den = 1 then s!"√{b.2}" else s!"√({b.2})"
+  if b.2 = 0 then toString b.1 else if b.1 = 0 then root else s!"{b.1} + {root}"
 
 /-- A rational with 8 decimal digits above `a + √c` for `b = (a, c)` with `c > 0`. -/
 def boundAbove (b : ℚ × ℚ) : ℚ :=
@@ -350,7 +350,7 @@ def logInverseLaplace (ref : Syntax) (s t : TSyntax `ident) (input : TSyntax `te
   -- search may have missed, may still factor over `ℚ`.
   let hint (g : Dense) : String :=
     if factorize?.isNone && (Dense.degree g ≥ 4 || !(Dense.rationalRoots g.toList).2.2) then
-      "; it may factor over ℚ: CASHex (`lake -R -Khex=on build CASHex`, \
+      "; it may factor over ℚ: CASHex (Lean 4.35 edition, \
         `import CASHex.Factor`) factors it completely"
     else ""
   -- The linear and quadratic factors of `d`, and the factors whose roots are only enclosed.

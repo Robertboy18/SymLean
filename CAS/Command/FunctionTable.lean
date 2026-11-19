@@ -1288,8 +1288,7 @@ Mathematica `PrimeQ`, SymPy `isprime`. The mode `factorInteger` and the call `mo
 #cas (primeQ 97)
 ```
 ```output
-primeQ needs Hex (`-Khex=on`): primality certificates and integer factorization come from Hex;
-build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
+primeQ needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition
 ```
 Without Hex the call refuses. Mathlib's `norm_num` extension `Mathlib.Tactic.NormNum.Prime`
 proves `Nat.Prime n` for small `n` without Hex.
@@ -1351,8 +1350,7 @@ Mathematica `MoebiusMu`, SymPy `mobius`. The mode `factorInteger` and the calls 
 #cas (moebiusMu 1001)
 ```
 ```output
-moebiusMu needs Hex (`-Khex=on`): primality certificates and integer factorization come from Hex;
-build with `lake -R -Khex=on build CASHex` and `import CASHex.NumberTheory`
+moebiusMu needs `CASHex.NumberTheory`, available in SymLean's Lean 4.35 edition
 ```
 Without Hex the call refuses.
 -/
