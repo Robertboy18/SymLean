@@ -60,7 +60,7 @@ shared within a declaration.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The enclosed
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>. The enclosed
   intervals are those of `FloatLib.Numerics.Enclosure.atan`, with its reductions, its geometric
   remainder and Machin's identity for `π / 4`.
 * Joris van der Hoeven, "Ball arithmetic", *Logical approaches to Barriers in Computing and

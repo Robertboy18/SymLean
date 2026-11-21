@@ -52,7 +52,7 @@ intersect them with FloatLib's enclosure.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>.
 * NIST Digital Library of Mathematical Functions, §4.19 Maclaurin Series and Laurent Series,
   Version 1.2.8 (2026-09-15), <https://dlmf.nist.gov/4.19>. Equations (4.19.1) and (4.19.2), the
   series of `sin z` and `cos z`.

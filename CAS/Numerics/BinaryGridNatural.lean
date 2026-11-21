@@ -33,7 +33,7 @@ kernel evaluates on literals, and FloatLib's enclosure theorems apply to the res
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The binary-grid
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>. The binary-grid
   interval operations that the natural-number definitions restate.
 -/
 

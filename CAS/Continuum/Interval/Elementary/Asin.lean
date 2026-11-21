@@ -33,7 +33,7 @@ denominator, and the dyadic hull rounds on a grid 32 bits finer, of at least 128
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>.
 -/
 
 @[expose] public section

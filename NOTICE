@@ -8,7 +8,7 @@ Required dependencies
 =====================
 
 SymLean requires two libraries, which Lake fetches when it builds SymLean; neither is bundled
-here. FloatLib (https://github.com/lean-dojo/FloatLib, 4.0.0 at ba998b6) is released under the MIT
+here. FloatLib (https://github.com/lean-dojo/FloatLib, 4.1.0 at fc2fad1) is released under the MIT
 License, and Mathlib (https://github.com/leanprover-community/mathlib4, v4.36.0) under the
 Apache License 2.0.
 

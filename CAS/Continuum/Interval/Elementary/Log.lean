@@ -33,7 +33,7 @@ with `0 < I.lo`.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>.
 * NIST Digital Library of Mathematical Functions, §4.6 Power Series, Version 1.2.8 (2026-09-15),
   <https://dlmf.nist.gov/4.6>. Equation (4.6.1), the series of `ln (1 + z)`, and (4.6.4), the
   series in `(z - 1) / (z + 1)`.

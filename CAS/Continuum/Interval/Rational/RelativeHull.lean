@@ -60,7 +60,7 @@ reciprocals and quotients with `quotientHull`.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>.
 * Siegfried M. Rump, "Verification methods: Rigorous results using floating-point arithmetic",
   *Acta Numerica* 19 (2010), pp. 287-449, <https://doi.org/10.1017/S096249291000005X>.
   Section 5.3 for the outward rounding (5.14) of the endpoints, there to floating-point numbers.

@@ -39,7 +39,7 @@ sum the same series in the kernel, and `AtanSplit` is kept for the statements ab
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>.
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>.
 * NIST Digital Library of Mathematical Functions, §4.24 Inverse Trigonometric Functions: Further
   Properties, Version 1.2.8 (2026-09-15), <https://dlmf.nist.gov/4.24>. Equation (4.24.3), the
   series of `arctan z` for `|z| ≤ 1`.

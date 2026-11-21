@@ -198,7 +198,7 @@ lake exe cache get
 lake build
 ```
 
-This builds the 173 modules of FloatLib that SymLean uses and SymLean's 632 modules, the examples
+This builds the 174 modules of FloatLib that SymLean uses and SymLean's 631 modules, the examples
 included, with warnings as errors, in about ten minutes on 8 cores.
 
 Inspect the axioms of a theorem proved by `cas`. They should be the three standard ones:

@@ -41,7 +41,7 @@ without unfolding type classes or bit vectors.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The kernels
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>. The kernels
   `FiniteScaleAdd.roundSum` and `FiniteProductRound.round` and their proofs.
 * IEEE Computer Society, *IEEE Standard for Floating-Point Arithmetic*, IEEE Std 754-2019, IEEE,
   Piscataway, NJ, 2019, <https://doi.org/10.1109/IEEESTD.2019.8766229>. The binary64 format and
@@ -587,7 +587,7 @@ theorem floorLog2_normal {m : ℕ} (h1 : 2 ^ 52 ≤ m) (h2 : m < 2 ^ 53) :
     FloatLib.Numerics.RationalBinary.floorLog2 m (2 ^ 52) = 0 := by
   have hm : m.log2 = 52 := (Nat.log2_eq_iff (by omega)).2 ⟨h1, h2⟩
   unfold FloatLib.Numerics.RationalBinary.floorLog2
-  rw [hm, Nat.log2_two_pow]
+  rw [FloatLib.Numerics.Kernel.log2_eq, FloatLib.Numerics.Kernel.log2_eq, hm, Nat.log2_two_pow]
   have hlt : FloatLib.Numerics.RationalBinary.lessThanPowerOfTwo m (2 ^ 52) 0 = false := by
     change decide (m < Nat.shiftLeft (2 ^ 52) 0) = false
     simp only [Nat.shiftLeft_eq', Nat.shiftLeft_zero, decide_eq_false_iff_not, not_lt]

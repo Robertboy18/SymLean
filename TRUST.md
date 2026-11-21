@@ -57,7 +57,7 @@ only, or pass `CASOracle` to audit that optional library after building it.
 - The optional `CASOracle` searches (SymPy, SageMath, FLINT, Maxima, PARI/GP and Gappa, through the
   Lean 4.36 port of DSLean at `996f7439`) propose answers, which become theorems through
   kernel-checked proofs. The same applies to Hex searches in the Lean 4.35 edition.
-- FloatLib 4.0.0 (`ba998b6`): its executable floats run in compiled searches and `#eval`; its interval
+- FloatLib 4.1.0 (`fc2fad1`): its executable floats run in compiled searches and `#eval`; its interval
   theorems are kernel-checked.
 
 ## Documentation

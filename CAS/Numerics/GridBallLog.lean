@@ -59,7 +59,7 @@ costs about 4.5 ms, and its rounded endpoints come out with radius zero, equal t
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The enclosed
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>. The enclosed
   intervals are those of `FloatLib.Numerics.Enclosure.log`, with its inversion below one, its
   reduction by a power of two and its series in `t = (x - 1) / (x + 1)`.
 * Joris van der Hoeven, "Ball arithmetic", *Logical approaches to Barriers in Computing and

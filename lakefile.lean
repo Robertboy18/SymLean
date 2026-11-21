@@ -40,7 +40,7 @@ package SymLean where
   buildDir := if certificatesMode == "fast" then ".lake/build-fast" else ".lake/build"
 
 -- FloatLib supplies executable floats and outward-rounded intervals.
-require floatlib from git "https://github.com/lean-dojo/FloatLib.git" @ "v4.0.0"
+require floatlib from git "https://github.com/lean-dojo/FloatLib.git" @ "v4.1.0"
 
 private def hexRequested : Bool := get_config? hex == some "on"
 

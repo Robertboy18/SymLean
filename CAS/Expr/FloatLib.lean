@@ -45,8 +45,8 @@ theorem with `eval_toFloatLib` gives an enclosure of the original CAS expression
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, 2026, <https://github.com/lean-dojo/FloatLib>. We pin FloatLib 4.0.0
-  (revision ba998b6).
+  Arithmetic in Lean*, 2026, <https://github.com/lean-dojo/FloatLib>. We pin FloatLib 4.1.0
+  (revision fc2fad1).
 -/
 
 @[expose] public section

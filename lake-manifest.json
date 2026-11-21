@@ -31,10 +31,10 @@
       "type": "git",
       "subDir": null,
       "scope": "",
-      "rev": "ba998b61f94299a26d285d10fa490a5ab35bd6b6",
+      "rev": "fc2fad1f9c7de970f0a10a44c58cdf2909a867b4",
       "name": "floatlib",
       "manifestFile": "lake-manifest.json",
-      "inputRev": "v4.0.0",
+      "inputRev": "v4.1.0",
       "inherited": false,
       "configFile": "lakefile.lean"
     },

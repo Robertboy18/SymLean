@@ -50,7 +50,7 @@ truncated value of the word.
 ## References
 
 * Robert Joseph George, Will Adkisson and Anima Anandkumar, *FloatLib: Verified Floating-Point
-  Arithmetic in Lean*, version 4.0.0 (commit ba998b6), <https://github.com/lean-dojo/FloatLib>. The grid values
+  Arithmetic in Lean*, version 4.1.0 (commit fc2fad1), <https://github.com/lean-dojo/FloatLib>. The grid values
   `FloatLib.Numerics.Interval.BinaryGrid.toRat`.
 * IEEE Computer Society, *IEEE Standard for Floating-Point Arithmetic*, IEEE Std 754-2019, IEEE,
   Piscataway, NJ, 2019, <https://doi.org/10.1109/IEEESTD.2019.8766229>. The binary64
